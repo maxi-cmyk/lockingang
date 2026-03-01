@@ -41,7 +41,7 @@ A node is the atomic unit of learning. Each node contains:
 - **Attached Notes** — markdown files, uploaded PDFs, images, or handwritten notes linked to this concept
 - **Quiz History** — a log of every quiz attempt, score, and timestamp for this node
 - **Decay Rate** — a per-node value influenced by topic complexity and the student's historical performance
-- **Status Indicator** — color-coded glow showing health (green = strong, amber = fading, red = critical, grey = unstarted)
+- **Status Indicator** — color-coded glow showing health based on urgency (blue = strong/mastered, yellow = fading/needs review, red = critical/quiz scheduled within 24h OR due today).
 
 **Edge**
 Edges are labeled, directed relationships between nodes:
@@ -87,12 +87,13 @@ The Dashboard provides a read-only, at-a-glance summary of the student's current
 
 **Dashboard Sections**
 
-- **Session Briefing (AI-Generated):** A natural-language paragraph synthesized by the AI summarizing the student's current state, what has decayed since their last session, and a recommended study plan for the day.
-- **Mastery Overview:** A treemap or stacked bar chart showing the distribution of node competence scores across all topics, segmented by subject/project.
-- **Forgetting Forecast Chart:** A line chart projecting aggregate knowledge decay over the next 7 days under a "no review" scenario versus the recommended review schedule.
-- **Urgency Queue:** A ranked list of the top 5–10 nodes most in need of review, sorted by a composite score of decay severity, upcoming deadlines, and prerequisite importance.
-- **Activity Heatmap:** A GitHub-style contribution grid showing daily study activity over the past 3 months.
-- **Trend Analysis:** Per-subject trend lines showing whether the student is improving, stagnating, or regressing over time — with AI-generated explanations for detected patterns.
+- **Task List:** The Urgency Queue showing the top 5–10 nodes most in need of review, synced daily scheduling blocks and tasks managed via the Focus Tunnel.
+- **Chatbot:** Seamlessly integrated agentic AI assistant for RAG-powered Q&A, graph manipulation, and study planning, accessible directly from the dashboard.
+- **Graphs:** The Mastery Overview and Knowledge Tree minimap, showing the distribution of node competence scores across all topics and recent activity.
+- **Calendar:** A unified timeline view displaying Google Calendar events side-by-side with locked auto-scheduled review sessions.
+-**Activity Heatmap:** A GitHub-style contribution grid showing daily study activity over the past 3 months. 
+- **Analysis:** Provides the Session Briefing and Trend Analysis, offering synthesized insights on recent decay and whether the student is improving or regressing over time.
+- **User Settings:** Access to configure API keys, toggle integrations (Google Calendar, Todoist, Pinecone), set study preferences, and manage templates.
 
 ### 4.3 Focus Tunnel
 
@@ -150,8 +151,10 @@ This tab provides a unified weekly view combining Google Calendar events with lo
 **Display**
 
 - Standard weekly calendar grid (Mon–Sun)
-- Google Calendar events shown in colors; Auto-scheduled review blocks shown in distinct lockingang accent color
-- Each review block shows the node name, estimated duration, and urgency level
+- Google Calendar events shown in their default colors; Auto-scheduled review blocks (quizzes) shown with an indicator corresponding to their node's urgency color (blue/yellow/red).
+- When a node hits the 'yellow' state, a quiz is automatically scheduled a few days out in the calendar.
+- 1 day before the scheduled quiz, and on the day itself, the calendar indicator and node turn 'red'.
+- Once the quiz is cleared, the node reverts back to its original 'blue' state, and the scheduled quiz is removed from the calendar.
 
 **Interaction**
 
@@ -221,7 +224,7 @@ Identifies when a student is structurally stuck and intervenes automatically.
 - **Auto-Bridge Nodes:** System generates a new bridge node between parent and difficult child containing introductory content.
 - **Grandparent Reset:** If failure persists, escalates by resetting grandparent node's score to 0.0, forcing review of fundamentals.
 
-## 9. Forgetting Curve Engine
+## 9. Forgetting Curve Engine (Active Recall)
 
 - **Real-Time Decay Model:** `live_score = stored_score × (1 − decay_rate) ^ days_elapsed`
 - **Background Decay Cycle:** Hourly background job runs across all active nodes (SQLite WAL mode).
