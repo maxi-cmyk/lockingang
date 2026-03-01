@@ -4,11 +4,14 @@ To ensure privacy and zero-latency performance, lockingang utilizes a fully loca
 
 | Layer                | Technology                   | Purpose                                         |
 | -------------------- | ---------------------------- | ----------------------------------------------- |
-| App Shell            | Electron                     | Cross-platform desktop container                |
+| App Shell            | Electron                     | Cross-platform desktop container               |
 | UI Framework         | React + Tailwind CSS         | Minimalist, high-contrast interface             |
 | Backend Logic        | Node.js                      | Core engine, scheduling, decay cycles           |
 | Knowledge Graph      | getzep/graphiti              | Relationship modeling between concepts          |
-| AI (LLM & Vision)    | OpenAI API                   | Quiz generation, content analysis, chatbot      |
+| AI(LLM & Vision)(RAG)| OpenAI API                   | Quiz generation, content analysis, 
+| Vector Database      | Pinecone DB                  | Used for the RAG
+| FastAPI's            | API's                        | Used to separate RAG AI system and forntend, need an API for the RAG AI
+ chatbot      |
 | On-Device Embeddings | Transformers.js (Web Worker) | 768-float semantic vectors, fully local         |
 | Database             | SQLite + WAL mode            | Prevents locks during background decay cycles   |
 | Vector Search        | Pinecone (API)               | Semantic retrieval for RAG chatbot              |
