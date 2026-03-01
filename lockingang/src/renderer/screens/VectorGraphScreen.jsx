@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useLocation } from "react-router-dom";
 import Sidebar from "../components/Sidebar/Sidebar";
 import MissionBriefingScreen from "./MissionBriefingScreen";
-import { getNodes, subscribe } from "../nodeStore";
+import { getNodes, subscribe, initNodes } from "../nodeStore";
 
 const MIN_SCALE = 0.2;
 const MAX_SCALE = 3;
@@ -24,6 +24,8 @@ const VectorGraphScreen = () => {
   const [newNodeLabel, setNewNodeLabel] = useState("");
   const [nodeSaved, setNodeSaved] = useState(false);
   const [inspectorCollapsed, setInspectorCollapsed] = useState(false);
+  const [backendStatus, setBackendStatus] = useState("loading"); // 'loading' | 'live' | 'offline'
+  const [editedData, setEditedData] = useState(""); // controlled textarea for node data
 
   const canvasRef = useRef(null);
   // Drag state stored in refs to avoid stale closures mid-gesture
@@ -37,11 +39,25 @@ const VectorGraphScreen = () => {
     return subscribe((updated) => setNodes([...updated]));
   }, []);
 
+  // ── Try to load from Python backend via IPC ──────────────────────────────
+  useEffect(() => {
+    initNodes()
+      .then(() => setBackendStatus("live"))
+      .catch(() => setBackendStatus("offline"));
+  }, []);
+
   // ── Initialise world-space positions from % coords in nodeStore ──────────
   const initPositions = useCallback((nodeList) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const { width, height } = canvas.getBoundingClientRect();
+    // If the canvas hasn't been laid out yet (0-dimensions), retry after the
+    // next paint instead of writing {x:0, y:0} which collapses all nodes and
+    // makes the overlap-culling code hide every edge.
+    if (width === 0 || height === 0) {
+      requestAnimationFrame(() => initPositions(nodeList));
+      return;
+    }
     setPositions((prev) => {
       const next = { ...prev };
       nodeList.forEach((n) => {
@@ -156,6 +172,7 @@ const VectorGraphScreen = () => {
       const node = nodes.find((n) => n.id === ia.nodeId);
       if (node) {
         setSelectedNode(node);
+        setEditedData(node.data || node.label || ""); // reset textarea to node's current data
         setNodeSaved(false);
         centreNode(ia.nodeId);
       }
@@ -201,7 +218,8 @@ const VectorGraphScreen = () => {
     (node.connectedTo || []).forEach((targetId) => {
       const target = nodes.find((n) => n.id === targetId);
       if (target && positions[node.id] && positions[target.id]) {
-        edges.push({ from: node, to: target });
+        // target is the parent, node is the child. Flow is Parent -> Child.
+        edges.push({ from: target, to: node });
       }
     });
   });
@@ -246,7 +264,16 @@ const VectorGraphScreen = () => {
               <div className="text-vector-blue/90">NODES: {nodes.length}</div>
               <div>LINKS: {edges.length}</div>
               <div>ZOOM: {Math.round(scale * 100)}%</div>
-              <div>ENCRYPTED_LINK: <span className="text-vector-blue">ACTIVE</span></div>
+              <div>
+                BACKEND:{" "}
+                <span className={
+                  backendStatus === "live" ? "text-green-400" :
+                    backendStatus === "offline" ? "text-amber-400" :
+                      "text-vector-blue/40"
+                }>
+                  {backendStatus === "live" ? "LIVE" : backendStatus === "offline" ? "OFFLINE" : "..."}
+                </span>
+              </div>
             </div>
 
             {/* Connection banner */}
@@ -307,16 +334,25 @@ const VectorGraphScreen = () => {
                         DATA_PAYLOAD // {selectedNode.id.toUpperCase()}
                       </p>
                       <textarea
-                        key={selectedNode.id}
-                        defaultValue={selectedNode.data || selectedNode.label}
+                        value={editedData}
+                        onChange={(e) => setEditedData(e.target.value)}
                         rows={4}
                         className="w-full bg-black/60 border border-vector-blue/20 p-3 text-vector-white/70 text-[10px] font-mono leading-relaxed resize-none outline-none focus:border-vector-blue/60 transition-colors"
                       />
                     </div>
                     <button
-                      onClick={() => {
+                      onClick={async () => {
+                        // Optimistic UI feedback
                         setNodeSaved(true);
                         setTimeout(() => setNodeSaved(false), 2000);
+                        // Call backend if available
+                        if (typeof window !== "undefined" && window.api?.updateNode) {
+                          try {
+                            await window.api.updateNode(selectedNode.id, editedData);
+                          } catch (err) {
+                            console.warn("[NodeInspector] updateNode failed:", err.message);
+                          }
+                        }
                       }}
                       className={`w-full flex items-center justify-center gap-2 py-2.5 border transition-all text-[10px] tracking-widest uppercase font-mono
                         ${nodeSaved
@@ -352,6 +388,17 @@ const VectorGraphScreen = () => {
                       <feMergeNode in="SourceGraphic" />
                     </feMerge>
                   </filter>
+                  <marker
+                    id="arrowhead"
+                    markerWidth="10"
+                    markerHeight="10"
+                    refX="9"
+                    refY="5"
+                    orient="auto"
+                    markerUnits="strokeWidth"
+                  >
+                    <path d="M 0 1 L 9 5 L 0 9 z" fill="#7DF9FF" opacity="0.8" />
+                  </marker>
                 </defs>
                 {edges.map(({ from, to }, i) => {
                   const fx = positions[from.id]?.x ?? 0;
@@ -359,15 +406,34 @@ const VectorGraphScreen = () => {
                   const tx = positions[to.id]?.x ?? 0;
                   const ty = positions[to.id]?.y ?? 0;
                   const isPrimary = from.isPrimary || to.isPrimary;
+
+                  const dx = tx - fx;
+                  const dy = ty - fy;
+                  const dist = Math.hypot(dx, dy);
+                  if (dist === 0) return null;
+
+                  // Node outer radius: primary=28, secondary=20
+                  // Add gap constraints: from gap=4px, to gap=6px (leaving room for arrowhead)
+                  const fromRadius = (from.isPrimary ? 28 : 20) + 4;
+                  const toRadius = (to.isPrimary ? 28 : 20) + 6;
+
+                  if (dist <= fromRadius + toRadius) return null; // Avoid drawing if overlapping
+
+                  const x1 = fx + (dx / dist) * fromRadius;
+                  const y1 = fy + (dy / dist) * fromRadius;
+                  const x2 = tx - (dx / dist) * toRadius;
+                  const y2 = ty - (dy / dist) * toRadius;
+
                   return (
                     <line
                       key={i}
-                      x1={fx} y1={fy} x2={tx} y2={ty}
+                      x1={x1} y1={y1} x2={x2} y2={y2}
                       stroke="#7DF9FF"
                       strokeWidth={isPrimary ? 2 / scale : 1 / scale}
                       strokeDasharray={isPrimary ? "0" : `${5 / scale} ${3 / scale}`}
                       opacity={isPrimary ? 0.8 : 0.35}
                       filter={isPrimary ? "url(#vectorGlow)" : "none"}
+                      markerEnd="url(#arrowhead)"
                     />
                   );
                 })}

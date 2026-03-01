@@ -1,16 +1,18 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { addNode } from "../nodeStore";
+import { getNodes, adaptAndReloadNodes } from "../nodeStore";
 
 const MissionCompleteScreen = ({ task, timeSpentSeconds = 25 * 60, onReEnter, onReturnToBase }) => {
     const navigate = useNavigate();
-    const [connected, setConnected] = useState("core");
+    const currentNodes = getNodes();
+    const defaultParent = currentNodes.find((n) => n.isPrimary)?.id ?? currentNodes[0]?.id ?? "";
+    const [parentId, setParentId] = useState(defaultParent);
+    const [saving, setSaving] = useState(false);
 
     const minutes = String(Math.floor(timeSpentSeconds / 60)).padStart(2, "0");
     const seconds = String(timeSpentSeconds % 60).padStart(2, "0");
     const timeString = `${minutes}:${seconds}`;
 
-    // Simple SVG XP growth line
     const points = [
         { x: 60, y: 160 },
         { x: 160, y: 130 },
@@ -19,6 +21,43 @@ const MissionCompleteScreen = ({ task, timeSpentSeconds = 25 * 60, onReEnter, on
         { x: 460, y: 45 },
     ];
     const polyline = points.map((p) => `${p.x},${p.y}`).join(" ");
+
+    // The node title comes from the quiz task title
+    const nodeTitle = task?.title ?? "SESSION";
+
+    const handleSaveAndConnect = async () => {
+        setSaving(true);
+        try {
+            // Find the parent's label (Python uses title, not id)
+            const parentNode = currentNodes.find((n) => n.id === parentId);
+            const parentTitle = parentNode?.label ?? "";
+
+            if (typeof window !== "undefined" && window.api?.addNode) {
+                // Call backend via IPC — returns the full updated graph
+                const updatedGraph = await window.api.addNode(nodeTitle, parentTitle);
+                if (updatedGraph?.nodes) {
+                    // Push the updated graph into nodeStore so VectorGraph refreshes
+                    adaptAndReloadNodes(updatedGraph);
+                }
+                // Navigate to vector graph to show the new node
+                // We pass title as the "new node" marker since the backend generates the id
+                navigate("/knowledge-tree", {
+                    state: { newNodeLabel: nodeTitle },
+                });
+            } else {
+                // Offline path — local-only add (no backend)
+                navigate("/knowledge-tree", {
+                    state: { newNodeLabel: nodeTitle },
+                });
+            }
+        } catch (err) {
+            console.error("[MissionComplete] addNode failed:", err.message);
+            // Still navigate so the user isn't stuck
+            navigate("/knowledge-tree");
+        } finally {
+            setSaving(false);
+        }
+    };
 
     return (
         <div className="fixed inset-0 z-50 bg-vector-bg overflow-y-auto">
@@ -76,19 +115,20 @@ const MissionCompleteScreen = ({ task, timeSpentSeconds = 25 * 60, onReEnter, on
                                 <span className="material-symbols-outlined text-vector-blue/30 text-2xl">hub</span>
                             </div>
                             <p className="text-xs text-vector-white/70 font-mono">
-                                Before saving <span className="text-vector-blue font-bold">"{task?.title ?? "session"}"</span>, connect it to an existing concept:
+                                Adding <span className="text-vector-blue font-bold">"{nodeTitle}"</span> to the Knowledge Graph. Connect it to a parent node:
                             </p>
                             <div>
-                                <p className="text-[8px] text-vector-blue/50 uppercase tracking-widest font-mono mb-2">CONNECTED TO:</p>
+                                <p className="text-[8px] text-vector-blue/50 uppercase tracking-widest font-mono mb-2">CONNECT TO PARENT:</p>
                                 <select
-                                    value={connected}
-                                    onChange={(e) => setConnected(e.target.value)}
+                                    value={parentId}
+                                    onChange={(e) => setParentId(e.target.value)}
                                     className="w-full bg-vector-bg border border-vector-blue/30 text-vector-white text-xs font-mono p-3 outline-none focus:border-vector-blue appearance-none cursor-pointer"
                                 >
-                                    <option value="core">ME (Core Memory)</option>
-                                    <option value="physics">Physics — Wave Mechanics</option>
-                                    <option value="biology">Biology — Cell Division</option>
-                                    <option value="history">History — Cold War Era</option>
+                                    {currentNodes.map((n) => (
+                                        <option key={n.id} value={n.id}>
+                                            {n.label}{n.isPrimary ? " [PRIMARY]" : ""}
+                                        </option>
+                                    ))}
                                 </select>
                             </div>
                             <div className="flex gap-3">
@@ -99,18 +139,14 @@ const MissionCompleteScreen = ({ task, timeSpentSeconds = 25 * 60, onReEnter, on
                                     CANCEL
                                 </button>
                                 <button
-                                    onClick={() => {
-                                        const newNode = addNode({
-                                            label: task?.title ?? "SESSION",
-                                            data: task?.description ?? "",
-                                            connectedToId: connected,
-                                        });
-                                        navigate("/knowledge-tree", { state: { newNodeId: newNode.id } });
-                                    }}
-                                    className="flex-[2] py-3 bg-vector-blue text-vector-bg text-[9px] uppercase tracking-widest font-bold font-mono hover:brightness-110 transition-all flex items-center justify-center gap-2"
+                                    onClick={handleSaveAndConnect}
+                                    disabled={saving}
+                                    className="flex-[2] py-3 bg-vector-blue text-vector-bg text-[9px] uppercase tracking-widest font-bold font-mono hover:brightness-110 transition-all flex items-center justify-center gap-2 disabled:opacity-60"
                                 >
-                                    <span className="material-symbols-outlined text-sm">save</span>
-                                    SAVE &amp; CONNECT
+                                    <span className="material-symbols-outlined text-sm">
+                                        {saving ? "sync" : "save"}
+                                    </span>
+                                    {saving ? "CONNECTING..." : "SAVE & CONNECT"}
                                 </button>
                             </div>
                         </div>
@@ -127,22 +163,14 @@ const MissionCompleteScreen = ({ task, timeSpentSeconds = 25 * 60, onReEnter, on
                                 <span className="text-[7px] text-vector-blue/30 font-mono tracking-widest">GROWTH_MATRIX_V.01</span>
                             </div>
                             <svg className="w-full" height="180" viewBox="0 60 520 130" preserveAspectRatio="none">
-                                {/* Grid lines */}
                                 {[0, 1, 2, 3].map((i) => (
                                     <line key={i} x1="60" y1={60 + i * 35} x2="480" y2={60 + i * 35} stroke="rgba(125,249,255,0.07)" strokeWidth="1" />
                                 ))}
-                                {/* Filled area */}
-                                <polygon
-                                    points={`${polyline} 460,185 60,185`}
-                                    fill="rgba(0,255,128,0.06)"
-                                />
-                                {/* Line */}
+                                <polygon points={`${polyline} 460,185 60,185`} fill="rgba(0,255,128,0.06)" />
                                 <polyline points={polyline} fill="none" stroke="#00ff80" strokeWidth="2" />
-                                {/* Dots */}
                                 {points.map((p, i) => (
                                     <circle key={i} cx={p.x} cy={p.y} r="4" fill="#080214" stroke="#00ff80" strokeWidth="2" />
                                 ))}
-                                {/* X labels */}
                                 {["START", "LVL_1", "LVL_2", "LVL_3", "NOW"].map((label, i) => (
                                     <text key={label} x={points[i].x} y={180} textAnchor="middle" fill="rgba(125,249,255,0.3)" fontSize="7" fontFamily="monospace">
                                         {label}

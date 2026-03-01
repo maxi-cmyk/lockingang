@@ -78,6 +78,7 @@ class node:
         self.decay_rate = decay_rate         # per-node; influenced by complexity & history
         self.last_reviewed = datetime.now()  # timestamp when score was last written
         self.notes = []                      # attached content: markdown text, PDF paths, image paths
+        self.description = ""                # freeform description edited from the Node Inspector
         self.quiz_history = []               # list of {timestamp, score, correct} dicts
         self.parents = []                    # parent node objects
         self.children = []                   # child node objects

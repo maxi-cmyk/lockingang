@@ -557,21 +557,65 @@ def wait_for_frontend_message(
     with open(request_file, "r", encoding="utf-8") as f:
         message = json.load(f)
 
-    response = _handle_frontend_message(message)
+    # Always write a response so the frontend never hangs
+    try:
+        response = _handle_frontend_message(message)
+    except Exception as exc:
+        response = {"error": f"Internal error: {exc}"}
+        print(f"[IPC] Handler exception: {exc}", flush=True)
+
     with open(response_file, "w", encoding="utf-8") as f:
         json.dump(response, f, indent=2)
 
-    os.remove(request_file)
+    try:
+        os.remove(request_file)
+    except FileNotFoundError:
+        pass  # Another process already cleaned it up — non-fatal
     return response
 
 
 def _handle_frontend_message(message: dict) -> dict:
     function_call = message.get("functionCall")
+
     if function_call == "MakeGraph":
         return _build_graph_response()
+
+    if function_call == "AddNode":
+        title = message.get("title", "").strip()
+        parent_title = message.get("parentTitle", "").strip()
+        if not title:
+            return {"error": "title is required"}
+        # Idempotent — reuse existing node if title already in tree
+        if title in _tree.nodes:
+            n = _tree.nodes[title]
+        else:
+            n = _tree.add_node(title)
+        # Connect to parent if specified and not already connected
+        if parent_title and parent_title in _tree.nodes:
+            try:
+                _tree.add_edge(parent_title, n.title, "related_to")
+            except Exception:
+                pass  # Edge already exists — non-fatal
+        _persist_node(n)
+        return _build_graph_response()  # Return full updated graph
+
+    if function_call == "UpdateNode":
+        node_id = message.get("nodeId", "").strip()
+        description = message.get("description", "")
+        # Locate by generated id (slugified title)
+        target = next(
+            (n for n in _tree.nodes.values() if _make_node_id(n.title) == node_id),
+            None
+        )
+        if target is None:
+            return {"error": f"Node with id '{node_id}' not found"}
+        target.description = description
+        _persist_node(target)
+        return {"ok": True, "nodeId": node_id}
+
     return {
         "error": f"Unsupported functionCall '{function_call}'",
-        "supported": ["MakeGraph"],
+        "supported": ["MakeGraph", "AddNode", "UpdateNode"],
     }
 
 
@@ -626,7 +670,7 @@ def _build_graph_response() -> dict:
                 "status": _to_frontend_status(n),
                 "position": {"x": round(x, 2), "y": round(y, 2)},
                 "payload": {
-                    "description": f"Knowledge node for {n.title}.",
+                    "description": n.description or f"Knowledge node for {n.title}.",
                     "tasks": [
                         {
                             "id": f"review_{node_id.lower()}",
@@ -735,8 +779,20 @@ def _delete_edge_from_db(parent_title: str, child_title: str):
 
 if __name__ == "__main__":
     startup()
+    print("[IPC] Backend ready. Waiting for frontend requests...", flush=True)
     try:
         while True:
-            wait_for_frontend_message()
+            try:
+                wait_for_frontend_message()
+            except KeyboardInterrupt:
+                raise  # Let outer handler catch Ctrl-C
+            except Exception as exc:
+                print(f"[IPC] Loop error (recovering): {exc}", flush=True)
+                # Clean up any orphaned request file so the next cycle starts fresh
+                try:
+                    if os.path.exists(IPC_REQUEST_FILE):
+                        os.remove(IPC_REQUEST_FILE)
+                except Exception:
+                    pass
     except KeyboardInterrupt:
         shutdown()

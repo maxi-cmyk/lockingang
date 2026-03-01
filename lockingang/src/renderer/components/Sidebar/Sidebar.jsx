@@ -81,6 +81,18 @@ const Sidebar = () => {
             </span>
           </NavLink>
           <NavLink
+            to="/templates"
+            className={({ isActive }) =>
+              `flex items-center gap-3 px-3 py-3 border transition-all group ${isActive
+                ? "border-[#7DF9FF] bg-[#7DF9FF]/10 text-white"
+                : "border-transparent text-white/60 hover:text-[#7DF9FF] hover:border-[#7DF9FF]/30"
+              }`
+            }
+          >
+            <span className="material-symbols-outlined text-[18px]">upload_file</span>
+            <span className="text-[9px] tracking-widest uppercase">Templates</span>
+          </NavLink>
+          <NavLink
             to="/calendar"
             className={({ isActive }) =>
               `flex items-center gap-3 px-3 py-3 border transition-all group ${isActive

@@ -1,0 +1,140 @@
+{
+    "nodes": [
+        {
+            "id": "SYSTEM_CORE",
+            "label": "SYSTEM_CORE",
+            "type": "primary",
+            "icon": "blur_on",
+            "status": "completed",
+            "position": {
+                "x": 50,
+                "y": 50
+            },
+            "payload": {
+                "description": "PRIMARY SYSTEM CORE.\nSTATUS: ONLINE.\nACCESS_LEVEL: OMEGA.",
+                "tasks": [
+                    {
+                        "id": "t_core_1",
+                        "title": "Initialise Boot Sequence",
+                        "status": "completed"
+                    }
+                ],
+                "associatedQuizId": "quiz_system_core"
+            }
+        },
+        {
+            "id": "BIOLOGY_ARCHIVE",
+            "label": "BIOLOGY_ARCHIVE",
+            "type": "secondary",
+            "icon": "biotech",
+            "status": "active",
+            "position": {
+                "x": 80,
+                "y": 30
+            },
+            "payload": {
+                "description": "BIOLOGICAL ARCHIVES.\nSTATUS: ENCRYPTED.\nREQUIRED_CLEARANCE: DELTA.",
+                "tasks": [
+                    {
+                        "id": "t_bio_1",
+                        "title": "Decrypt Archive",
+                        "status": "pending"
+                    }
+                ],
+                "associatedQuizId": "quiz_biology_archive"
+            }
+        },
+        {
+            "id": "QUANTUM_PHYS",
+            "label": "QUANTUM_PHYS",
+            "type": "secondary",
+            "icon": "science",
+            "status": "active",
+            "position": {
+                "x": 80,
+                "y": 70
+            },
+            "payload": {
+                "description": "QUANTUM PHYSICS MODULE.\nSTATUS: STANDBY.\nRESOURCES: ADEQUATE.",
+                "tasks": [
+                    {
+                        "id": "t_phys_1",
+                        "title": "Run Simulation",
+                        "status": "pending"
+                    }
+                ],
+                "associatedQuizId": "quiz_quantum_phys"
+            }
+        },
+        {
+            "id": "OLD_EARTH",
+            "label": "OLD_EARTH",
+            "type": "secondary",
+            "icon": "history_edu",
+            "status": "locked",
+            "position": {
+                "x": 20,
+                "y": 30
+            },
+            "payload": {
+                "description": "OLD EARTH RECORDS.\nSTATUS: CORRUPTED.\nRESTORATION_IN_PROGRESS: 12%.",
+                "tasks": [
+                    {
+                        "id": "t_hist_1",
+                        "title": "Restore Records",
+                        "status": "pending"
+                    }
+                ],
+                "associatedQuizId": "quiz_old_earth"
+            }
+        },
+        {
+            "id": "COMPOUND_ENG",
+            "label": "COMPOUND_ENG",
+            "type": "secondary",
+            "icon": "science",
+            "status": "active",
+            "position": {
+                "x": 20,
+                "y": 70
+            },
+            "payload": {
+                "description": "CHEMICAL COMPOUND ENGINE.\nSTATUS: ACTIVE.\nWARNING: FLAMMABLE MATERIALS PRESENT.",
+                "tasks": [
+                    {
+                        "id": "t_chem_1",
+                        "title": "Safety Audit",
+                        "status": "pending"
+                    }
+                ],
+                "associatedQuizId": "quiz_compound_eng"
+            }
+        }
+    ],
+    "edges": [
+        {
+            "from": "SYSTEM_CORE",
+            "to": "BIOLOGY_ARCHIVE",
+            "type": "requires",
+            "status": "connected"
+        },
+        {
+            "from": "SYSTEM_CORE",
+            "to": "QUANTUM_PHYS",
+            "type": "requires",
+            "status": "connected"
+        },
+        {
+            "from": "BIOLOGY_ARCHIVE",
+            "to": "OLD_EARTH",
+            "type": "is_a_type_of",
+            "status": "connected"
+        },
+        {
+            "from": "QUANTUM_PHYS",
+            "to": "COMPOUND_ENG",
+            "type": "related_to",
+            "status": "connected"
+        }
+    ]
+}
