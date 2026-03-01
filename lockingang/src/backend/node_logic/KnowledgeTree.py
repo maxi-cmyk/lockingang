@@ -189,9 +189,26 @@ class KnowledgeTree:
         self.add_edge(parent_title, bridge_title, "bridges_to")
         self.add_edge(bridge_title, child_title, "bridges_to")
 
-        # TODO: embed parent_title via Transformers.js sidecar (POST http://localhost:5001/embed),
-        #       normalise the vector, then call self.get_node(parent_title).search_faiss(vec, k=4)
-        #       to pull the 4 most relevant chunks from the parent's own FAISS index.
+        import numpy as np
+        import requests
+
+        response = requests.post(
+            "http://localhost:5001/embed",
+            json={"text": parent_title},
+            timeout=10,
+        )
+        response.raise_for_status()
+        vector = response.json().get("vector")
+        if not isinstance(vector, list) or not vector:
+            raise ValueError("Embedding service returned an invalid vector for parent_title.")
+
+        parent_vec = np.array([vector], dtype=np.float32)
+        norm = np.linalg.norm(parent_vec)
+        if norm == 0.0:
+            raise ValueError("Embedding service returned a zero vector for parent_title.")
+        parent_vec /= norm
+
+        parent_chunks = self.get_node(parent_title).search_faiss(parent_vec, k=4)
         # TODO: do the same for child_title: embed + normalise + child.search_faiss(vec, k=4).
         # TODO: call OpenAI with both chunk sets + prompt:
         #         "A student has mastered '{parent_title}' but repeatedly fails '{child_title}'.

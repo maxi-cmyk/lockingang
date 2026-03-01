@@ -8,6 +8,11 @@ Every other function is safe to call at any time after startup().
 """
 
 from datetime import datetime, timedelta
+import json
+import math
+import os
+import re
+import time
 from KnowledgeTree import KnowledgeTree
 from node import node
 
@@ -16,6 +21,9 @@ from node import node
 # ---------------------------------------------------------------------------
 
 _tree = KnowledgeTree()
+IPC_DIR = os.path.join("data", "ipc")
+IPC_REQUEST_FILE = os.path.join(IPC_DIR, "request.json")
+IPC_RESPONSE_FILE = os.path.join(IPC_DIR, "response.json")
 
 
 # ===========================================================================
@@ -514,6 +522,123 @@ def confirm_ingest():
     for title, n in _tree.nodes.items():
         for edge in n.edges:
             _persist_edge(title, edge["target"].title, edge["type"])
+
+
+# ===========================================================================
+# JSON FILE INTERFACE
+# ===========================================================================
+
+def wait_for_frontend_message(
+    request_file: str = IPC_REQUEST_FILE,
+    response_file: str = IPC_RESPONSE_FILE,
+    poll_interval_seconds: float = 0.1,
+):
+    """
+    Blocks until a JSON request file exists, then handles one message and
+    writes a JSON response file.
+    """
+    os.makedirs(os.path.dirname(request_file), exist_ok=True)
+    os.makedirs(os.path.dirname(response_file), exist_ok=True)
+
+    while not os.path.exists(request_file):
+        time.sleep(poll_interval_seconds)
+
+    with open(request_file, "r", encoding="utf-8") as f:
+        message = json.load(f)
+
+    response = _handle_frontend_message(message)
+    with open(response_file, "w", encoding="utf-8") as f:
+        json.dump(response, f, indent=2)
+
+    os.remove(request_file)
+    return response
+
+
+def _handle_frontend_message(message: dict) -> dict:
+    function_call = message.get("functionCall")
+    if function_call == "MakeGraph":
+        return _build_graph_response()
+    return {
+        "error": f"Unsupported functionCall '{function_call}'",
+        "supported": ["MakeGraph"],
+    }
+
+
+def _make_node_id(title: str) -> str:
+    slug = re.sub(r"[^\w]+", "_", title.upper()).strip("_")
+    return slug or "NODE"
+
+
+def _to_frontend_status(n: node) -> str:
+    status = n.get_status()
+    if status == "blue":
+        return "completed"
+    if status == "yellow":
+        return "active"
+    return "locked"
+
+
+def _build_graph_response() -> dict:
+    nodes = []
+    edges = []
+
+    all_nodes = list(_tree.nodes.values())
+    root_titles = {n.title for n in _tree.get_root_nodes()}
+    center_x = 50.0
+    center_y = 50.0
+    max_radius = 45.0  # keep nodes in 5..95 bounds
+
+    primary_node = next((n for n in all_nodes if n.title in root_titles), None)
+    if primary_node is None and all_nodes:
+        primary_node = all_nodes[0]
+
+    ring_nodes = [n for n in all_nodes if n is not primary_node]
+    ring_total = len(ring_nodes)
+    ring_index_by_title = {n.title: i for i, n in enumerate(ring_nodes)}
+
+    for idx, n in enumerate(all_nodes):
+        node_id = _make_node_id(n.title)
+        if n is primary_node:
+            x, y = center_x, center_y
+        else:
+            ring_idx = ring_index_by_title[n.title]
+            angle = (2.0 * math.pi * ring_idx) / max(ring_total, 1)
+            x = center_x + math.cos(angle) * max_radius
+            y = center_y + math.sin(angle) * max_radius
+
+        nodes.append(
+            {
+                "id": node_id,
+                "label": n.title,
+                "type": "primary" if n.title in root_titles else "secondary",
+                "icon": "blur_on",
+                "status": _to_frontend_status(n),
+                "position": {"x": round(x, 2), "y": round(y, 2)},
+                "payload": {
+                    "description": f"Knowledge node for {n.title}.",
+                    "tasks": [
+                        {
+                            "id": f"review_{node_id.lower()}",
+                            "title": "Review node",
+                            "status": "completed" if n.get_status() == "blue" else "pending",
+                        }
+                    ],
+                    "associatedQuizId": f"quiz_{node_id.lower()}",
+                },
+            }
+        )
+
+        for e in n.edges:
+            edges.append(
+                {
+                    "from": node_id,
+                    "to": _make_node_id(e["target"].title),
+                    "type": e["type"],
+                    "status": "connected",
+                }
+            )
+
+    return {"nodes": nodes, "edges": edges}
 
 
 # ===========================================================================

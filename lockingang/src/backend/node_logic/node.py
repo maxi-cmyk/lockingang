@@ -2,6 +2,8 @@ from datetime import datetime
 import os
 import json
 import re
+import base64
+import requests
 
 
 # faiss and numpy are imported lazily inside methods so the class can be
@@ -10,11 +12,54 @@ import re
 
 FAISS_EMBED_DIM = 768          # Transformers.js vector size (techstack)
 FAISS_INDEX_DIR = "data/faiss" # directory where per-node index files are stored
+EMBED_SIDECAR_URL = "http://localhost:5001/embed"
+OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o")
+CHUNK_WORD_WINDOW = 400
+CHUNK_WORD_OVERLAP = 50
 
 
 def _safe_filename(title: str) -> str:
     """Convert a node title to a safe filename prefix (strips special chars)."""
     return re.sub(r"[^\w\-]", "_", title).strip("_")
+
+
+def _chunk_text(text: str, chunk_size_words: int = CHUNK_WORD_WINDOW, overlap_words: int = CHUNK_WORD_OVERLAP) -> list[str]:
+    """Split text into overlapping word windows for embedding."""
+    words = text.split()
+    if not words:
+        return []
+    if chunk_size_words <= 0:
+        raise ValueError("chunk_size_words must be > 0")
+    if overlap_words < 0 or overlap_words >= chunk_size_words:
+        raise ValueError("overlap_words must be >= 0 and < chunk_size_words")
+
+    stride = chunk_size_words - overlap_words
+    chunks = []
+    for i in range(0, len(words), stride):
+        window = words[i:i + chunk_size_words]
+        if not window:
+            break
+        chunks.append(" ".join(window))
+        if i + chunk_size_words >= len(words):
+            break
+    return chunks
+
+
+def _extract_json_payload(raw: str):
+    """Parse JSON from a model response, tolerating fenced code blocks."""
+    text = raw.strip()
+    if text.startswith("```"):
+        text = re.sub(r"^```(?:json)?\s*", "", text)
+        text = re.sub(r"\s*```$", "", text)
+    try:
+        return json.loads(text)
+    except json.JSONDecodeError:
+        pass
+
+    match = re.search(r"\{.*\}", text, flags=re.DOTALL)
+    if match:
+        return json.loads(match.group(0))
+    raise ValueError("Response did not contain valid JSON payload")
 
 
 class node:
@@ -201,16 +246,47 @@ class node:
              - Append file_path to self.notes so the Notes View can render it.
              - Persist the updated self.notes list to SQLite via the db layer.
 
-        TODO: implement PDF extraction via PyMuPDF (import fitz)
-        TODO: implement OpenAI Vision OCR for 'image' file_type
-        TODO: implement chunking helper (split text into 512-token windows with 64 overlap)
-        TODO: call Transformers.js sidecar POST /embed for each chunk
-        TODO: call faiss.normalize_L2(vec) before adding to the index
-        TODO: call self._init_faiss_index() then self.faiss_index.add(vec)
-        TODO: call self.save_faiss_index() after all chunks are indexed
-        TODO: append file_path to self.notes and flush to SQLite
+        Note list persistence to SQLite is handled by the caller layer
+        (see node_logic/main.py upload_notes -> _persist_node).
         """
-        pass
+        supported_types = {"markdown", "pdf", "image", "plaintext"}
+        if file_type not in supported_types:
+            raise ValueError(
+                f"Unsupported file_type '{file_type}'. Must be one of {supported_types}."
+            )
+        if not os.path.exists(file_path):
+            raise FileNotFoundError(f"Note file not found: {file_path}")
+
+        if file_type == "pdf":
+            import fitz
+            doc = fitz.open(file_path)
+            try:
+                extracted_text = "".join(page.get_text() for page in doc)
+            finally:
+                doc.close()
+        elif file_type == "image":
+            extracted_text = self._extract_text_from_image(file_path)
+        else:
+            with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
+                extracted_text = f.read()
+
+        if not extracted_text or not extracted_text.strip():
+            raise ValueError(f"No extractable text found in '{file_path}'.")
+
+        chunks = _chunk_text(extracted_text)
+        if not chunks:
+            raise ValueError(f"Unable to chunk extracted text for '{file_path}'.")
+
+        self._init_faiss_index()
+        for chunk in chunks:
+            vec = self._get_embedding(chunk)
+            self.faiss_index.add(vec)
+            self.faiss_chunks.append(chunk)
+
+        self.save_faiss_index()
+
+        if file_path not in self.notes:
+            self.notes.append(file_path)
 
     # ------------------------------------------------------------------
     # Graph relationships
@@ -308,14 +384,42 @@ class node:
              - Prompt: "Generate a synthesis question requiring understanding of both
                '{parent_1.title}' and '{parent_2.title}' as they relate to '{self.title}'."
 
-        TODO: implement Kahoot API call — check if official API requires OAuth or use scraper
-        TODO: implement OpenAI relevance scoring call for Kahoot results
-        TODO: embed self.title via Transformers.js sidecar, normalise, call self.search_faiss(k=6)
-        TODO: implement OpenAI quiz generation call with FAISS-retrieved chunks as context
-        TODO: for Diamond nodes, call parent.search_faiss(k=3) for each parent and append synthesis questions
-        TODO: return structured list of question dicts
         """
-        pass
+        questions = []
+
+        # 1-2) Kahoot path first
+        try:
+            from kahoot.search import search as kahoot_search
+            from kahoot.evaluator import pick_best
+            from kahoot.adapter import adapt, filter_duplicates
+
+            kahoot_candidates = kahoot_search(self.title, limit=5)
+            best = pick_best(kahoot_candidates, self.title)
+            if best:
+                questions = filter_duplicates(adapt(best))
+        except Exception:
+            questions = []
+
+        # 3) RAG fallback
+        if not questions:
+            try:
+                from quiz_generation.rag_quiz import generate as rag_generate
+                questions = rag_generate(self)
+            except Exception:
+                questions = self._generate_rag_quiz_locally()
+
+        # 4) Diamond synthesis
+        if len(self.parents) >= 2:
+            synthesis_questions = []
+            try:
+                from quiz_generation.synthesis import generate as synth_generate
+                synthesis_questions = synth_generate(self)
+            except Exception:
+                synthesis_questions = self._generate_synthesis_locally()
+            questions.extend(synthesis_questions)
+
+        questions = self._validate_questions(questions)
+        return self._dedupe_questions(questions)
 
     def gen_summary(self):
         """
@@ -340,13 +444,28 @@ class node:
           5. Return the response text as a markdown string for the UI to render
              with syntax highlighting.
 
-        TODO: call Transformers.js sidecar POST /embed with self.title, get 768-float vector
-        TODO: faiss.normalize_L2(vec) then call self.search_faiss(vec, k=8)
-        TODO: concatenate retrieved chunks into context string
-        TODO: build the prompt and call OpenAI chat completions API
-        TODO: return the markdown string
         """
-        pass
+        query_vec = self._get_embedding(self.title)
+        chunks = self.search_faiss(query_vec, k=8)
+        if not chunks:
+            return (
+                f"## {self.title}\n\n"
+                "No indexed notes were found for this node yet. "
+                "Upload notes first so a grounded summary can be generated."
+            )
+
+        context = "\n\n---\n\n".join(chunks)
+        prompt = (
+            f"You are a study assistant. Using only the provided notes, write a concise "
+            f"markdown summary of '{self.title}'.\n"
+            "Include:\n"
+            "- A 2-3 sentence overview\n"
+            "- Key definitions\n"
+            "- 3-5 bullet points of the most important concepts\n"
+            "Do not add information not present in the notes.\n\n"
+            f"Notes:\n{context}"
+        )
+        return self._chat_text(prompt)
 
     def ask_qn(self, context: str = ""):
         """
@@ -359,39 +478,213 @@ class node:
                         answer or Wall Detection).
         Returns a question dict: {question, hint, node_title}
         """
+        query_text = context.strip() if context else self.title
+        query_vec = self._get_embedding(query_text)
+        chunks = self.search_faiss(query_vec, k=4)
+
+        if not chunks:
+            return {
+                "question": f"What is the core idea of '{self.title}'?",
+                "hint": "Upload notes for this node to get grounded active-recall questions.",
+                "node_title": self.title,
+                "wall_detected": self.is_wall() if context else False,
+            }
+
+        notes_context = "\n\n---\n\n".join(chunks)
         if not context:
-            # STANDARD ACTIVE RECALL MODE
-            # Goal: generate a single fresh comprehension question about self.title
-            # grounded strictly in the student's own notes via this node's FAISS index.
-            #
-            # TODO: POST self.title to Transformers.js sidecar (http://localhost:5001/embed)
-            #       to get a 768-float query vector; call faiss.normalize_L2(vec).
-            # TODO: call self.search_faiss(vec, k=4) to pull the 4 most relevant chunks
-            #       from this node's own FAISS index.
-            # TODO: call OpenAI with retrieved chunks + prompt:
-            #         "Generate one short-answer comprehension question about '{self.title}'
-            #          based only on the provided notes. Return JSON:
-            #          {question: str, hint: str, node_title: str}"
-            # TODO: parse the JSON response and return the dict
-            pass
+            prompt = (
+                f"Generate one short-answer comprehension question about '{self.title}' "
+                "based only on the provided notes.\n"
+                "Return ONLY JSON: "
+                '{"question": str, "hint": str, "node_title": str}\n\n'
+                f"Notes:\n{notes_context}"
+            )
         else:
-            # REMEDIATION MODE — triggered after a wrong answer or Wall Detection (PRD §7)
-            # Goal: generate a targeted question probing the specific misunderstanding
-            # in `context`, using only this node's FAISS-indexed materials.
-            #
-            # TODO: POST `context` (the wrong answer / error description) to the
-            #       Transformers.js sidecar to get a 768-float vector; normalise it.
-            #       Using the mistake text as the query pulls chunks most relevant
-            #       to what the student got wrong rather than the topic in general.
-            # TODO: call self.search_faiss(vec, k=4) to retrieve the most relevant chunks
-            #       from this node's FAISS index.
-            # TODO: call OpenAI with retrieved chunks + prompt:
-            #         "A student answered incorrectly. Their mistake: '{context}'.
-            #          Generate one targeted follow-up question about '{self.title}'
-            #          that directly addresses this misunderstanding.
-            #          Return JSON: {question: str, hint: str, node_title: str}"
-            # TODO: if self.is_wall() is True, signal the KnowledgeTree layer
-            #       (e.g. raise a WallException or return a flag) so it can call
-            #       generate_bridge_node(parent.title, self.title) automatically.
-            # TODO: parse the JSON response and return the dict
-            pass
+            prompt = (
+                f"A student answered incorrectly. Their mistake: '{context}'.\n"
+                f"Generate one targeted follow-up question about '{self.title}' that directly "
+                "addresses this misunderstanding using only the provided notes.\n"
+                "Return ONLY JSON: "
+                '{"question": str, "hint": str, "node_title": str}\n\n'
+                f"Notes:\n{notes_context}"
+            )
+
+        result = self._chat_json(prompt)
+        question = {
+            "question": result.get("question", "").strip(),
+            "hint": result.get("hint", "").strip(),
+            "node_title": result.get("node_title", self.title).strip() or self.title,
+        }
+        if not question["question"]:
+            question["question"] = f"Explain '{self.title}' in your own words."
+        if not question["hint"]:
+            question["hint"] = "Focus on definitions and key relationships."
+        if context:
+            question["wall_detected"] = self.is_wall()
+        return question
+
+    # ------------------------------------------------------------------
+    # Internal AI helpers
+    # ------------------------------------------------------------------
+
+    def _get_openai_client(self):
+        from openai import OpenAI
+
+        api_key = os.getenv("OPENAI_API_KEY")
+        if not api_key:
+            raise EnvironmentError(
+                "OPENAI_API_KEY is not set. Add it to your environment or .env."
+            )
+        return OpenAI(api_key=api_key)
+
+    def _chat_text(self, prompt: str) -> str:
+        client = self._get_openai_client()
+        response = client.chat.completions.create(
+            model=OPENAI_MODEL,
+            messages=[{"role": "user", "content": prompt}],
+        )
+        return (response.choices[0].message.content or "").strip()
+
+    def _chat_json(self, prompt: str) -> dict:
+        client = self._get_openai_client()
+        response = client.chat.completions.create(
+            model=OPENAI_MODEL,
+            messages=[{"role": "user", "content": prompt}],
+            response_format={"type": "json_object"},
+        )
+        content = response.choices[0].message.content or "{}"
+        payload = _extract_json_payload(content)
+        if not isinstance(payload, dict):
+            raise ValueError("Expected JSON object in OpenAI response.")
+        return payload
+
+    def _get_embedding(self, text: str):
+        import numpy as np
+        import faiss
+
+        response = requests.post(EMBED_SIDECAR_URL, json={"text": text}, timeout=15)
+        response.raise_for_status()
+        data = response.json()
+        vector = data.get("vector")
+        if not isinstance(vector, list) or len(vector) != FAISS_EMBED_DIM:
+            raise ValueError(
+                f"Embedding service returned invalid vector shape (expected {FAISS_EMBED_DIM})."
+            )
+        arr = np.array([vector], dtype=np.float32)
+        faiss.normalize_L2(arr)
+        return arr
+
+    def _extract_text_from_image(self, file_path: str) -> str:
+        ext = os.path.splitext(file_path)[1].lower()
+        mime = {
+            ".jpg": "image/jpeg",
+            ".jpeg": "image/jpeg",
+            ".png": "image/png",
+            ".webp": "image/webp",
+            ".gif": "image/gif",
+        }.get(ext, "image/png")
+
+        with open(file_path, "rb") as f:
+            b64 = base64.b64encode(f.read()).decode("utf-8")
+
+        prompt = "Extract all readable text from this image verbatim."
+        client = self._get_openai_client()
+        response = client.chat.completions.create(
+            model=OPENAI_MODEL,
+            messages=[
+                {
+                    "role": "user",
+                    "content": [
+                        {"type": "text", "text": prompt},
+                        {
+                            "type": "image_url",
+                            "image_url": {"url": f"data:{mime};base64,{b64}"},
+                        },
+                    ],
+                }
+            ],
+        )
+        return (response.choices[0].message.content or "").strip()
+
+    def _generate_rag_quiz_locally(self) -> list[dict]:
+        query_vec = self._get_embedding(self.title)
+        chunks = self.search_faiss(query_vec, k=6)
+        if not chunks:
+            return []
+
+        context = "\n\n---\n\n".join(chunks)
+        prompt = (
+            f"You are generating a quiz for a student studying '{self.title}'.\n"
+            "Using ONLY the notes below, generate 5 multiple-choice questions.\n"
+            "Each question must have 4 options labelled A, B, C, D.\n"
+            "Return ONLY JSON with key 'questions' and list items as:\n"
+            '{"question": str, "options": {"A": str, "B": str, "C": str, "D": str}, '
+            '"answer": "A|B|C|D", "explanation": str}\n\n'
+            f"Notes:\n{context}"
+        )
+        payload = self._chat_json(prompt)
+        questions = payload if isinstance(payload, list) else payload.get("questions", [])
+        return self._validate_questions(questions)
+
+    def _generate_synthesis_locally(self) -> list[dict]:
+        if len(self.parents) < 2:
+            return []
+        parent_contexts = []
+        for parent in self.parents[:2]:
+            try:
+                query_vec = self._get_embedding(parent.title)
+            except Exception:
+                continue
+            chunks = parent.search_faiss(query_vec, k=3)
+            if chunks:
+                parent_contexts.append({"title": parent.title, "context": "\n\n".join(chunks)})
+
+        if len(parent_contexts) < 2:
+            return []
+
+        p1, p2 = parent_contexts[0], parent_contexts[1]
+        prompt = (
+            f"Generate 2 synthesis multiple-choice questions for '{self.title}' that require "
+            f"knowledge from BOTH '{p1['title']}' and '{p2['title']}'.\n"
+            "Each must have options A-D and one correct answer.\n"
+            "Return ONLY JSON with key 'questions'.\n\n"
+            f"{p1['title']} notes:\n{p1['context']}\n\n"
+            f"{p2['title']} notes:\n{p2['context']}"
+        )
+        payload = self._chat_json(prompt)
+        questions = payload if isinstance(payload, list) else payload.get("questions", [])
+        return self._validate_questions(questions)
+
+    def _validate_questions(self, questions: list) -> list[dict]:
+        valid = []
+        required = {"A", "B", "C", "D"}
+        for q in questions or []:
+            if not isinstance(q, dict):
+                continue
+            if not q.get("question"):
+                continue
+            options = q.get("options", {})
+            if not isinstance(options, dict) or not required.issubset(options.keys()):
+                continue
+            answer = q.get("answer")
+            if answer not in required:
+                continue
+            valid.append(
+                {
+                    "question": q["question"],
+                    "options": {k: str(options[k]) for k in ("A", "B", "C", "D")},
+                    "answer": answer,
+                    "explanation": str(q.get("explanation", "")),
+                }
+            )
+        return valid
+
+    def _dedupe_questions(self, questions: list[dict]) -> list[dict]:
+        seen = set()
+        unique = []
+        for q in questions:
+            key = q.get("question", "").strip().lower()
+            if key and key not in seen:
+                seen.add(key)
+                unique.append(q)
+        return unique
