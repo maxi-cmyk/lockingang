@@ -225,13 +225,19 @@ def delete_note(node_title: str, file_path: str):
 # QUIZ FLOW
 # ===========================================================================
 
-def get_quiz(node_title: str) -> list[dict]:
+def get_quiz(node_title: str) -> list[dict] | None:
     """
-    Generate and return quiz questions for a node.
-    Delegates to node.gen_quiz() (Kahoot search → RAG fallback).
-    Returns a list of {question, options, answer, explanation} dicts.
+    Generate and return quiz questions for a node, but only if the node
+    actually needs a quiz based on its adjusted urgency score.
+
+    Returns None if should_generate_quiz() is False — the caller should
+    treat this as "no quiz needed right now" and skip this node.
+    Returns the question list if a quiz is warranted.
     """
-    return _tree.get_node(node_title).gen_quiz()
+    n = _tree.get_node(node_title)
+    if not n.should_generate_quiz():
+        return None
+    return n.gen_quiz()
 
 
 def submit_answer(node_title: str, correct: bool) -> dict:
@@ -337,8 +343,13 @@ def get_session_briefing() -> dict:
 
 
 def get_urgency_queue(limit: int = 10) -> list[dict]:
-    """Top N nodes most in need of review, serialised for the task list."""
-    return [_serialise_node(n) for n in _tree.get_urgency_queue(limit)]
+    """
+    Top N nodes most in need of review, filtered by should_generate_quiz()
+    so nodes suppressed by strong parent mastery are excluded from the list.
+    Wall nodes are always included regardless of parent weight.
+    """
+    candidates = [n for n in _tree.get_urgency_queue(limit * 2) if n.should_generate_quiz()]
+    return [_serialise_node(n) for n in candidates[:limit]]
 
 
 def get_forgetting_forecast(days: int = 7) -> dict:
@@ -716,3 +727,16 @@ def _delete_edge_from_db(parent_title: str, child_title: str):
     TODO: DELETE FROM edges WHERE parent_title = ? AND child_title = ?
     """
     pass
+
+
+# ===========================================================================
+# ENTRY POINT
+# ===========================================================================
+
+if __name__ == "__main__":
+    startup()
+    try:
+        while True:
+            wait_for_frontend_message()
+    except KeyboardInterrupt:
+        shutdown()

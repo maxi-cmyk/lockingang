@@ -220,7 +220,7 @@ Because the app has deep knowledge of the student's per-topic mastery, decay rat
 
 Identifies when a student is structurally stuck and intervenes automatically.
 
-- **The Wall Detection:** If a student fails a child node's quiz 3+ times while the parent node shows mastery (>0.7), system flags it as "The Wall."
+- **The Wall Detection:** If a student fails a child node's quiz while the parent node shows mastery (>0.7), system flags it as "The Wall."
 - **Auto-Bridge Nodes:** System generates a new bridge node between parent and difficult child containing introductory content.
 - **Grandparent Reset:** If failure persists, escalates by resetting grandparent node's score to 0.0, forcing review of fundamentals.
 

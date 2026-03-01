@@ -72,7 +72,7 @@ class node:
 
     VALID_RELATIONSHIPS = {"requires", "is_a_type_of", "related_to", "bridges_to"}
 
-    def __init__(self, title: str, decay_rate: float = 0.05):
+    def __init__(self, title: str, decay_rate: float = 5.0):
         self.title = title
         self.mastery = 0.0                   # stored score (0.0–1.0), reset on each quiz
         self.decay_rate = decay_rate         # per-node; influenced by complexity & history
@@ -106,7 +106,7 @@ class node:
         As defined in PRD §8.
         """
         days_elapsed = (datetime.now() - self.last_reviewed).total_seconds() / 86400
-        live = self.mastery * ((1 - self.decay_rate) ** days_elapsed)
+        live = self.mastery * (0.5 ** (days_elapsed / self.decay_rate))
         return max(0.0, round(live, 4))
 
     def get_status(self) -> str:
@@ -342,6 +342,47 @@ class node:
         The caller is responsible for checking the parent's score.
         """
         return self.fail_count >= 3
+
+    def get_parent_weight(self) -> float:
+        """
+        Returns the average live mastery score across all direct parents (0.0–1.0).
+        A high weight means prerequisites are well-mastered, which suppresses
+        quiz urgency for this child node.
+        Returns 0.0 if this node has no parents (root node — no suppression).
+        """
+        if not self.parents:
+            return 0.0
+        return sum(p.get_live_score() for p in self.parents) / len(self.parents)
+
+    def should_generate_quiz(self, urgency_threshold: float = 0.5, suppression_factor: float = 0.3) -> bool:
+        """
+        Decide whether a quiz should be generated for this node.
+
+        Logic:
+          1. Compute the adjusted score:
+               adjusted = child_live_score + (parent_weight × suppression_factor)
+             A high parent weight nudges the effective score upward, making
+             the node appear less urgent and less likely to trigger a quiz.
+
+          2. A quiz is needed when adjusted score is below urgency_threshold.
+
+          3. Wall bypass: if is_wall() is True the suppression is ignored and
+             a quiz is always generated — this is the exact scenario where the
+             child is struggling despite strong parental mastery (PRD §7).
+
+        Args:
+          urgency_threshold:   effective score below which a quiz is triggered (default 0.5).
+          suppression_factor:  how much parent mastery can raise the effective score (default 0.3).
+                               At max parent weight (1.0), effective score rises by at most 0.3.
+
+        Returns True if a quiz should be generated, False otherwise.
+        """
+        if self.is_wall():
+            return True
+
+        parent_weight = self.get_parent_weight()
+        adjusted_score = self.get_live_score() + (parent_weight * suppression_factor)
+        return adjusted_score < urgency_threshold
 
     # ------------------------------------------------------------------
     # AI-powered generation

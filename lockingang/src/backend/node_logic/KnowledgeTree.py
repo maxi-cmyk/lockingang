@@ -141,7 +141,7 @@ class KnowledgeTree:
             will_decay = []
             for n in self.nodes.values():
                 elapsed = (future_time - n.last_reviewed).total_seconds() / 86400
-                projected = n.mastery * ((1 - n.decay_rate) ** elapsed)
+                projected = n.mastery * (0.5 ** (elapsed / n.decay_rate))
                 if projected < 0.3:
                     will_decay.append(n.title)
             forecast[f"day_{day}"] = will_decay
@@ -259,7 +259,7 @@ class KnowledgeTree:
             if n.mastery == 0.0:
                 continue
             for day in range(1, 31):
-                projected = n.mastery * ((1 - n.decay_rate) ** day)
+                projected = n.mastery * (0.5 ** (day / n.decay_rate))
                 if projected < 0.3:
                     review_by = n.last_reviewed + timedelta(days=day)
                     schedule.append({
