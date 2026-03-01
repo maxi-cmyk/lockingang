@@ -10,11 +10,12 @@ To ensure privacy and zero-latency performance, lockingang utilizes a fully loca
 | Knowledge Graph      | getzep/graphiti              | Relationship modeling between concepts          |
 | AI(LLM & Vision)(RAG)| OpenAI API                   | Quiz generation, content analysis, 
 | Vector Database      | Pinecone DB                  | Used for the RAG
-| FastAPI's            | API's                        | Used to separate RAG AI system and forntend, need an API for the RAG AI chatbot|
+| API for RAG          | FastAPI                      | Used to separate RAG AI system and forntend, need an API for the RAG AI chatbot|
 | On-Device Embeddings | Transformers.js (Web Worker) | 768-float semantic vectors, fully local         |
 | Database             | SQLite + WAL mode            | Prevents locks during background decay cycles   |
 | Vector Search        | Pinecone (API)               | Semantic retrieval for RAG chatbot              |
 | Calendar             | Google Calendar API          | Display and schedule tasks (up to 1 week ahead) |
 | Task Management      | Todoist API                  | Natural-language task capture and sync          |
 | External Quiz Source | Kahoot API / Scraping        | Sourcing community quiz content                 |
+
 
