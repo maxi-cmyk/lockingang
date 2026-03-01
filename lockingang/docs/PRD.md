@@ -14,7 +14,7 @@ lockingang solves this by maintaining a live, per-topic knowledge score that dec
 **Mathematical Analogy**
 If knowledge is a vector field (V) where each concept is a point, without active review the system suffers from entropy — the magnitude of these vectors (mastery) shrinks toward zero. The engine acts as an External Impulse Force that calculates the necessary work (active recall) required to counteract this decay and maintain a state of high-energy mastery.
 
-## 3. Application Structure & Navigation
+## 2. Application Structure & Navigation
 
 The application is organized into six primary tabs accessible from a persistent sidebar. Each tab serves a distinct purpose in the student's learning workflow.
 
@@ -27,9 +27,9 @@ The application is organized into six primary tabs accessible from a persistent 
 | Templates           | 📦   | Browse, upload, and import community-shared roadmaps and curricula                  |
 | Calendar & Schedule | 📅   | Unified view of Google Calendar events and auto-scheduled review sessions           |
 
-## 4. Tab Specifications
+## 3. Tab Specifications
 
-### 4.1 Knowledge Tree (Primary Tab)
+### 3.1 Knowledge Tree (Primary Tab)
 
 The Knowledge Tree is the heart of lockingang. It is an interactive, zoomable graph where each node represents a topic or concept and each edge represents a relationship between concepts.
 
@@ -81,7 +81,7 @@ Students can build their tree in three ways:
 2.  **Import a Template** — clone a pre-built roadmap from the Templates tab
 3.  **AI Auto-Generation from Content** — upload a textbook, PDF, or set of notes, and the AI parses, converts to markdown, extracts key concepts, and generates a complete tree structure automatically
 
-### 4.2 Dashboard
+### 3.2 Dashboard
 
 The Dashboard provides a read-only, at-a-glance summary of the student's current learning state. It is the first screen a returning student sees.
 
@@ -95,7 +95,7 @@ The Dashboard provides a read-only, at-a-glance summary of the student's current
 - **Analysis:** Provides the Session Briefing and Trend Analysis, offering synthesized insights on recent decay and whether the student is improving or regressing over time.
 - **User Settings:** Access to configure API keys, toggle integrations (Google Calendar, Todoist, Pinecone), set study preferences, and manage templates.
 
-### 4.3 Focus Tunnel
+### 3.3 Focus Tunnel
 
 The Focus Tunnel is a distraction-free task execution environment built on the principle of constraint over freedom.
 
@@ -117,7 +117,7 @@ Selecting a task and entering Zen Mode triggers a full-screen takeover:
 **Brain Dump Shortcut**
 A global hotkey (Cmd/Ctrl + J) opens a quick-capture modal. The student types a thought, and it is saved to an Inbox with the context of what they were working on (current node, active task). This offloads intrusive thoughts without breaking flow state.
 
-### 4.4 Chatbot (Agentic AI Assistant)
+### 3.4 Chatbot (Agentic AI Assistant)
 
 The Chatbot tab provides a conversational AI assistant that is deeply integrated with the student's knowledge graph and external services.
 
@@ -129,7 +129,7 @@ The Chatbot tab provides a conversational AI assistant that is deeply integrated
 - **Graph Manipulation:** Create nodes, add edges, attach notes, and trigger quizzes via conversation.
 - **Study Planning:** Generates multi-day study plans for upcoming exams and auto-schedules review sessions.
 
-### 4.5 Templates (Community Roadmaps)
+### 3.5 Templates (Community Roadmaps)
 
 The Templates tab is a library of pre-built learning roadmaps created and shared by teachers, tutors, and other students.
 
@@ -144,7 +144,7 @@ The Templates tab is a library of pre-built learning roadmaps created and shared
 - Any student can export their own tree (or subtree) as a template
 - Uploaded templates undergo basic moderation/review before appearing publicly
 
-### 4.6 Calendar & Schedule
+### 3.6 Calendar & Schedule
 
 This tab provides a unified weekly view combining Google Calendar events with lockingang's auto-scheduled review sessions.
 
@@ -162,7 +162,7 @@ This tab provides a unified weekly view combining Google Calendar events with lo
 - Clicking a review block opens the relevant node's quiz panel
 - Completed reviews are automatically marked, updating competence scores
 
-## 5. Quiz Engine
+## 4. Quiz Engine
 
 The quiz engine is the primary mechanism for active recall. Every quiz interaction updates the student's competence scores and feeds adaptive logic.
 
@@ -177,7 +177,7 @@ The quiz engine is the primary mechanism for active recall. Every quiz interacti
 **Synthesis Quizzes**
 When two parent nodes point to one child node (Diamond Problem), the AI generates synthesis questions requiring integrated understanding of both concepts.
 
-## 6. Content Ingestion Pipeline
+## 5. Content Ingestion Pipeline
 
 Students upload raw materials, and AI automatically structures them into a learning tree.
 
@@ -192,7 +192,7 @@ Students upload raw materials, and AI automatically structures them into a learn
 6.  **Embedding:** Content embedded via Transformers.js and indexed in Pinecone.
 7.  **Review:** Student reviews and adjusts the generated tree before finalizing.
 
-## 7. Auto-Scheduler (Intelligent Study Planning)
+## 6. Auto-Scheduler (Intelligent Study Planning)
 
 Because the app has deep knowledge of the student's per-topic mastery, decay rates, and quiz history, it schedules study time with precision.
 
@@ -216,7 +216,7 @@ Because the app has deep knowledge of the student's per-topic mastery, decay rat
 - Natural language task creation.
 - Priority levels map to urgency weighting.
 
-## 8. Adaptive Logic Engine
+## 7. Adaptive Logic Engine
 
 Identifies when a student is structurally stuck and intervenes automatically.
 
@@ -224,13 +224,13 @@ Identifies when a student is structurally stuck and intervenes automatically.
 - **Auto-Bridge Nodes:** System generates a new bridge node between parent and difficult child containing introductory content.
 - **Grandparent Reset:** If failure persists, escalates by resetting grandparent node's score to 0.0, forcing review of fundamentals.
 
-## 9. Forgetting Curve Engine (Active Recall)
+## 8. Forgetting Curve Engine (Active Recall)
 
 - **Real-Time Decay Model:** `live_score = stored_score × (1 − decay_rate) ^ days_elapsed`
 - **Background Decay Cycle:** Hourly background job runs across all active nodes (SQLite WAL mode).
 - **7-Day Forgetting Forecast:** Projects node state over time based on decay rates.
 
-## 10. Ideal User Flow
+## 9. Ideal User Flow
 
 1.  **First-Time Setup:** Import template or upload course materials. AI generates knowledge tree. Connect Google Calendar/Todoist.
 2.  **Daily Study Session:** Dashboard briefing -> Move top items to Focus Tunnel -> Zen Mode -> Quit. Stray thoughts captured via Brain Dump. Decay clock recalculates next day's blocks.
