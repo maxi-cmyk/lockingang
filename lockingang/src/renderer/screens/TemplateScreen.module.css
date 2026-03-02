@@ -1,0 +1,310 @@
+/* Global Layout */
+.container {
+    @apply h-screen flex overflow-hidden bg-vector-bg text-vector-white font-terminal relative;
+}
+
+.scanline {
+    @apply absolute top-0 left-0 right-0 bottom-0 pointer-events-none z-10 opacity-30;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0) 50%, rgba(0, 0, 0, 0.1) 50%, rgba(0, 0, 0, 0.1));
+    background-size: 100% 4px;
+}
+
+.contentWrapper {
+    @apply flex-1 flex flex-col overflow-hidden;
+}
+
+.mainScrollArea {
+    @apply flex-1 overflow-y-auto p-8 flex flex-col gap-6;
+}
+
+/* Header */
+.headerTitle {
+    @apply text-2xl font-bold tracking-widest text-vector-white uppercase terminal-text;
+    text-shadow: 0 0 20px rgba(125, 249, 255, 0.4);
+}
+
+.headerDesc {
+    @apply text-[1rem] text-vector-blue/60 font-mono tracking-wider mt-1;
+}
+
+/* Demo quick-load banner */
+.demoBanner {
+    @apply border border-vector-blue/30 bg-vector-blue/5 p-4 flex items-center justify-between;
+}
+
+.demoBannerTitle {
+    @apply text-[1rem] text-vector-blue font-mono tracking-widest uppercase;
+}
+
+.demoBannerDesc {
+    @apply text-[1rem] text-vector-white/40 font-mono mt-0.5;
+}
+
+.demoLoadBtn {
+    @apply px-4 py-2 border border-vector-blue text-vector-blue text-[8px] font-mono tracking-widest uppercase hover:bg-vector-blue/20 transition-all flex items-center gap-2;
+}
+
+/* Main Grid Layout */
+.mainGrid {
+    @apply grid grid-cols-[1fr_320px] gap-6;
+}
+
+.leftCol {
+    @apply flex flex-col gap-5;
+}
+
+.rightCol {
+    @apply flex flex-col gap-4;
+}
+
+/* Drop Zone */
+.dropZoneBase {
+    @apply relative border-2 border-dashed p-12 flex flex-col items-center justify-center gap-4 cursor-pointer transition-all;
+}
+
+.dropZoneActive {
+    @apply border-vector-blue bg-vector-blue/10;
+    box-shadow: 0 0 40px rgba(125, 249, 255, 0.2);
+}
+
+.dropZoneInactive {
+    @apply border-vector-blue/30 hover:border-vector-blue/60 hover:bg-vector-blue/5;
+}
+
+.dropZoneIconBase {
+    @apply transition-colors;
+}
+
+.dropZoneTitle {
+    @apply text-[1rem] text-vector-white tracking-widest uppercase font-mono;
+}
+
+.dropZoneDesc {
+    @apply text-[1rem] text-vector-white/40 font-mono mt-1;
+}
+
+.dropZonePing {
+    @apply absolute inset-0 border-2 border-vector-blue animate-ping opacity-20 pointer-events-none;
+}
+
+/* File Queue */
+.queueCard {
+    @apply border border-vector-blue/30 bg-black/20;
+}
+
+.queueHeader {
+    @apply flex items-center justify-between px-4 py-3 border-b border-vector-blue/20;
+}
+
+.queueTitle {
+    @apply text-[1rem] text-vector-blue/60 uppercase tracking-widest font-mono;
+}
+
+.queueClearBtn {
+    @apply text-[1rem] text-vector-white/30 hover:text-vector-blue font-mono uppercase tracking-widest transition-colors;
+}
+
+.queueList {
+    @apply divide-y divide-vector-blue/10;
+}
+
+.queueItem {
+    @apply flex items-center gap-3 px-4 py-3;
+}
+
+.queueItemName {
+    @apply text-[1rem] text-vector-white font-mono truncate;
+}
+
+.queueItemMsg {
+    @apply text-[1rem] text-vector-white/40 font-mono mt-0.5;
+}
+
+.queueItemSize {
+    @apply text-[1rem] text-vector-white/30 font-mono uppercase shrink-0;
+}
+
+.queueItemRemove {
+    @apply text-vector-white/20 hover:text-red-400 transition-colors;
+}
+
+.queueEmptyState {
+    @apply flex flex-col items-center justify-center p-10 gap-3 text-center border-t border-vector-blue/10;
+}
+
+.queueEmptyIcon {
+    @apply text-4xl text-vector-blue/20;
+}
+
+.queueEmptyText {
+    @apply text-[1rem] font-mono text-vector-white/30 tracking-widest uppercase;
+}
+
+.queueFooter {
+    @apply px-4 py-3 border-t border-vector-blue/20;
+}
+
+.queueBuildBtn {
+    @apply w-full py-3 bg-vector-blue text-vector-bg text-[9px] uppercase tracking-widest font-bold font-mono hover:brightness-110 transition-all disabled:opacity-40 flex items-center justify-center gap-2;
+}
+
+/* Scan Log */
+.logCard {
+    @apply border border-vector-blue/20 bg-black/60;
+}
+
+.logHeader {
+    @apply px-4 py-2 border-b border-vector-blue/20;
+}
+
+.logTitle {
+    @apply text-[1rem] text-vector-blue/60 font-mono tracking-widest uppercase;
+}
+
+.logScrollArea {
+    @apply p-4 max-h-36 overflow-y-auto font-mono text-[9px] space-y-1;
+}
+
+.logLine {
+    @apply flex items-center gap-2 text-vector-blue/70;
+}
+
+/* Right Column Widgets */
+.formatsCard {
+    @apply border border-vector-blue/30 bg-black/20 p-5;
+}
+
+.cardTitle {
+    @apply text-[1rem] text-vector-blue/50 uppercase tracking-widest font-mono mb-4;
+}
+
+.cardTitleMb3 {
+    @apply text-[1rem] text-vector-blue/50 uppercase tracking-widest font-mono mb-3;
+}
+
+.formatsList {
+    @apply flex flex-col gap-3;
+}
+
+.formatItem {
+    @apply flex items-center gap-3 p-3 border border-vector-blue/15;
+}
+
+.formatLabel {
+    @apply text-[1rem] font-bold uppercase tracking-widest font-mono;
+}
+
+.formatExt {
+    @apply text-[1rem] text-vector-white/30 font-mono;
+}
+
+.pipelinePanel {
+    @apply fixed bottom-20 right-6 w-96 p-4 py-5 border border-vector-blue/30 bg-vector-bg/95 backdrop-blur-md shadow-card-glow z-40 rounded-lg;
+}
+
+.pipelineToggleButton {
+    @apply fixed bottom-6 right-6 w-10 h-10 rounded-full flex items-center justify-center bg-vector-bg border border-vector-blue/40 text-vector-blue/70 hover:text-vector-blue hover:border-vector-blue hover:bg-vector-blue/10 transition-all cursor-pointer hover:shadow-card-glow z-50;
+}
+
+.pipelineTitle {
+    @apply text-[0.8rem] font-mono text-vector-white/40 tracking-widest uppercase mb-4 text-center;
+}
+
+.pipelineItem {
+    @apply flex gap-3 mb-3 last:mb-0;
+}
+
+.pipelineStepNum {
+    @apply text-[1rem] text-vector-blue/40 font-mono shrink-0 pt-0.5;
+}
+
+.pipelineStepLabel {
+    @apply text-[1rem] text-vector-blue font-mono uppercase tracking-widest;
+}
+
+.pipelineStepDesc {
+    @apply text-[1rem] text-vector-white/30 font-mono;
+}
+
+/* Live node discovery panel */
+.discoveryList {
+    @apply flex flex-col gap-1.5;
+}
+
+.discoveryItem {
+    @apply flex items-center gap-2;
+}
+
+.discoveryNode {
+    @apply text-[9px] font-mono text-vector-white/70;
+}
+
+.scanningText {
+    @apply text-[9px] font-mono text-vector-blue/50 animate-pulse;
+}
+
+/* COMPLETE STATE */
+.completeView {
+    @apply flex flex-col gap-6;
+}
+
+.successBanner {
+    @apply border border-green-500/50 bg-green-500/5 p-6 relative overflow-hidden;
+    box-shadow: 0 0 30px rgba(74, 222, 128, 0.1);
+}
+
+.successBannerLine {
+    @apply absolute top-0 left-0 w-1 h-full bg-green-500;
+}
+
+.successBannerContent {
+    @apply flex items-start gap-4;
+}
+
+.successTitle {
+    @apply text-lg font-bold text-green-400 tracking-widest terminal-text uppercase;
+}
+
+.successDesc {
+    @apply text-[10px] text-vector-white/60 font-mono mt-1;
+}
+
+.successStats {
+    @apply flex gap-6 mt-3;
+}
+
+.statLabel {
+    @apply text-[8px] text-vector-white/40 font-mono uppercase tracking-widest;
+}
+
+.statNumber {
+    @apply text-2xl font-bold text-green-400 font-mono;
+}
+
+.nodeListCard {
+    @apply border border-vector-blue/20 bg-black/20;
+}
+
+.nodeListHeader {
+    @apply px-4 py-3 border-b border-vector-blue/20;
+}
+
+.nodeListGrid {
+    @apply grid grid-cols-2 divide-x divide-vector-blue/10;
+}
+
+.nodeListItem {
+    @apply flex items-center gap-2 px-4 py-2.5 border-b border-vector-blue/10;
+}
+
+.completeActionArea {
+    @apply flex gap-4;
+}
+
+.viewTreeBtn {
+    @apply flex-1 py-4 bg-vector-blue text-vector-bg text-[10px] font-bold tracking-widest uppercase font-mono hover:brightness-110 transition-all flex items-center justify-center gap-2;
+}
+
+.resetBtn {
+    @apply px-6 py-4 border border-vector-blue/30 text-vector-blue text-[9px] font-mono tracking-widest uppercase hover:bg-vector-blue/10 transition-all;
+}

@@ -185,29 +185,31 @@ const ChatbotScreen = () => {
           <div className={styles.inputArea}>
             <div className={styles.inputContainer}>
               <div className={styles.inputRow}>
+                <button className={styles.iconButton}>
+                  <span className={`material-symbols-outlined ${styles.actionIcon}`}>add</span>
+                </button>
                 <div className={styles.textareaWrapper}>
-                  <textarea
+                  <input
                     ref={inputRef}
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     onKeyDown={handleKeyDown}
-                    className={styles.textarea}
-                    placeholder="DUMP A THOUGHT, ASK A QUESTION, OR REQUEST HELP..."
+                    className={styles.inputField}
+                    placeholder="Ask anything"
                   />
-                  <div className={styles.textareaCornerDeco} />
                 </div>
+                <button className={styles.iconButton}>
+                  <span className={`material-symbols-outlined ${styles.actionIcon}`}>mic</span>
+                </button>
                 <button
-                  onClick={() => sendMessage()}
-                  disabled={!input.trim() || isTyping}
+                  onClick={() => input.trim() ? sendMessage() : null}
+                  disabled={isTyping || !input.trim()}
                   className={styles.sendButton}
                 >
-                  <span className={styles.sendText}>SEND</span>
-                  <span className={`material-symbols-outlined ${styles.sendIcon}`}>arrow_forward</span>
+                  <span className={`material-symbols-outlined ${styles.sendIcon}`}>
+                    arrow_upward
+                  </span>
                 </button>
-              </div>
-              <div className={styles.hintRow}>
-                <span>TRY: "buy milk" or "quiz me on distributions"</span>
-                <span>ENTER TO SEND · SHIFT+ENTER FOR NEWLINE</span>
               </div>
             </div>
           </div>
@@ -237,8 +239,8 @@ const ChatbotScreen = () => {
                           {" "}{task.scheduled}
                         </p>
                         <span className={`${styles.taskPriority} ${task.priority === "HIGH"
-                            ? styles.priorityHigh
-                            : styles.priorityLow
+                          ? styles.priorityHigh
+                          : styles.priorityLow
                           }`}>
                           {task.priority}
                         </span>

@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import Sidebar from "../components/Sidebar/Sidebar";
 import MissionBriefingScreen from "./MissionBriefingScreen";
 import { getNodes, subscribe, initNodes } from "../nodeStore";
+import styles from "./KnowledgeTreeScreen.module.css";
 
 const MIN_SCALE = 0.2;
 const MAX_SCALE = 3;
@@ -141,7 +142,7 @@ const KnowledgeTreeScreen = () => {
   };
 
   const handleCanvasPointerDown = (e) => {
-    if (e.target !== canvasRef.current && !e.target.closest(".graph-layer")) return;
+    if (e.target !== canvasRef.current && !e.target.closest(`.${styles.graphLayer}`)) return;
     interactionRef.current = {
       type: "pan",
       startMouseX: e.clientX,
@@ -236,16 +237,16 @@ const KnowledgeTreeScreen = () => {
   });
 
   return (
-    <div className="h-screen flex overflow-hidden bg-vector-bg text-vector-white font-terminal relative">
+    <div className={styles.container}>
       <div className="scanline" />
       <Sidebar />
 
-      <div className="flex-1 flex flex-col relative overflow-hidden">
+      <div className={styles.mainWrapper}>
 
 
         {/* Grid background (NOT transformed — it tiles across the full viewport) */}
         <div
-          className="absolute inset-0 z-0 pointer-events-none"
+          className={styles.gridBackground}
           style={{
             backgroundSize: `${32 * scale}px ${32 * scale}px`,
             backgroundPosition: `${pan.x % (32 * scale)}px ${pan.y % (32 * scale)}px`,
@@ -254,26 +255,26 @@ const KnowledgeTreeScreen = () => {
           }}
         />
 
-        <main className="flex-1 relative flex flex-col overflow-hidden">
+        <main className={styles.mainArea}>
           {/* ── Canvas (receives pan/zoom events) ── */}
           <div
             ref={canvasRef}
-            className="flex-1 relative overflow-hidden cursor-grab active:cursor-grabbing select-none"
+            className={styles.canvasArea}
             onPointerDown={handleCanvasPointerDown}
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
           >
             {/* Fixed HUD — stays in place while graph pans */}
-            <div className="absolute top-6 left-8 z-20 space-y-1 text-[9px] tracking-widest uppercase text-vector-blue/60 pointer-events-none">
-              <p className="text-vector-blue/90">NODES: {nodes.length}</p>
+            <div className={styles.hudOverlay}>
+              <p className={styles.hudTotalNodes}>NODES: {nodes.length}</p>
               <p>LINKS: {edges.length}</p>
               <p>ZOOM: {Math.round(scale * 100)}%</p>
               <p>
                 BACKEND:{" "}
                 <span className={
-                  backendStatus === "live" ? "text-green-400" :
-                    backendStatus === "offline" ? "text-amber-400" :
-                      "text-vector-blue/40"
+                  backendStatus === "live" ? styles.hudBackendLive :
+                    backendStatus === "offline" ? styles.hudBackendOffline :
+                      styles.hudBackendLoading
                 }>
                   {backendStatus === "live" ? "LIVE" : backendStatus === "offline" ? "OFFLINE" : "..."}
                 </span>
@@ -282,24 +283,24 @@ const KnowledgeTreeScreen = () => {
 
             {/* Connection banner */}
             {showConnectionBanner && (
-              <div className="absolute top-6 right-8 w-80 z-30">
-                <div className="bg-vector-bg/90 border border-vector-blue p-4 shadow-card-glow backdrop-blur-md relative overflow-hidden">
-                  <div className="absolute top-0 left-0 w-1 h-full bg-vector-blue" />
-                  <div className="flex items-start gap-3 mb-2">
-                    <div className="p-1 bg-vector-blue/20 border border-vector-blue/50 text-vector-blue">
+              <div className={styles.connectionBannerWrapper}>
+                <div className={styles.connectionBanner}>
+                  <div className={styles.bannerEdge} />
+                  <div className={styles.bannerContent}>
+                    <div className={styles.bannerIconWrapper}>
                       <span className="material-symbols-outlined text-[18px]">link</span>
                     </div>
                     <div>
-                      <h3 className="text-vector-blue font-bold text-[9px] tracking-widest uppercase">CONNECTION_ESTABLISHED</h3>
-                      <p className="text-vector-white/70 text-[9px] mt-1 leading-relaxed font-mono">
-                        Node <span className="text-vector-white">[{newNodeLabel}]</span> added to Knowledge Graph.
+                      <h3 className={styles.bannerTitle}>CONNECTION_ESTABLISHED</h3>
+                      <p className={styles.bannerText}>
+                        Node <span className={styles.nodeHighlight}>[{newNodeLabel}]</span> added to Knowledge Graph.
                       </p>
                     </div>
                   </div>
-                  <div className="mt-2 flex justify-end">
+                  <div className={styles.dismissButtonWrapper}>
                     <button
                       onClick={() => setShowConnectionBanner(false)}
-                      className="text-[9px] tracking-widest uppercase text-vector-blue hover:text-vector-white transition-colors flex items-center gap-1"
+                      className={styles.dismissButton}
                     >
                       DISMISS <span className="material-symbols-outlined text-[12px]">close</span>
                     </button>
@@ -310,38 +311,38 @@ const KnowledgeTreeScreen = () => {
 
             {/* NODE_INSPECTOR */}
             {selectedNode && !showConnectionBanner && (
-              <div className="absolute top-6 right-8 w-72 z-30 border border-vector-blue bg-vector-bg/95 backdrop-blur-md shadow-card-glow">
-                <div className="flex items-center justify-between px-4 py-3 border-b border-vector-blue/30">
-                  <div className="flex items-center gap-2">
+              <div className={styles.inspectorPanel}>
+                <div className={styles.inspectorHeader}>
+                  <div className={styles.inspectorTitleWrapper}>
                     <span className="material-symbols-outlined text-vector-blue text-sm">settings</span>
-                    <span className="text-[9px] text-vector-blue tracking-widest uppercase font-bold">NODE_INSPECTOR</span>
+                    <span className={styles.inspectorTitle}>NODE_INSPECTOR</span>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className={styles.inspectorActions}>
                     <button
                       onClick={() => setInspectorCollapsed((c) => !c)}
-                      className="text-vector-white/30 hover:text-vector-blue transition-colors"
+                      className={styles.iconButton}
                       title={inspectorCollapsed ? "Expand" : "Collapse"}
                     >
                       <span className="material-symbols-outlined text-sm">
                         {inspectorCollapsed ? "add" : "remove"}
                       </span>
                     </button>
-                    <button onClick={closeInspector} className="text-vector-white/30 hover:text-vector-white transition-colors">
+                    <button onClick={closeInspector} className={styles.closeButton}>
                       <span className="material-symbols-outlined text-sm">close</span>
                     </button>
                   </div>
                 </div>
                 {!inspectorCollapsed && (
-                  <div className="p-4 flex flex-col gap-4">
+                  <div className={styles.inspectorContent}>
                     <div>
-                      <p className="text-[7px] text-vector-blue/40 font-mono tracking-widest uppercase mb-2">
+                      <p className={styles.payloadLabel}>
                         DATA_PAYLOAD // {selectedNode.id.toUpperCase()}
                       </p>
                       <textarea
                         value={editedData}
                         onChange={(e) => setEditedData(e.target.value)}
                         rows={4}
-                        className="w-full bg-black/60 border border-vector-blue/20 p-3 text-vector-white/70 text-[10px] font-mono leading-relaxed resize-none outline-none focus:border-vector-blue/60 transition-colors"
+                        className={styles.payloadTextarea}
                       />
                     </div>
                     <button
@@ -358,10 +359,7 @@ const KnowledgeTreeScreen = () => {
                           }
                         }
                       }}
-                      className={`w-full flex items-center justify-center gap-2 py-2.5 border transition-all text-[10px] tracking-widest uppercase font-mono
-                        ${nodeSaved
-                          ? "border-green-500/60 bg-green-500/10 text-green-400"
-                          : "border-vector-blue/40 bg-vector-blue/5 hover:bg-vector-blue/20 text-vector-blue"}`}
+                      className={`${styles.saveButton} ${nodeSaved ? styles.saveButtonSuccess : styles.saveButtonDefault}`}
                     >
                       <span className="material-symbols-outlined text-sm">{nodeSaved ? "check_circle" : "save"}</span>
                       {nodeSaved ? "SAVED" : "SAVE"}
@@ -374,7 +372,7 @@ const KnowledgeTreeScreen = () => {
 
             {/* ── Graph layer — single transform for pan + scale ── */}
             <div
-              className="graph-layer absolute inset-0"
+              className={styles.graphLayer}
               style={{
                 transform: `translate(${pan.x}px, ${pan.y}px) scale(${scale})`,
                 transformOrigin: "0 0",
@@ -382,8 +380,7 @@ const KnowledgeTreeScreen = () => {
               }}
             >
               {/* SVG edges */}
-              <svg className="absolute inset-0 w-full h-full pointer-events-none"
-                style={{ overflow: "visible" }}>
+              <svg className={styles.svgEdges} style={{ overflow: "visible" }}>
                 <defs>
                   <filter id="vectorGlow">
                     <feGaussianBlur result="blur" stdDeviation="2.5" />
@@ -455,11 +452,11 @@ const KnowledgeTreeScreen = () => {
                 return (
                   <div
                     key={node.id}
-                    className="absolute flex flex-col items-center"
+                    className={styles.nodeWrapper}
                     style={{ left: pos.x, top: pos.y, transform: "translate(-50%, -50%)", cursor: "grab" }}
                     onPointerDown={(e) => handleNodePointerDown(e, node)}
                   >
-                    <div className="relative">
+                    <div className={styles.nodeCircleWrapper}>
                       <div
                         style={{
                           width: sizePx,
@@ -469,7 +466,7 @@ const KnowledgeTreeScreen = () => {
                           borderColor: colors.border,
                           boxShadow: colors.glow,
                         }}
-                        className="flex items-center justify-center bg-vector-bg transition-all duration-150"
+                        className={styles.nodeCircle}
                       >
                         <span
                           className="material-symbols-outlined"
@@ -479,10 +476,10 @@ const KnowledgeTreeScreen = () => {
                         </span>
                       </div>
                       {isSelected && (
-                        <div className="absolute inset-0 border border-vector-blue animate-ping opacity-40 pointer-events-none" />
+                        <div className={styles.nodePing} />
                       )}
                       {node.status === "critical" && !isSelected && (
-                        <div className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 animate-pulse" />
+                        <div className={styles.nodeCriticalPulse} />
                       )}
                     </div>
                     <div
@@ -510,40 +507,40 @@ const KnowledgeTreeScreen = () => {
             </div> {/* graph layer */}
 
             {/* Bottom-left floating controls */}
-            <div className="absolute bottom-6 left-6 z-20 flex items-center gap-4 pointer-events-auto">
-              <button className="border border-vector-blue/50 bg-vector-blue/5 px-6 py-2 flex items-center gap-2 hover:bg-vector-blue/20 transition-all text-vector-white text-[9px] tracking-widest uppercase">
+            <div className={styles.bottomLeftControls}>
+              <button className={`${styles.controlButton} ${styles.autoSortButton}`}>
                 <span className="material-symbols-outlined text-[18px]">magic_button</span>
                 <p>AUTO_SORT</p>
               </button>
-              <button className="border border-vector-blue bg-vector-blue/10 px-6 py-2 flex items-center gap-2 hover:bg-vector-blue/30 transition-all text-vector-white text-[9px] tracking-widest uppercase">
+              <button className={`${styles.controlButton} ${styles.addEdgeButton}`}>
                 <span className="material-symbols-outlined text-[18px]">add_circle</span>
                 <p>ADD_EDGE</p>
               </button>
-              <button className="border border-red-500/50 bg-red-500/5 px-6 py-2 flex items-center gap-2 text-red-400 hover:bg-red-500/20 transition-all text-[9px] tracking-widest uppercase">
+              <button className={`${styles.controlButton} ${styles.delEdgeButton}`}>
                 <span className="material-symbols-outlined text-[18px]">delete</span>
                 <p>DEL_EDGE</p>
               </button>
             </div>
 
             {/* Bottom-right floating controls */}
-            <div className="absolute bottom-6 right-6 z-20 pointer-events-auto">
-              <div className="flex flex-col border border-vector-blue/30 divide-y divide-vector-blue/30">
+            <div className={styles.bottomRightControls}>
+              <div className={styles.zoomControlGroup}>
                 <button
                   onClick={() => { setPan({ x: 0, y: 0 }); setScale(1); }}
-                  className="p-1 hover:bg-vector-blue/10 text-vector-blue/70 hover:text-vector-blue transition-colors"
+                  className={styles.zoomButton}
                   title="Recenter"
                 >
                   <span className="material-symbols-outlined text-[20px]">filter_center_focus</span>
                 </button>
                 <button
                   onClick={() => setScale((s) => Math.min(MAX_SCALE, s * 1.25))}
-                  className="p-1 hover:bg-vector-blue/10 text-vector-blue/70 hover:text-vector-blue transition-colors"
+                  className={styles.zoomButton}
                 >
                   <span className="material-symbols-outlined text-[20px]">add</span>
                 </button>
                 <button
                   onClick={() => setScale((s) => Math.max(MIN_SCALE, s / 1.25))}
-                  className="p-1 hover:bg-vector-blue/10 text-vector-blue/70 hover:text-vector-blue transition-colors"
+                  className={styles.zoomButton}
                 >
                   <span className="material-symbols-outlined text-[20px]">remove</span>
                 </button>
@@ -554,7 +551,7 @@ const KnowledgeTreeScreen = () => {
       </div> {/* outer column */}
 
       {showBriefing && (
-        <div className="absolute inset-0 z-50 bg-vector-bg/80 backdrop-blur-sm overflow-y-auto">
+        <div className={styles.briefingOverlay}>
           <MissionBriefingScreen
             onClose={() => setShowBriefing(false)}
             onEngage={() => setShowBriefing(false)}

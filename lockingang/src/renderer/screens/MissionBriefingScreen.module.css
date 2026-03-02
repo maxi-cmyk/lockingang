@@ -1,0 +1,228 @@
+.container {
+    @apply bg-vector-bg min-h-screen font-terminal overflow-hidden flex flex-col relative text-vector-white/80;
+}
+
+.bgGrid {
+    @apply absolute inset-0 z-0 pointer-events-none;
+    background-size: 40px 40px;
+    background-image: linear-gradient(to right, rgba(125, 249, 255, 0.05) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(125, 249, 255, 0.05) 1px, transparent 1px);
+}
+
+.scanline {
+    @apply absolute top-0 left-0 right-0 bottom-0 pointer-events-none z-10 opacity-30;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0) 50%, rgba(0, 0, 0, 0.1) 50%, rgba(0, 0, 0, 0.1));
+    background-size: 100% 4px;
+}
+
+.decorativeCircle1 {
+    @apply absolute right-[-10%] top-[10%] w-[600px] h-[600px] border border-vector-blue/5 rounded-full z-0 opacity-20 pointer-events-none;
+}
+
+.decorativeCircle2 {
+    @apply absolute right-[-5%] top-[15%] w-[500px] h-[500px] border border-vector-blue/10 rounded-full z-0 opacity-20 pointer-events-none;
+}
+
+.decorativeCircle3 {
+    @apply absolute left-[-10%] bottom-[-10%] w-[800px] h-[800px] border border-vector-blue/5 rounded-full z-0 opacity-10 pointer-events-none;
+}
+
+.mainArea {
+    @apply relative z-10 flex-1 flex flex-col items-center justify-center p-6 sm:p-12 overflow-y-auto w-full;
+}
+
+.card {
+    @apply w-full max-w-5xl flex flex-col border-2 border-vector-blue bg-vector-bg/95 relative overflow-hidden;
+    box-shadow: 0 0 10px rgba(125, 249, 255, 0.2), inset 0 0 10px rgba(125, 249, 255, 0.05);
+}
+
+.cornerTL {
+    @apply absolute top-0 left-0 w-4 h-4 border-t-4 border-l-4 border-vector-blue z-20;
+}
+
+.cornerTR {
+    @apply absolute top-0 right-0 w-4 h-4 border-t-4 border-r-4 border-vector-blue z-20;
+}
+
+.cornerBL {
+    @apply absolute bottom-0 left-0 w-4 h-4 border-b-4 border-l-4 border-vector-blue z-20;
+}
+
+.cornerBR {
+    @apply absolute bottom-0 right-0 w-4 h-4 border-b-4 border-r-4 border-vector-blue z-20;
+}
+
+.cardHeader {
+    @apply bg-vector-blue/10 border-b border-vector-blue/30 p-4 flex justify-between items-center;
+}
+
+.headerTitle {
+    @apply text-vector-blue tracking-widest text-sm font-bold uppercase terminal-text;
+}
+
+.headerStats {
+    @apply flex gap-2 text-[8px] font-mono text-vector-blue/70 tracking-widest;
+}
+
+.cardBody {
+    @apply grid grid-cols-1 lg:grid-cols-12 gap-0 lg:divide-x divide-vector-blue/30 min-h-[400px];
+}
+
+.leftPanel {
+    @apply lg:col-span-7 p-8 flex flex-col gap-8 relative;
+}
+
+.leftPanelGradient {
+    @apply absolute right-0 top-0 w-1/2 h-full bg-gradient-to-l from-vector-blue/5 to-transparent pointer-events-none;
+}
+
+.sectionHeader {
+    @apply flex items-center gap-2 mb-3;
+}
+
+.sectionLabel {
+    @apply text-vector-blue/60 text-[8px] font-bold tracking-widest uppercase;
+}
+
+.objectiveTitle {
+    @apply text-vector-white text-lg font-bold leading-tight mb-2 terminal-text uppercase tracking-tighter;
+}
+
+.objectiveDesc {
+    @apply text-vector-white/60 text-xs font-mono leading-relaxed max-w-xl;
+}
+
+.statsGrid {
+    @apply grid grid-cols-2 gap-6 mt-auto;
+}
+
+.statBlock {
+    @apply border-l-2 border-vector-blue/40 pl-4 py-1;
+}
+
+.statLabel {
+    @apply text-vector-blue/60 text-[8px] font-bold tracking-widest uppercase mb-1;
+}
+
+.difficultyRow {
+    @apply flex items-center gap-2;
+}
+
+.difficultyText {
+    @apply text-red-400 font-bold text-sm font-mono tracking-widest;
+}
+
+.difficultyBars {
+    @apply flex gap-0.5;
+}
+
+.diffBarFull {
+    @apply w-1.5 h-3 bg-red-400;
+}
+
+.diffBarEmpty {
+    @apply w-1.5 h-3 bg-red-400/30;
+}
+
+.focusRow {
+    @apply flex items-center gap-2;
+}
+
+.focusText {
+    @apply text-vector-white font-bold text-sm font-mono;
+}
+
+.rightPanel {
+    @apply lg:col-span-5 p-8 flex flex-col bg-black/20 relative;
+}
+
+.reportHeader {
+    @apply flex items-center justify-between mb-4 relative z-10;
+}
+
+.reportTitleWrapper {
+    @apply flex items-center gap-2;
+}
+
+.nodeIdLabel {
+    @apply text-[8px] text-vector-blue/40 font-mono;
+}
+
+.graphContainer {
+    @apply flex-1 border border-vector-blue/20 bg-vector-bg/50 relative overflow-hidden flex items-center justify-center p-4;
+}
+
+.graphBackground {
+    @apply absolute inset-0 opacity-30;
+    background-image: radial-gradient(#7DF9FF 1px, transparent 1px);
+    background-size: 20px 20px;
+}
+
+.graphWrapper {
+    @apply relative w-full h-full min-h-[200px];
+}
+
+.svgGraph {
+    @apply w-full h-full;
+}
+
+.linkedNodesBanner {
+    @apply absolute bottom-2 left-2 right-2 bg-black/60 backdrop-blur-sm border border-vector-blue/20 p-2 text-[9px] text-vector-white/60 font-mono;
+}
+
+.statsBarList {
+    @apply border-t border-vector-blue/30 bg-vector-blue/5 p-6 grid grid-cols-2 gap-4;
+}
+
+.xpBlock {
+    @apply flex flex-col items-center justify-center border border-vector-blue/20 bg-vector-bg/40 p-4 relative overflow-hidden hover:border-vector-blue/50 transition-colors;
+}
+
+.xpGradient {
+    @apply absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-vector-blue to-transparent opacity-50;
+}
+
+.xpNumberWrapper {
+    @apply flex items-baseline gap-1;
+}
+
+.xpValue {
+    @apply text-4xl font-bold text-vector-white tracking-tighter font-mono;
+}
+
+.xpUnit {
+    @apply text-sm text-vector-blue font-bold;
+}
+
+.footerArea {
+    @apply p-8 bg-vector-bg border-t border-vector-blue/30 flex justify-center relative overflow-hidden;
+}
+
+.footerHoverGradient {
+    @apply absolute inset-0 bg-vector-blue/5 opacity-0 hover:opacity-100 transition-opacity duration-500;
+    background-image: radial-gradient(circle, rgba(125, 249, 255, 0.1) 0%, transparent 70%);
+}
+
+.engageButton {
+    @apply relative cursor-pointer w-full max-w-md;
+}
+
+.engageButtonGlow {
+    @apply absolute -inset-1 bg-gradient-to-r from-vector-blue via-blue-400 to-vector-blue blur opacity-25 group-hover:opacity-75 transition duration-1000 group-hover:duration-200;
+}
+
+.engageButtonInner {
+    @apply relative flex items-center justify-center bg-vector-blue hover:brightness-110 text-vector-bg h-14 px-8 text-sm font-bold tracking-widest uppercase transition-all shadow-card-glow hover:shadow-card-glow-hover font-mono;
+}
+
+.engageButtonText {
+    @apply truncate;
+}
+
+.bottomContext {
+    @apply mt-8 text-vector-blue/40 text-[8px] font-mono text-center tracking-widest;
+}
+
+.abortText {
+    @apply mt-1;
+}

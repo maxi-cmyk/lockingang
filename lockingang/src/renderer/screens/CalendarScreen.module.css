@@ -7,7 +7,7 @@
 }
 
 .calendarArea {
-    @apply flex-1 flex flex-col p-6 min-w-0;
+    @apply flex-1 flex flex-col p-6 pb-3 min-w-0;
 }
 
 .monthHeader {
@@ -20,7 +20,7 @@
 }
 
 .schedulerInfo {
-    @apply flex items-center gap-2 text-[8px] text-vector-white/40 font-mono;
+    @apply flex items-center justify-center mt-3 gap-2 text-[0.6rem] tracking-widest text-vector-white/30 font-mono uppercase;
 }
 
 .pulseDot {
@@ -52,11 +52,11 @@
 }
 
 .dayText {
-    @apply text-[9px] font-mono;
+    @apply text-[1rem] font-mono;
 }
 
 .todayIndicator {
-    @apply ml-1 text-[7px] text-vector-blue;
+    @apply ml-1 text-[1rem] text-vector-blue;
 }
 
 .blockContainer {
@@ -64,11 +64,11 @@
 }
 
 .blockPill {
-    @apply w-full px-1 py-0.5 text-[6px] font-mono truncate;
+    @apply w-full px-1 py-0.5 text-[0.8rem] font-mono truncate;
 }
 
 .moreBlocks {
-    @apply text-[6px] font-mono text-vector-white/30;
+    @apply text-[1rem] font-mono text-vector-white/30;
 }
 
 .detailPanel {
@@ -80,7 +80,7 @@
 }
 
 .detailTitle {
-    @apply text-[8px] text-vector-blue/50 font-mono tracking-widest uppercase;
+    @apply text-[1rem] text-vector-blue/50 font-mono tracking-widest uppercase;
 }
 
 .todayStatus {
@@ -92,7 +92,7 @@
 }
 
 .todayLabel {
-    @apply text-[8px] text-vector-blue font-mono tracking-widest;
+    @apply text-[1rem] text-vector-blue font-mono tracking-widest;
 }
 
 .detailContent {
@@ -108,7 +108,7 @@
 }
 
 .emptyText {
-    @apply text-[8px] text-vector-white/20 font-mono text-center;
+    @apply text-[1rem] text-vector-white/20 font-mono text-center;
 }
 
 .blockList {
@@ -136,11 +136,11 @@
 }
 
 .blockTitle {
-    @apply text-[9px] font-mono font-bold;
+    @apply text-[1rem] font-mono font-bold;
 }
 
 .blockMeta {
-    @apply flex items-center gap-4 text-[8px] font-mono text-vector-white/40;
+    @apply flex items-center gap-4 text-[1rem] font-mono text-vector-white/40;
 }
 
 .masteryContainer {
@@ -152,11 +152,11 @@
 }
 
 .masteryLabelText {
-    @apply text-[7px] font-mono text-vector-white/30;
+    @apply text-[1rem] font-mono text-vector-white/30;
 }
 
 .masteryValue {
-    @apply text-[7px] font-mono;
+    @apply text-[1rem] font-mono;
 }
 
 .masteryTrack {
@@ -168,21 +168,62 @@
 }
 
 .examMeta {
-    @apply mt-2 text-[8px] font-mono text-yellow-400/80;
+    @apply mt-2 text-[1rem] font-mono text-yellow-400/80;
 }
 
 .quizButton {
-    @apply w-full mt-2 py-1.5 border text-[8px] font-mono tracking-widest uppercase transition-all hover:opacity-80;
+    @apply w-full mt-2 py-1.5 border text-[1rem] font-mono tracking-widest uppercase transition-all hover:opacity-80;
 }
 
 .legendPanel {
-    @apply p-4 border-t border-vector-blue/20;
+    @apply fixed bottom-20 right-6 w-96 p-4 py-5 border border-vector-blue/30 bg-vector-bg/95 backdrop-blur-md shadow-card-glow z-40 rounded-lg;
+}
+
+.legendToggleButton {
+    @apply fixed bottom-6 right-6 w-10 h-10 rounded-full flex items-center justify-center bg-vector-bg border border-vector-blue/40 text-vector-blue/70 hover:text-vector-blue hover:border-vector-blue hover:bg-vector-blue/10 transition-all cursor-pointer hover:shadow-card-glow z-50;
 }
 
 .legendTitle {
-    @apply text-[7px] font-mono text-vector-white/20 tracking-widest uppercase mb-2;
+    @apply text-[0.8rem] font-mono text-vector-white/40 tracking-widest uppercase mb-4 text-center;
 }
 
-.legendText {
-    @apply text-[8px] font-mono text-vector-white/40 leading-relaxed;
+.legendList {
+    @apply grid grid-cols-2 gap-3 max-w-2xl mx-auto;
+}
+
+.legendItem {
+    @apply flex items-start gap-3 p-3 border border-vector-blue/10 bg-vector-blue/5 transition-colors hover:border-vector-blue/30 hover:bg-vector-blue/10;
+}
+
+.legendDot {
+    @apply w-2.5 h-2.5 mt-1 rounded-full flex-shrink-0 animate-pulse;
+    box-shadow: 0 0 8px currentColor;
+}
+
+.legendDotCritical {
+    @apply bg-[#FF4444] text-[#FF4444];
+}
+
+.legendDotActive {
+    @apply bg-[#FFB800] text-[#FFB800];
+}
+
+.legendDotCompleted {
+    @apply bg-vector-blue text-vector-blue;
+}
+
+.legendDotExam {
+    @apply bg-[#FFD700] text-[#FFD700];
+}
+
+.legendItemContent {
+    @apply flex flex-col;
+}
+
+.legendLabel {
+    @apply text-[0.9rem] font-mono font-bold text-vector-white/80 uppercase tracking-widest leading-tight;
+}
+
+.legendDesc {
+    @apply text-[0.7rem] font-mono text-vector-white/40 mt-1;
 }

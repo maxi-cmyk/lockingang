@@ -1,0 +1,199 @@
+.container {
+    @apply h-screen flex overflow-hidden bg-vector-bg text-vector-white font-terminal relative;
+}
+
+.mainWrapper {
+    @apply flex-1 flex flex-col relative overflow-hidden;
+}
+
+.gridBackground {
+    @apply absolute inset-0 z-0 pointer-events-none;
+}
+
+.mainArea {
+    @apply flex-1 relative flex flex-col overflow-hidden;
+}
+
+.canvasArea {
+    @apply flex-1 relative overflow-hidden cursor-grab active:cursor-grabbing select-none;
+}
+
+.hudOverlay {
+    @apply absolute top-6 left-8 z-20 space-y-1 text-[9px] tracking-widest uppercase text-vector-blue/60 pointer-events-none bg-vector-bg px-4 py-3 border border-vector-blue/30 rounded-md shadow-lg;
+}
+
+.hudOverlay p {
+    font-size: 0.5rem;
+}
+
+.hudTotalNodes {
+    @apply text-vector-blue/90;
+}
+
+.hudBackendLive {
+    @apply text-green-400;
+}
+
+.hudBackendOffline {
+    @apply text-amber-400;
+}
+
+.hudBackendLoading {
+    @apply text-vector-blue/40;
+}
+
+.connectionBannerWrapper {
+    @apply absolute top-6 right-8 w-80 z-30;
+}
+
+.connectionBanner {
+    @apply bg-vector-bg/90 border border-vector-blue p-4 shadow-card-glow backdrop-blur-md relative overflow-hidden;
+}
+
+.bannerEdge {
+    @apply absolute top-0 left-0 w-1 h-full bg-vector-blue;
+}
+
+.bannerContent {
+    @apply flex items-start gap-3 mb-2;
+}
+
+.bannerIconWrapper {
+    @apply p-1 bg-vector-blue/20 border border-vector-blue/50 text-vector-blue;
+}
+
+.bannerTitle {
+    @apply text-vector-blue font-bold text-[9px] tracking-widest uppercase;
+}
+
+.bannerText {
+    @apply text-vector-white/70 text-[9px] mt-1 leading-relaxed font-mono;
+}
+
+.nodeHighlight {
+    @apply text-vector-white;
+}
+
+.dismissButtonWrapper {
+    @apply mt-2 flex justify-end;
+}
+
+.dismissButton {
+    @apply text-[9px] tracking-widest uppercase text-vector-blue hover:text-vector-white transition-colors flex items-center gap-1;
+}
+
+.inspectorPanel {
+    @apply absolute top-6 right-8 w-72 z-30 border border-vector-blue bg-vector-bg/95 backdrop-blur-md shadow-card-glow;
+}
+
+.inspectorHeader {
+    @apply flex items-center justify-between px-4 py-3 border-b border-vector-blue/30;
+}
+
+.inspectorTitleWrapper {
+    @apply flex items-center gap-2;
+}
+
+.inspectorTitle {
+    @apply text-[9px] text-vector-blue tracking-widest uppercase font-bold;
+}
+
+.inspectorActions {
+    @apply flex items-center gap-2;
+}
+
+.iconButton {
+    @apply text-vector-white/30 hover:text-vector-blue transition-colors;
+}
+
+.closeButton {
+    @apply text-vector-white/30 hover:text-vector-white transition-colors;
+}
+
+.inspectorContent {
+    @apply p-4 flex flex-col gap-4;
+}
+
+.payloadLabel {
+    @apply text-[7px] text-vector-blue/40 font-mono tracking-widest uppercase mb-2;
+}
+
+.payloadTextarea {
+    @apply w-full bg-black/60 border border-vector-blue/20 p-3 text-vector-white/70 text-[10px] font-mono leading-relaxed resize-none outline-none focus:border-vector-blue/60 transition-colors;
+}
+
+.saveButton {
+    @apply w-full flex items-center justify-center gap-2 py-2.5 border transition-all text-[10px] tracking-widest uppercase font-mono;
+}
+
+.saveButtonSuccess {
+    @apply border-green-500/60 bg-green-500/10 text-green-400;
+}
+
+.saveButtonDefault {
+    @apply border-vector-blue/40 bg-vector-blue/5 hover:bg-vector-blue/20 text-vector-blue;
+}
+
+.graphLayer {
+    @apply absolute inset-0;
+}
+
+.svgEdges {
+    @apply absolute inset-0 w-full h-full pointer-events-none;
+}
+
+.nodeWrapper {
+    @apply absolute flex flex-col items-center;
+}
+
+.nodeCircleWrapper {
+    @apply relative;
+}
+
+.nodeCircle {
+    @apply flex items-center justify-center bg-vector-bg transition-all duration-150;
+}
+
+.nodePing {
+    @apply absolute inset-0 border border-vector-blue animate-ping opacity-40 pointer-events-none;
+}
+
+.nodeCriticalPulse {
+    @apply absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 animate-pulse;
+}
+
+.bottomLeftControls {
+    @apply absolute bottom-6 left-6 z-20 flex items-center gap-4 pointer-events-auto;
+}
+
+.controlButton {
+    @apply px-6 py-2 flex items-center gap-2 transition-all tracking-widest uppercase font-mono text-[9px];
+}
+
+.autoSortButton {
+    @apply border border-vector-blue/50 bg-vector-bg hover:border-vector-blue hover:text-vector-blue text-vector-white transition-all shadow-md;
+}
+
+.addEdgeButton {
+    @apply border border-vector-blue bg-vector-bg hover:text-vector-blue text-vector-white transition-all shadow-md;
+}
+
+.delEdgeButton {
+    @apply border border-red-500/50 bg-vector-bg hover:border-red-500 hover:text-red-300 text-red-400 transition-all shadow-md;
+}
+
+.bottomRightControls {
+    @apply absolute bottom-6 right-6 z-20 pointer-events-auto;
+}
+
+.zoomControlGroup {
+    @apply flex flex-col border border-vector-blue/30 divide-y divide-vector-blue/30 bg-vector-bg rounded shadow-md;
+}
+
+.zoomButton {
+    @apply p-1 hover:bg-vector-blue/10 text-vector-blue/70 hover:text-vector-blue transition-colors;
+}
+
+.briefingOverlay {
+    @apply absolute inset-0 z-50 bg-vector-bg/80 backdrop-blur-sm overflow-y-auto;
+}

@@ -53,6 +53,7 @@ const DAYS = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
 const CalendarScreen = () => {
   const navigate = useNavigate();
   const [selectedDay, setSelectedDay] = useState(TODAY);
+  const [isLegendOpen, setIsLegendOpen] = useState(false);
 
   // Build calendar grid (6 rows × 7 cols)
   const cells = [];
@@ -88,10 +89,6 @@ const CalendarScreen = () => {
               <h2 className={styles.monthTitle} style={{ textShadow: "0 0 20px rgba(125,249,255,0.3)" }}>
                 {MONTH} {YEAR}
               </h2>
-              <div className={styles.schedulerInfo}>
-                <span className={styles.pulseDot} />
-                <span>AUTO-SCHEDULED BY LOCKINGANG · SPACED REPETITION ACTIVE</span>
-              </div>
             </div>
 
             {/* Day headers */}
@@ -159,6 +156,11 @@ const CalendarScreen = () => {
                   </div>
                 );
               })}
+            </div>
+
+            {/* Scheduler Info Footer */}
+            <div className={styles.schedulerInfo}>
+              <span>AUTO-SCHEDULED BY LOCKINGANG · SPACED REPETITION ACTIVE</span>
             </div>
           </div>
 
@@ -241,14 +243,53 @@ const CalendarScreen = () => {
               )}
             </div>
 
-            {/* Legend */}
-            <div className={styles.legendPanel}>
-              <p className={styles.legendTitle}>DECAY_FORECAST</p>
-              <p className={styles.legendText}>
-                Review blocks are auto-scheduled based on your forgetting curve.
-                Red blocks → decay imminent. Yellow → review soon. Blue → mastered.
-              </p>
-            </div>
+            {/* Legend Panel (Floating) */}
+            {isLegendOpen && (
+              <div className={styles.legendPanel}>
+                <p className={styles.legendTitle}>DECAY_FORECAST</p>
+                <div className={styles.legendList}>
+                  <div className={styles.legendItem}>
+                    <div className={`${styles.legendDot} ${styles.legendDotCritical}`} />
+                    <div className={styles.legendItemContent}>
+                      <span className={styles.legendLabel}>CRITICAL</span>
+                      <p className={styles.legendDesc}>Decay imminent. Review now.</p>
+                    </div>
+                  </div>
+                  <div className={styles.legendItem}>
+                    <div className={`${styles.legendDot} ${styles.legendDotActive}`} />
+                    <div className={styles.legendItemContent}>
+                      <span className={styles.legendLabel}>ACTIVE</span>
+                      <p className={styles.legendDesc}>Scheduled for review.</p>
+                    </div>
+                  </div>
+                  <div className={styles.legendItem}>
+                    <div className={`${styles.legendDot} ${styles.legendDotCompleted}`} />
+                    <div className={styles.legendItemContent}>
+                      <span className={styles.legendLabel}>MASTERED</span>
+                      <p className={styles.legendDesc}>Knowledge retained.</p>
+                    </div>
+                  </div>
+                  <div className={styles.legendItem}>
+                    <div className={`${styles.legendDot} ${styles.legendDotExam}`} />
+                    <div className={styles.legendItemContent}>
+                      <span className={styles.legendLabel}>ASSESSMENT</span>
+                      <p className={styles.legendDesc}>Major exam milestone.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Legend Toggle Button */}
+            <button
+              className={styles.legendToggleButton}
+              onClick={() => setIsLegendOpen(!isLegendOpen)}
+              title="Toggle Decay Forecast Legend"
+            >
+              <span className="material-symbols-outlined text-[20px]">
+                {isLegendOpen ? 'close' : 'help'}
+              </span>
+            </button>
           </div>
         </main>
       </div>

@@ -1,0 +1,18 @@
+﻿ D src/backend/node_logic/data/ipc/request.json
+ M src/renderer/components/FocusTunnel/FocusTunnel.jsx
+ M src/renderer/components/FocusTunnel/TaskCard.module.css
+ M src/renderer/components/Header/Header.jsx
+ M src/renderer/index.jsx
+ M src/renderer/nodeStore.js
+ M src/renderer/screens/CalendarScreen.jsx
+ M src/renderer/screens/ChatbotScreen.jsx
+ M src/renderer/screens/DashboardScreen.jsx
+ M src/renderer/screens/DashboardScreen.module.css
+ M src/renderer/screens/MissionBriefingScreen.jsx
+ M src/renderer/screens/QuizScreen.jsx
+ M src/renderer/screens/TemplateScreen.jsx
+ D src/renderer/screens/VectorGraphScreen.jsx
+?? src/renderer/screens/CalendarScreen.module.css
+?? src/renderer/screens/ChatbotScreen.module.css
+?? src/renderer/screens/KnowledgeTreeScreen.jsx
+?? status.txt

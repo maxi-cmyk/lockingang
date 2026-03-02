@@ -1,55 +1,37 @@
 import React from "react";
+import styles from "./MissionBriefingScreen.module.css";
 
 const MissionBriefingScreen = ({
   onClose,
   onEngage,
 }) => {
   return (
-    <div className="bg-vector-bg min-h-screen font-terminal overflow-hidden flex flex-col relative text-vector-white/80">
+    <div className={styles.container}>
       {/* Background grid */}
-      <div
-        className="absolute inset-0 z-0 pointer-events-none"
-        style={{
-          backgroundSize: "40px 40px",
-          backgroundImage:
-            "linear-gradient(to right, rgba(125, 249, 255, 0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(125, 249, 255, 0.05) 1px, transparent 1px)",
-        }}
-      ></div>
+      <div className={styles.bgGrid}></div>
       {/* Scanline */}
-      <div
-        className="absolute top-0 left-0 right-0 bottom-0 pointer-events-none z-10 opacity-30"
-        style={{
-          background:
-            "linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.1))",
-          backgroundSize: "100% 4px",
-        }}
-      ></div>
+      <div className={styles.scanline}></div>
 
       {/* Decorative circles */}
-      <div className="absolute right-[-10%] top-[10%] w-[600px] h-[600px] border border-vector-blue/5 rounded-full z-0 opacity-20 pointer-events-none"></div>
-      <div className="absolute right-[-5%] top-[15%] w-[500px] h-[500px] border border-vector-blue/10 rounded-full z-0 opacity-20 pointer-events-none"></div>
-      <div className="absolute left-[-10%] bottom-[-10%] w-[800px] h-[800px] border border-vector-blue/5 rounded-full z-0 opacity-10 pointer-events-none"></div>
-
-
+      <div className={styles.decorativeCircle1}></div>
+      <div className={styles.decorativeCircle2}></div>
+      <div className={styles.decorativeCircle3}></div>
 
       {/* Main Content */}
-      <main className="relative z-10 flex-1 flex flex-col items-center justify-center p-6 sm:p-12 overflow-y-auto w-full">
-        <div
-          className="w-full max-w-5xl flex flex-col border-2 border-vector-blue bg-vector-bg/95 relative overflow-hidden"
-          style={{ boxShadow: "0 0 10px rgba(125, 249, 255, 0.2), inset 0 0 10px rgba(125, 249, 255, 0.05)" }}
-        >
+      <main className={styles.mainArea}>
+        <div className={styles.card}>
           {/* Decorative corners */}
-          <div className="absolute top-0 left-0 w-4 h-4 border-t-4 border-l-4 border-vector-blue z-20"></div>
-          <div className="absolute top-0 right-0 w-4 h-4 border-t-4 border-r-4 border-vector-blue z-20"></div>
-          <div className="absolute bottom-0 left-0 w-4 h-4 border-b-4 border-l-4 border-vector-blue z-20"></div>
-          <div className="absolute bottom-0 right-0 w-4 h-4 border-b-4 border-r-4 border-vector-blue z-20"></div>
+          <div className={styles.cornerTL}></div>
+          <div className={styles.cornerTR}></div>
+          <div className={styles.cornerBL}></div>
+          <div className={styles.cornerBR}></div>
 
           {/* Card Header */}
-          <div className="bg-vector-blue/10 border-b border-vector-blue/30 p-4 flex justify-between items-center">
-            <h1 className="text-vector-blue tracking-widest text-sm font-bold uppercase terminal-text">
+          <div className={styles.cardHeader}>
+            <h1 className={styles.headerTitle}>
               MISSION BRIEFING
             </h1>
-            <div className="flex gap-2 text-[8px] font-mono text-vector-blue/70 tracking-widest">
+            <div className={styles.headerStats}>
               <span>SECURE_CONN_ESTABLISHED</span>
               <span>::</span>
               <span>LATENCY: 12ms</span>
@@ -57,76 +39,73 @@ const MissionBriefingScreen = ({
           </div>
 
           {/* Card Body Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 lg:divide-x divide-vector-blue/30 min-h-[400px]">
+          <div className={styles.cardBody}>
             {/* Left: Objective Overview */}
-            <div className="lg:col-span-7 p-8 flex flex-col gap-8 relative">
-              <div className="absolute right-0 top-0 w-1/2 h-full bg-gradient-to-l from-vector-blue/5 to-transparent pointer-events-none"></div>
+            <div className={styles.leftPanel}>
+              <div className={styles.leftPanelGradient}></div>
 
               <div>
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="material-symbols-outlined text-vector-blue text-sm">label_important</span>
-                  <p className="text-vector-blue/60 text-[8px] font-bold tracking-widest uppercase">
+                <div className={styles.sectionHeader}>
+                  <span className={`material-symbols-outlined text-vector-blue text-sm`}>label_important</span>
+                  <p className={styles.sectionLabel}>
                     OBJECTIVE_OVERVIEW
                   </p>
                 </div>
-                <h3 className="text-vector-white text-lg font-bold leading-tight mb-2 terminal-text uppercase tracking-tighter">
+                <h3 className={styles.objectiveTitle}>
                   History Essay: Industrial Revolution
                 </h3>
-                <p className="text-vector-white/60 text-xs font-mono leading-relaxed max-w-xl">
+                <p className={styles.objectiveDesc}>
                   Analyze the primary socio-economic causes of the Industrial
                   Revolution in 18th century Britain. Focus on technological
                   innovations and labor shifts.
                 </p>
               </div>
 
-              <div className="grid grid-cols-2 gap-6 mt-auto">
-                <div className="border-l-2 border-vector-blue/40 pl-4 py-1">
-                  <p className="text-vector-blue/60 text-[8px] font-bold tracking-widest uppercase mb-1">
+              <div className={styles.statsGrid}>
+                <div className={styles.statBlock}>
+                  <p className={styles.statLabel}>
                     DIFFICULTY_LEVEL
                   </p>
-                  <div className="flex items-center gap-2">
-                    <span className="text-red-400 font-bold text-sm font-mono tracking-widest">HARD</span>
-                    <div className="flex gap-0.5">
-                      <div className="w-1.5 h-3 bg-red-400"></div>
-                      <div className="w-1.5 h-3 bg-red-400"></div>
-                      <div className="w-1.5 h-3 bg-red-400"></div>
-                      <div className="w-1.5 h-3 bg-red-400/30"></div>
-                      <div className="w-1.5 h-3 bg-red-400/30"></div>
+                  <div className={styles.difficultyRow}>
+                    <span className={styles.difficultyText}>HARD</span>
+                    <div className={styles.difficultyBars}>
+                      <div className={styles.diffBarFull}></div>
+                      <div className={styles.diffBarFull}></div>
+                      <div className={styles.diffBarFull}></div>
+                      <div className={styles.diffBarEmpty}></div>
+                      <div className={styles.diffBarEmpty}></div>
                     </div>
                   </div>
                 </div>
 
-                <div className="border-l-2 border-vector-blue/40 pl-4 py-1">
-                  <p className="text-vector-blue/60 text-[8px] font-bold tracking-widest uppercase mb-1">
+                <div className={styles.statBlock}>
+                  <p className={styles.statLabel}>
                     FOCUS_TYPE
                   </p>
-                  <div className="flex items-center gap-2">
-                    <span className="material-symbols-outlined text-vector-blue text-base">psychology</span>
-                    <span className="text-vector-white font-bold text-sm font-mono">Deep Work</span>
+                  <div className={styles.focusRow}>
+                    <span className={`material-symbols-outlined text-vector-blue text-base`}>psychology</span>
+                    <span className={styles.focusText}>Deep Work</span>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Right: Intelligence Report */}
-            <div className="lg:col-span-5 p-8 flex flex-col bg-black/20 relative group">
-              <div className="flex items-center justify-between mb-4 relative z-10">
-                <div className="flex items-center gap-2">
-                  <span className="material-symbols-outlined text-vector-blue text-sm">hub</span>
-                  <p className="text-vector-blue/60 text-[8px] font-bold tracking-widest uppercase">
+            <div className={`${styles.rightPanel} group`}>
+              <div className={styles.reportHeader}>
+                <div className={styles.reportTitleWrapper}>
+                  <span className={`material-symbols-outlined text-vector-blue text-sm`}>hub</span>
+                  <p className={styles.sectionLabel}>
                     INTELLIGENCE_REPORT
                   </p>
                 </div>
-                <span className="text-[8px] text-vector-blue/40 font-mono">NODE_ID: 8821a</span>
+                <span className={styles.nodeIdLabel}>NODE_ID: 8821a</span>
               </div>
 
-              <div className="flex-1 border border-vector-blue/20 bg-vector-bg/50 relative overflow-hidden flex items-center justify-center p-4">
-                <div
-                  className="absolute inset-0 opacity-30"
-                  style={{ backgroundImage: "radial-gradient(#7DF9FF 1px, transparent 1px)", backgroundSize: "20px 20px" }}
-                ></div>
-                <div className="relative w-full h-full min-h-[200px]">
-                  <svg className="w-full h-full drop-shadow-[0_0_8px_rgba(125,249,255,0.3)]" fill="none" height="100%" viewBox="0 0 300 200" width="100%">
+              <div className={styles.graphContainer}>
+                <div className={styles.graphBackground}></div>
+                <div className={styles.graphWrapper}>
+                  <svg className={styles.svgGraph} fill="none" height="100%" viewBox="0 0 300 200" width="100%">
                     <path d="M150 100 L 80 60" stroke="#7DF9FF" strokeOpacity="0.6" strokeWidth="1"></path>
                     <path d="M150 100 L 220 70" stroke="#7DF9FF" strokeOpacity="0.6" strokeWidth="1"></path>
                     <path d="M150 100 L 120 160" stroke="#7DF9FF" strokeOpacity="0.6" strokeWidth="1"></path>
@@ -144,7 +123,7 @@ const MissionBriefingScreen = ({
                   </svg>
                 </div>
 
-                <div className="absolute bottom-2 left-2 right-2 bg-black/60 backdrop-blur-sm border border-vector-blue/20 p-2 text-[9px] text-vector-white/60 font-mono">
+                <div className={styles.linkedNodesBanner}>
                   <span className="text-vector-blue">&gt;</span> LINKED: '18th Century Economics', 'Steam Power'
                 </div>
               </div>
@@ -152,50 +131,47 @@ const MissionBriefingScreen = ({
           </div>
 
           {/* Stats Bar */}
-          <div className="border-t border-vector-blue/30 bg-vector-blue/5 p-6 grid grid-cols-2 gap-4">
-            <div className="flex flex-col items-center justify-center border border-vector-blue/20 bg-vector-bg/40 p-4 relative overflow-hidden group hover:border-vector-blue/50 transition-colors">
-              <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-vector-blue to-transparent opacity-50"></div>
-              <p className="text-vector-blue/60 text-[8px] font-bold tracking-widest mb-1 uppercase">PROJECTED_XP</p>
-              <div className="flex items-baseline gap-1">
-                <span className="text-4xl font-bold text-vector-white tracking-tighter font-mono">250</span>
-                <span className="text-sm text-vector-blue font-bold">XP</span>
+          <div className={styles.statsBarList}>
+            <div className={`${styles.xpBlock} group`}>
+              <div className={styles.xpGradient}></div>
+              <p className={styles.statLabel}>PROJECTED_XP</p>
+              <div className={styles.xpNumberWrapper}>
+                <span className={styles.xpValue}>250</span>
+                <span className={styles.xpUnit}>XP</span>
               </div>
             </div>
 
-            <div className="flex flex-col items-center justify-center border border-vector-blue/20 bg-vector-bg/40 p-4 relative overflow-hidden group hover:border-vector-blue/50 transition-colors">
-              <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-vector-blue to-transparent opacity-50"></div>
-              <p className="text-vector-blue/60 text-[8px] font-bold tracking-widest mb-1 uppercase">ESTIMATED_TIME</p>
-              <div className="flex items-baseline gap-1">
-                <span className="text-4xl font-bold text-vector-white tracking-tighter font-mono">25:00</span>
-                <span className="text-sm text-vector-blue font-bold">MIN</span>
+            <div className={`${styles.xpBlock} group`}>
+              <div className={styles.xpGradient}></div>
+              <p className={styles.statLabel}>ESTIMATED_TIME</p>
+              <div className={styles.xpNumberWrapper}>
+                <span className={styles.xpValue}>25:00</span>
+                <span className={styles.xpUnit}>MIN</span>
               </div>
             </div>
           </div>
 
           {/* Footer Action */}
-          <div className="p-8 bg-vector-bg border-t border-vector-blue/30 flex justify-center relative overflow-hidden">
-            <div
-              className="absolute inset-0 bg-vector-blue/5 opacity-0 hover:opacity-100 transition-opacity duration-500"
-              style={{ backgroundImage: "radial-gradient(circle, rgba(125,249,255,0.1) 0%, transparent 70%)" }}
-            ></div>
+          <div className={styles.footerArea}>
+            <div className={styles.footerHoverGradient}></div>
             <button
               onClick={onEngage}
-              className="relative group cursor-pointer w-full max-w-md"
+              className={`${styles.engageButton} group`}
             >
-              <div className="absolute -inset-1 bg-gradient-to-r from-vector-blue via-blue-400 to-vector-blue blur opacity-25 group-hover:opacity-75 transition duration-1000 group-hover:duration-200"></div>
-              <div className="relative flex items-center justify-center bg-vector-blue hover:brightness-110 text-vector-bg h-14 px-8 text-sm font-bold tracking-widest uppercase transition-all shadow-card-glow hover:shadow-card-glow-hover font-mono">
-                <span className="material-symbols-outlined mr-3 animate-[spin_3s_linear_infinite]">api</span>
-                <span className="truncate">ENGAGE_ZEN_MODE</span>
-                <span className="material-symbols-outlined ml-2 opacity-0 group-hover:opacity-100 transition-opacity -mr-6 group-hover:mr-0">arrow_forward</span>
+              <div className={styles.engageButtonGlow}></div>
+              <div className={styles.engageButtonInner}>
+                <span className={`material-symbols-outlined mr-3 animate-[spin_3s_linear_infinite]`}>api</span>
+                <span className={styles.engageButtonText}>ENGAGE_ZEN_MODE</span>
+                <span className={`material-symbols-outlined ml-2 opacity-0 group-hover:opacity-100 transition-opacity -mr-6 group-hover:mr-0`}>arrow_forward</span>
               </div>
             </button>
           </div>
         </div>
 
         {/* Bottom context */}
-        <div className="mt-8 text-vector-blue/40 text-[8px] font-mono text-center tracking-widest">
+        <div className={styles.bottomContext}>
           <p>UGTA_SYSTEM_V.4.2.1 // READY_FOR_DEPLOYMENT</p>
-          {onClose && <p className="mt-1">PRESS 'ESC' TO ABORT MISSION</p>}
+          {onClose && <p className={styles.abortText}>PRESS 'ESC' TO ABORT MISSION</p>}
         </div>
       </main>
     </div>

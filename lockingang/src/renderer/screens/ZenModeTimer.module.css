@@ -1,0 +1,179 @@
+/* Layout and Background */
+.container {
+    @apply fixed inset-0 z-50 bg-vector-bg flex flex-col overflow-hidden;
+}
+
+.gridOverlay {
+    @apply absolute inset-0 pointer-events-none opacity-20;
+    background-image: linear-gradient(to right, rgba(125, 249, 255, 0.15) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(125, 249, 255, 0.15) 1px, transparent 1px);
+    background-size: 60px 60px;
+}
+
+/* Top HUD */
+.topHud {
+    @apply relative z-10 flex justify-between items-start px-8 pt-6;
+}
+
+.hudIndicator {
+    @apply flex items-center gap-2;
+}
+
+.pulseDot {
+    @apply h-1.5 w-1.5 bg-vector-blue animate-pulse;
+}
+
+.hudLabel {
+    @apply text-[8px] text-vector-blue tracking-widest uppercase font-mono;
+}
+
+.objectiveContainer {
+    @apply flex flex-col items-center gap-1;
+}
+
+.objectiveLabel {
+    @apply text-[8px] text-vector-blue/60 tracking-widest uppercase font-mono;
+}
+
+.objectiveTitle {
+    @apply text-sm text-vector-white tracking-[0.2em] uppercase font-bold terminal-text border-b border-vector-blue/40 pb-1;
+}
+
+.hudRight {
+    @apply text-[8px] text-vector-white/30 tracking-widest uppercase font-mono;
+}
+
+/* Timer Area */
+.timerArea {
+    @apply flex-1 flex flex-col items-center justify-center gap-8;
+}
+
+.timerWrapper {
+    @apply relative flex items-center justify-center;
+}
+
+.bracketLeft {
+    @apply absolute -left-8 top-1/2 -translate-y-1/2 h-24 w-6 border-l-2 border-t-2 border-b-2 border-vector-blue/40;
+}
+
+.bracketRight {
+    @apply absolute -right-8 top-1/2 -translate-y-1/2 h-24 w-6 border-r-2 border-t-2 border-b-2 border-vector-blue/40;
+}
+
+.timerText {
+    @apply text-[10rem] font-mono leading-none tracking-widest terminal-text text-vector-white;
+    font-variant-numeric: tabular-nums;
+    text-shadow: 0 0 40px rgba(125, 249, 255, 0.6), 0 0 80px rgba(125, 249, 255, 0.2);
+}
+
+.timerColon {
+    @apply text-vector-blue/60 animate-pulse mx-2;
+}
+
+.decorativeLines {
+    @apply flex gap-6;
+}
+
+.decorativeLine {
+    @apply h-0.5 w-12 bg-vector-blue/60;
+}
+
+/* Bottom Area (Brain Dump & Actions) */
+.bottomArea {
+    @apply relative z-10 flex flex-col items-center gap-4 px-8 pb-10;
+}
+
+/* Brain Dump Box */
+.dumpBox {
+    @apply w-full max-w-2xl border border-vector-blue/30 bg-vector-bg/60 p-4 font-mono;
+}
+
+.dumpHeader {
+    @apply flex items-center justify-between mb-2;
+}
+
+.dumpPrompt {
+    @apply flex items-center gap-2;
+}
+
+.promptArrow {
+    @apply text-vector-blue text-xs;
+}
+
+.promptText {
+    @apply text-[8px] text-vector-blue/50 tracking-widest uppercase;
+}
+
+.loggedCount {
+    @apply text-[8px] text-green-400 font-mono;
+}
+
+.inputRow {
+    @apply flex gap-2;
+}
+
+.dumpInput {
+    @apply flex-1 bg-transparent text-vector-white/70 placeholder:text-vector-white/20 text-xs font-mono resize-none outline-none;
+}
+
+.logBtn {
+    @apply self-end px-3 py-1 border border-vector-blue/50 text-vector-blue text-[8px] font-mono tracking-widest uppercase hover:bg-vector-blue/10 transition-all;
+}
+
+.cursor {
+    @apply text-vector-blue/40 text-xs mt-1;
+}
+
+/* Toast Notification */
+.toast {
+    @apply fixed bottom-32 left-1/2 -translate-x-1/2 border border-green-500/70 bg-black/90 px-6 py-3 flex items-center gap-3 z-50;
+    box-shadow: 0 0 20px rgba(74, 222, 128, 0.3);
+    animation: fadeIn 0.2s ease;
+}
+
+.toastTitle {
+    @apply text-[9px] text-green-400 font-mono tracking-widest uppercase;
+}
+
+.toastDesc {
+    @apply text-[8px] text-vector-white/50 font-mono mt-0.5;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, 10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+}
+
+/* Action Buttons */
+.actionButtons {
+    @apply flex gap-6;
+}
+
+.giveUpBtn {
+    @apply flex flex-col items-center gap-1 px-10 py-3 border border-vector-white/20 bg-vector-bg text-vector-white/50 hover:border-vector-white/50 hover:text-vector-white transition-all;
+}
+
+.completeBtn {
+    @apply flex flex-col items-center gap-1 px-10 py-3 border-2 border-vector-blue bg-vector-blue/10 text-vector-blue hover:bg-vector-blue/20 transition-all;
+    box-shadow: 0 0 20px rgba(125, 249, 255, 0.3);
+}
+
+.btnText {
+    @apply text-[9px] tracking-widest uppercase font-mono;
+}
+
+.btnTextBold {
+    @apply text-[9px] tracking-widest uppercase font-bold font-mono;
+}
+
+/* Bottom HUD */
+.bottomHud {
+    @apply relative z-10 flex justify-between items-center px-8 pb-4 text-[8px] text-vector-white/20 font-mono tracking-widest;
+}

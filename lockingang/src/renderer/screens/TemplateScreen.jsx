@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../components/Sidebar/Sidebar";
 import { getNodes } from "../nodeStore";
+import styles from "./TemplateScreen.module.css";
 
 const ACCEPTED_TYPES = [
     { ext: "md", label: "MARKDOWN", icon: "description", color: "text-vector-blue" },
@@ -13,11 +14,11 @@ const ACCEPTED_TYPES = [
 const EXT_TO_TYPE = { md: "markdown", txt: "plaintext", pdf: "pdf", png: "image", jpg: "image", jpeg: "image", webp: "image" };
 
 const DEMO_FILES = [
-    { id: "df1", name: "CS105_lecture_week1.pdf",        type: "pdf",      size: 2400000 },
-    { id: "df2", name: "CS105_lecture_week2.pdf",        type: "pdf",      size: 1900000 },
-    { id: "df3", name: "marty_notes_handwritten.png",    type: "image",    size: 870000  },
-    { id: "df4", name: "stats_past_paper_2024.pdf",      type: "pdf",      size: 3100000 },
-    { id: "df5", name: "probability_cheatsheet.md",      type: "markdown", size: 45000   },
+    { id: "df1", name: "CS105_lecture_week1.pdf", type: "pdf", size: 2400000 },
+    { id: "df2", name: "CS105_lecture_week2.pdf", type: "pdf", size: 1900000 },
+    { id: "df3", name: "marty_notes_handwritten.png", type: "image", size: 870000 },
+    { id: "df4", name: "stats_past_paper_2024.pdf", type: "pdf", size: 3100000 },
+    { id: "df5", name: "probability_cheatsheet.md", type: "markdown", size: 45000 },
 ];
 
 const DEMO_NODES = [
@@ -56,6 +57,7 @@ const TemplateScreen = () => {
     const [selectedNodeId, setSelectedNodeId] = useState(defaultId);
     const [uploadedFiles, setUploadedFiles] = useState([]);
     const [isDragging, setIsDragging] = useState(false);
+    const [isPipelineOpen, setIsPipelineOpen] = useState(false);
     const fileInputRef = useRef(null);
 
     // Demo analysis state
@@ -146,32 +148,31 @@ const TemplateScreen = () => {
     };
 
     return (
-        <div className="h-screen flex overflow-hidden bg-vector-bg text-vector-white font-terminal relative">
-            <div className="scanline" />
+        <div className={styles.container}>
+            <div className={styles.scanline} />
             <Sidebar />
 
-            <div className="flex-1 flex flex-col overflow-hidden">
-                <main className="flex-1 overflow-y-auto p-8 flex flex-col gap-6 custom-scrollbar">
+            <div className={styles.contentWrapper}>
+                <main className={`${styles.mainScrollArea} custom-scrollbar`}>
                     <div>
-                        <h1 className="text-2xl font-bold tracking-widest text-vector-white uppercase terminal-text"
-                            style={{ textShadow: "0 0 20px rgba(125,249,255,0.4)" }}>
+                        <h1 className={styles.headerTitle}>
                             UPLOAD_TEMPLATE
                         </h1>
-                        <p className="text-[10px] text-vector-blue/60 font-mono tracking-wider mt-1">
+                        <p className={styles.headerDesc}>
                             Drop your study materials. The AI reads everything and builds your knowledge tree automatically.
                         </p>
                     </div>
 
                     {/* Demo quick-load banner */}
                     {demoPhase === "idle" && uploadedFiles.length === 0 && (
-                        <div className="border border-vector-blue/30 bg-vector-blue/5 p-4 flex items-center justify-between">
+                        <div className={styles.demoBanner}>
                             <div>
-                                <p className="text-[9px] text-vector-blue font-mono tracking-widest uppercase">DEMO: CS105 Course Materials</p>
-                                <p className="text-[8px] text-vector-white/40 font-mono mt-0.5">Load Marty's lecture PDFs, handwritten notes and past papers</p>
+                                <p className={styles.demoBannerTitle}>DEMO: CS105 Course Materials</p>
+                                <p className={styles.demoBannerDesc}>Load Marty's lecture PDFs, handwritten notes and past papers</p>
                             </div>
                             <button
                                 onClick={loadDemoFiles}
-                                className="px-4 py-2 border border-vector-blue text-vector-blue text-[8px] font-mono tracking-widest uppercase hover:bg-vector-blue/20 transition-all flex items-center gap-2"
+                                className={styles.demoLoadBtn}
                             >
                                 <span className="material-symbols-outlined text-sm">auto_awesome</span>
                                 <p>LOAD FILES</p>
@@ -181,8 +182,8 @@ const TemplateScreen = () => {
 
                     {/* Main grid - hide when analysis complete */}
                     {demoPhase !== "complete" && (
-                        <div className="grid grid-cols-[1fr_320px] gap-6">
-                            <div className="flex flex-col gap-5">
+                        <div className={styles.mainGrid}>
+                            <div className={styles.leftCol}>
 
                                 {/* Drop zone */}
                                 <div
@@ -190,82 +191,84 @@ const TemplateScreen = () => {
                                     onDragLeave={() => setIsDragging(false)}
                                     onDrop={handleDrop}
                                     onClick={() => fileInputRef.current?.click()}
-                                    className={`relative border-2 border-dashed p-12 flex flex-col items-center justify-center gap-4 cursor-pointer transition-all
-                                        ${isDragging ? "border-vector-blue bg-vector-blue/10" : "border-vector-blue/30 hover:border-vector-blue/60 hover:bg-vector-blue/5"}`}
-                                    style={isDragging ? { boxShadow: "0 0 40px rgba(125,249,255,0.2)" } : {}}
+                                    className={`${styles.dropZoneBase} ${isDragging ? styles.dropZoneActive : styles.dropZoneInactive}`}
                                 >
                                     <input ref={fileInputRef} type="file" multiple accept=".md,.txt,.pdf,.png,.jpg,.jpeg,.webp"
                                         className="hidden" onChange={(e) => processFiles(e.target.files)} />
-                                    <span className="material-symbols-outlined text-[48px] transition-colors"
+                                    <span className={`${styles.dropZoneIconBase} material-symbols-outlined text-[48px]`}
                                         style={{ color: isDragging ? "#7DF9FF" : "rgba(125,249,255,0.3)" }}>cloud_upload</span>
                                     <div className="text-center">
-                                        <p className="text-[11px] text-vector-white tracking-widest uppercase font-mono">DROP FILES HERE</p>
-                                        <p className="text-[9px] text-vector-white/40 font-mono mt-1">or click to browse · PDF, MD, IMG, TXT</p>
+                                        <p className={styles.dropZoneTitle}>DROP FILES HERE</p>
+                                        <p className={styles.dropZoneDesc}>or click to browse · PDF, MD, IMG, TXT</p>
                                     </div>
-                                    {isDragging && <div className="absolute inset-0 border-2 border-vector-blue animate-ping opacity-20 pointer-events-none" />}
+                                    {isDragging && <div className={styles.dropZonePing} />}
                                 </div>
 
                                 {/* File queue */}
-                                {uploadedFiles.length > 0 && (
-                                    <div className="border border-vector-blue/30 bg-black/20">
-                                        <div className="flex items-center justify-between px-4 py-3 border-b border-vector-blue/20">
-                                            <span className="text-[8px] text-vector-blue/60 uppercase tracking-widest font-mono">
-                                                QUEUE ({uploadedFiles.length}) — {doneCount} INDEXED
-                                            </span>
-                                            {doneCount > 0 && (
-                                                <button onClick={clearDone} className="text-[8px] text-vector-white/30 hover:text-vector-blue font-mono uppercase tracking-widest transition-colors">
-                                                    <p>CLEAR DONE</p>
-                                                </button>
-                                            )}
-                                        </div>
-                                        <div className="divide-y divide-vector-blue/10">
-                                            {uploadedFiles.map((f) => (
-                                                <div key={f.id} className="flex items-center gap-3 px-4 py-3">
-                                                    <span className={`material-symbols-outlined text-[18px] ${
-                                                        f.status === "done" ? "text-green-400" :
+                                <div className={styles.queueCard}>
+                                    <div className={styles.queueHeader}>
+                                        <span className={styles.queueTitle}>
+                                            QUEUE ({uploadedFiles.length}) — {doneCount} INDEXED
+                                        </span>
+                                        {doneCount > 0 && (
+                                            <button onClick={clearDone} className={styles.queueClearBtn}>
+                                                <p>CLEAR DONE</p>
+                                            </button>
+                                        )}
+                                    </div>
+                                    <div className={styles.queueList}>
+                                        {uploadedFiles.length === 0 ? (
+                                            <div className={styles.queueEmptyState}>
+                                                <span className={`material-symbols-outlined ${styles.queueEmptyIcon}`}>topic</span>
+                                                <p className={styles.queueEmptyText}>NO FILES UPLOADED YET</p>
+                                            </div>
+                                        ) : (
+                                            uploadedFiles.map((f) => (
+                                                <div key={f.id} className={styles.queueItem}>
+                                                    <span className={`material-symbols-outlined text-[18px] ${f.status === "done" ? "text-green-400" :
                                                         f.status === "error" ? "text-red-400" :
-                                                        f.status === "uploading" ? "text-vector-blue animate-spin" :
-                                                        "text-vector-white/30"}`}>
+                                                            f.status === "uploading" ? "text-vector-blue animate-spin" :
+                                                                "text-vector-white/30"}`}>
                                                         {f.status === "done" ? "check_circle" : f.status === "error" ? "error" :
-                                                         f.status === "uploading" ? "refresh" : "schedule"}
+                                                            f.status === "uploading" ? "refresh" : "schedule"}
                                                     </span>
                                                     <div className="flex-1 min-w-0">
-                                                        <p className="text-[10px] text-vector-white font-mono truncate">{f.name}</p>
-                                                        {f.message && <p className="text-[8px] text-vector-white/40 font-mono mt-0.5">{f.message}</p>}
+                                                        <p className={styles.queueItemName}>{f.name}</p>
+                                                        {f.message && <p className={styles.queueItemMsg}>{f.message}</p>}
                                                     </div>
-                                                    <span className="text-[8px] text-vector-white/30 font-mono uppercase shrink-0">{fmtSize(f.size)}</span>
+                                                    <span className={styles.queueItemSize}>{fmtSize(f.size)}</span>
                                                     {f.status === "pending" && (
-                                                        <button onClick={() => removeFile(f.id)} className="text-vector-white/20 hover:text-red-400 transition-colors">
+                                                        <button onClick={() => removeFile(f.id)} className={styles.queueItemRemove}>
                                                             <span className="material-symbols-outlined text-[16px]">close</span>
                                                         </button>
                                                     )}
                                                 </div>
-                                            ))}
-                                        </div>
-                                        <div className="px-4 py-3 border-t border-vector-blue/20">
-                                            <button
-                                                onClick={handleUploadAll}
-                                                disabled={pendingCount === 0 || demoPhase === "loading"}
-                                                className="w-full py-3 bg-vector-blue text-vector-bg text-[9px] uppercase tracking-widest font-bold font-mono hover:brightness-110 transition-all disabled:opacity-40 flex items-center justify-center gap-2"
-                                            >
-                                                <span className="material-symbols-outlined text-sm">
-                                                    {demoPhase === "loading" ? "hourglass_top" : "auto_awesome"}
-                                                </span>
-                                                <p>{demoPhase === "loading" ? "ANALYSING..." : `BUILD KNOWLEDGE TREE (${pendingCount} FILE${pendingCount !== 1 ? "S" : ""})`}</p>
-                                            </button>
-                                        </div>
+                                            ))
+                                        )}
                                     </div>
-                                )}
+                                    <div className={styles.queueFooter}>
+                                        <button
+                                            onClick={handleUploadAll}
+                                            disabled={pendingCount === 0 || demoPhase === "loading"}
+                                            className={styles.queueBuildBtn}
+                                        >
+                                            <span className="material-symbols-outlined text-sm">
+                                                {demoPhase === "loading" ? "hourglass_top" : "auto_awesome"}
+                                            </span>
+                                            <p>{demoPhase === "loading" ? "ANALYSING..." : `BUILD KNOWLEDGE TREE (${pendingCount} FILE${pendingCount !== 1 ? "S" : ""})`}</p>
+                                        </button>
+                                    </div>
+                                </div>
 
                                 {/* Scan log */}
                                 {demoPhase === "loading" && scanLog.length > 0 && (
-                                    <div className="border border-vector-blue/20 bg-black/60">
-                                        <div className="px-4 py-2 border-b border-vector-blue/20">
-                                            <span className="text-[8px] text-vector-blue/60 font-mono tracking-widest uppercase">AI_PIPELINE_LOG</span>
+                                    <div className={styles.logCard}>
+                                        <div className={styles.logHeader}>
+                                            <span className={styles.logTitle}>AI_PIPELINE_LOG</span>
                                         </div>
-                                        <div ref={logRef} className="p-4 max-h-36 overflow-y-auto custom-scrollbar font-mono text-[9px] space-y-1">
+                                        <div ref={logRef} className={`${styles.logScrollArea} custom-scrollbar`}>
                                             {scanLog.map((line, i) => (
-                                                <div key={i} className="flex items-center gap-2 text-vector-blue/70">
+                                                <div key={i} className={styles.logLine}>
                                                     <span className="text-vector-blue/30">&gt;</span>
                                                     <span>{line}</span>
                                                 </div>
@@ -282,57 +285,39 @@ const TemplateScreen = () => {
                             </div>
 
                             {/* Right column */}
-                            <div className="flex flex-col gap-4">
-                                <div className="border border-vector-blue/30 bg-black/20 p-5">
-                                    <p className="text-[8px] text-vector-blue/50 uppercase tracking-widest font-mono mb-4">ACCEPTED_FORMATS</p>
-                                    <div className="flex flex-col gap-3">
+                            <div className={styles.rightCol}>
+                                <div className={styles.formatsCard}>
+                                    <p className={styles.cardTitle}>ACCEPTED_FORMATS</p>
+                                    <div className={styles.formatsList}>
                                         {ACCEPTED_TYPES.map(({ ext, label, icon, color }) => (
-                                            <div key={label} className="flex items-center gap-3 p-3 border border-vector-blue/15">
+                                            <div key={label} className={styles.formatItem}>
                                                 <span className={`material-symbols-outlined text-[20px] ${color}`}>{icon}</span>
                                                 <div>
-                                                    <p className={`text-[9px] font-bold uppercase tracking-widest font-mono ${color}`}>{label}</p>
-                                                    <p className="text-[8px] text-vector-white/30 font-mono">.{ext.replace(",", " .")}</p>
+                                                    <p className={`${styles.formatLabel} ${color}`}>{label}</p>
+                                                    <p className={styles.formatExt}>.{ext.replace(",", " .")}</p>
                                                 </div>
                                             </div>
                                         ))}
                                     </div>
                                 </div>
-                                <div className="border border-vector-blue/20 bg-black/10 p-5">
-                                    <p className="text-[8px] text-vector-blue/50 uppercase tracking-widest font-mono mb-3">PIPELINE_OVERVIEW</p>
-                                    {[
-                                        { step: "01", label: "TEXT_EXTRACT", desc: "Read file content (PDF/OCR for images)" },
-                                        { step: "02", label: "CHUNK", desc: "400-word windows, 50-word overlap" },
-                                        { step: "03", label: "EMBED", desc: "768-float vectors via Transformers.js" },
-                                        { step: "04", label: "CONCEPT_MAP", desc: "Cluster semantics → identify nodes" },
-                                        { step: "05", label: "FAISS_INDEX", desc: "Per-node IndexFlatIP for RAG queries" },
-                                    ].map(({ step, label, desc }) => (
-                                        <div key={step} className="flex gap-3 mb-3 last:mb-0">
-                                            <span className="text-[8px] text-vector-blue/40 font-mono shrink-0 pt-0.5">{step}</span>
-                                            <div>
-                                                <p className="text-[8px] text-vector-blue font-mono uppercase tracking-widest">{label}</p>
-                                                <p className="text-[8px] text-vector-white/30 font-mono">{desc}</p>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
 
                                 {/* Live node discovery panel */}
                                 {demoPhase === "loading" && discoveredNodes.length > 0 && (
-                                    <div className="border border-vector-blue/30 bg-black/20 p-4">
-                                        <p className="text-[8px] text-vector-blue/50 uppercase tracking-widest font-mono mb-3">
+                                    <div className={styles.formatsCard}>
+                                        <p className={styles.cardTitleMb3}>
                                             NODES_DISCOVERED ({discoveredNodes.length}/{DEMO_NODES.length})
                                         </p>
-                                        <div className="flex flex-col gap-1.5">
+                                        <div className={styles.discoveryList}>
                                             {discoveredNodes.map((n) => (
-                                                <div key={n} className="flex items-center gap-2">
+                                                <div key={n} className={styles.discoveryItem}>
                                                     <span className="material-symbols-outlined text-green-400 text-sm">check_circle</span>
-                                                    <span className="text-[9px] font-mono text-vector-white/70">{n}</span>
+                                                    <span className={styles.discoveryNode}>{n}</span>
                                                 </div>
                                             ))}
                                             {nodeIdx < DEMO_NODES.length && (
-                                                <div className="flex items-center gap-2">
+                                                <div className={styles.discoveryItem}>
                                                     <span className="material-symbols-outlined text-vector-blue text-sm animate-spin">refresh</span>
-                                                    <span className="text-[9px] font-mono text-vector-blue/50 animate-pulse">scanning...</span>
+                                                    <span className={styles.scanningText}>scanning...</span>
                                                 </div>
                                             )}
                                         </div>
@@ -344,32 +329,31 @@ const TemplateScreen = () => {
 
                     {/* ── COMPLETE STATE ── */}
                     {demoPhase === "complete" && (
-                        <div className="flex flex-col gap-6">
+                        <div className={styles.completeView}>
                             {/* Success banner */}
-                            <div className="border border-green-500/50 bg-green-500/5 p-6 relative overflow-hidden"
-                                style={{ boxShadow: "0 0 30px rgba(74,222,128,0.1)" }}>
-                                <div className="absolute top-0 left-0 w-1 h-full bg-green-500" />
-                                <div className="flex items-start gap-4">
+                            <div className={styles.successBanner}>
+                                <div className={styles.successBannerLine} />
+                                <div className={styles.successBannerContent}>
                                     <span className="material-symbols-outlined text-green-400 text-4xl">check_circle</span>
                                     <div>
-                                        <h2 className="text-lg font-bold text-green-400 tracking-widest terminal-text uppercase">
+                                        <h2 className={styles.successTitle}>
                                             KNOWLEDGE TREE GENERATED
                                         </h2>
-                                        <p className="text-[10px] text-vector-white/60 font-mono mt-1">
+                                        <p className={styles.successDesc}>
                                             AI analysed 5 files · identified 11 core concepts · built 11 prerequisite edges
                                         </p>
-                                        <div className="flex gap-6 mt-3">
+                                        <div className={styles.successStats}>
                                             <div>
-                                                <p className="text-[8px] text-vector-white/40 font-mono uppercase tracking-widest">Nodes Created</p>
-                                                <p className="text-2xl font-bold text-green-400 font-mono">11</p>
+                                                <p className={styles.statLabel}>Nodes Created</p>
+                                                <p className={styles.statNumber}>11</p>
                                             </div>
                                             <div>
-                                                <p className="text-[8px] text-vector-white/40 font-mono uppercase tracking-widest">Edges Mapped</p>
-                                                <p className="text-2xl font-bold text-green-400 font-mono">11</p>
+                                                <p className={styles.statLabel}>Edges Mapped</p>
+                                                <p className={styles.statNumber}>11</p>
                                             </div>
                                             <div>
-                                                <p className="text-[8px] text-vector-white/40 font-mono uppercase tracking-widest">Chunks Indexed</p>
-                                                <p className="text-2xl font-bold text-green-400 font-mono">247</p>
+                                                <p className={styles.statLabel}>Chunks Indexed</p>
+                                                <p className={styles.statNumber}>247</p>
                                             </div>
                                         </div>
                                     </div>
@@ -377,13 +361,13 @@ const TemplateScreen = () => {
                             </div>
 
                             {/* Node list */}
-                            <div className="border border-vector-blue/20 bg-black/20">
-                                <div className="px-4 py-3 border-b border-vector-blue/20">
+                            <div className={styles.nodeListCard}>
+                                <div className={styles.nodeListHeader}>
                                     <span className="text-[8px] text-vector-blue/60 font-mono tracking-widest uppercase">GENERATED_NODES</span>
                                 </div>
-                                <div className="grid grid-cols-2 divide-x divide-vector-blue/10">
+                                <div className={styles.nodeListGrid}>
                                     {DEMO_NODES.map((n) => (
-                                        <div key={n} className="flex items-center gap-2 px-4 py-2.5 border-b border-vector-blue/10">
+                                        <div key={n} className={styles.nodeListItem}>
                                             <span className="material-symbols-outlined text-green-400 text-sm">check_circle</span>
                                             <span className="text-[9px] font-mono text-vector-white/70">{n}</span>
                                         </div>
@@ -391,23 +375,56 @@ const TemplateScreen = () => {
                                 </div>
                             </div>
 
-                            <div className="flex gap-4">
+                            <div className={styles.completeActionArea}>
                                 <button
                                     onClick={() => navigate("/knowledge-tree")}
-                                    className="flex-1 py-4 bg-vector-blue text-vector-bg text-[10px] font-bold tracking-widest uppercase font-mono hover:brightness-110 transition-all flex items-center justify-center gap-2"
+                                    className={styles.viewTreeBtn}
                                 >
                                     <span className="material-symbols-outlined">account_tree</span>
                                     <p>VIEW KNOWLEDGE TREE</p>
                                 </button>
                                 <button
                                     onClick={() => { setDemoPhase("idle"); setUploadedFiles([]); setScanLog([]); setDiscoveredNodes([]); }}
-                                    className="px-6 py-4 border border-vector-blue/30 text-vector-blue text-[9px] font-mono tracking-widest uppercase hover:bg-vector-blue/10 transition-all"
+                                    className={styles.resetBtn}
                                 >
                                     <p>RESET</p>
                                 </button>
                             </div>
                         </div>
                     )}
+
+                    {/* Floating Pipeline Overview */}
+                    {isPipelineOpen && (
+                        <div className={styles.pipelinePanel}>
+                            <p className={styles.pipelineTitle}>PIPELINE_OVERVIEW</p>
+                            {[
+                                { step: "01", label: "TEXT_EXTRACT", desc: "Read file content (PDF/OCR for images)" },
+                                { step: "02", label: "CHUNK", desc: "400-word windows, 50-word overlap" },
+                                { step: "03", label: "EMBED", desc: "768-float vectors via Transformers.js" },
+                                { step: "04", label: "CONCEPT_MAP", desc: "Cluster semantics → identify nodes" },
+                                { step: "05", label: "FAISS_INDEX", desc: "Per-node IndexFlatIP for RAG queries" },
+                            ].map(({ step, label, desc }) => (
+                                <div key={step} className={styles.pipelineItem}>
+                                    <span className={styles.pipelineStepNum}>{step}</span>
+                                    <div>
+                                        <p className={styles.pipelineStepLabel}>{label}</p>
+                                        <p className={styles.pipelineStepDesc}>{desc}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+
+                    {/* Pipeline Toggle Button */}
+                    <button
+                        className={styles.pipelineToggleButton}
+                        onClick={() => setIsPipelineOpen(!isPipelineOpen)}
+                        title="Toggle Pipeline Overview"
+                    >
+                        <span className="material-symbols-outlined text-[20px]">
+                            {isPipelineOpen ? 'close' : 'help'}
+                        </span>
+                    </button>
                 </main>
             </div>
         </div>
