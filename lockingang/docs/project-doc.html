@@ -445,14 +445,14 @@
 </div>
 
 <table>
-  <thead><tr><th>Tab</th><th>Route</th><th>Status</th></tr></thead>
+  <thead><tr><th>Tab</th><th>Route</th></tr></thead>
   <tbody>
-    <tr><td>Dashboard</td><td><code>/</code></td><td><span class="badge badge-green">Live</span></td></tr>
-    <tr><td>Knowledge Tree</td><td><code>/knowledge-tree</code></td><td><span class="badge badge-green">Live</span></td></tr>
-    <tr><td>Chatbot</td><td><code>/chatbot</code></td><td><span class="badge badge-green">Live</span></td></tr>
-    <tr><td>Calendar &amp; Schedule</td><td><code>/calendar</code></td><td><span class="badge badge-green">Live</span></td></tr>
-    <tr><td>Templates</td><td><code>/templates</code></td><td><span class="badge badge-green">Live</span></td></tr>
-    <tr><td>Focus Tunnel</td><td><code>/focus-tunnel</code></td><td><span class="badge badge-yellow">Partial</span></td></tr>
+    <tr><td>Dashboard</td><td><code>/</code></td></tr>
+    <tr><td>Knowledge Tree</td><td><code>/knowledge-tree</code></td></tr>
+    <tr><td>Chatbot</td><td><code>/chatbot</code></td></tr>
+    <tr><td>Calendar &amp; Schedule</td><td><code>/calendar</code></td></tr>
+    <tr><td>Templates</td><td><code>/templates</code></td></tr>
+    <tr><td>Focus Tunnel</td><td><code>/focus-tunnel</code></td></tr>
   </tbody>
 </table>
 
@@ -621,31 +621,6 @@
 <div class="flow-step"><div class="flow-num">3</div><div class="flow-text"><strong>Exam Preparation</strong> — Tell the Chatbot your exam date. It proposes an N-day study plan and injects sessions into Google Calendar for confirmation.</div></div>
 <div class="flow-step"><div class="flow-num">4</div><div class="flow-text"><strong>Ongoing Adaptation</strong> — Wall Detection automatically inserts bridge nodes when a student repeatedly fails a concept. Grandparent resets escalate to deeper fundamentals when needed.</div></div>
 
-<!-- ═══════════════════════════════════════════════════════ 13. IMPLEMENTATION STATUS -->
-<div class="section-header">
-  <div class="section-num">13</div>
-  <h2>Implementation Status</h2>
-</div>
-
-<table>
-  <thead><tr><th>Component</th><th>Status</th><th>Notes</th></tr></thead>
-  <tbody>
-    <tr><td>Dashboard Screen</td><td><span class="badge badge-green">Done</span></td><td>Dynamic task input, Focus Tunnel, Zen Mode timer</td></tr>
-    <tr><td>Knowledge Tree Screen</td><td><span class="badge badge-green">Done</span></td><td>Graph rendering with dummy data wired</td></tr>
-    <tr><td>Chatbot Screen</td><td><span class="badge badge-green">Done</span></td><td>RAG chatbot UI complete</td></tr>
-    <tr><td>Calendar Screen</td><td><span class="badge badge-green">Done</span></td><td>Weekly grid, Google Calendar fetch, week navigation</td></tr>
-    <tr><td>Templates Screen</td><td><span class="badge badge-green">Done</span></td><td>Browse and import community roadmaps</td></tr>
-    <tr><td>Google Calendar Auth</td><td><span class="badge badge-green">Done</span></td><td>OAuth flow, token.json persistence</td></tr>
-    <tr><td>Kahoot Pipeline</td><td><span class="badge badge-green">Done</span></td><td>search.py, evaluator.py, adapter.py implemented</td></tr>
-    <tr><td>RAG Quiz Generation</td><td><span class="badge badge-green">Done</span></td><td>rag_quiz.py and synthesis.py implemented</td></tr>
-    <tr><td>node.py / KnowledgeTree.py</td><td><span class="badge badge-green">Done</span></td><td>Full decay model, adaptive logic, FAISS, graph traversal</td></tr>
-    <tr><td>SQLite Persistence</td><td><span class="badge badge-red">Todo</span></td><td>startup(), shutdown(), _persist_node() stubs remain</td></tr>
-    <tr><td>run_decay_cycle()</td><td><span class="badge badge-red">Todo</span></td><td>Hourly background job + Calendar sync not yet wired</td></tr>
-    <tr><td>Content Ingestion Pipeline</td><td><span class="badge badge-red">Todo</span></td><td>import_from_ai_generation() body is a stub</td></tr>
-    <tr><td>Calendar Auto-Scheduling</td><td><span class="badge badge-yellow">Partial</span></td><td>IPC handlers done; decay → calendar trigger pending</td></tr>
-    <tr><td>Brain Dump (Cmd+J)</td><td><span class="badge badge-yellow">Partial</span></td><td>UI exists in Zen Mode; global hotkey not registered</td></tr>
-  </tbody>
-</table>
 
 </div><!-- /page -->
 </body>
