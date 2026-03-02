@@ -1,0 +1,116 @@
+
+/* Shared Material Symbols font properties */
+.msoBase {
+  font-family: 'Material Symbols Outlined';
+  font-weight: normal;
+  font-style: normal;
+  display: inline-block;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+}
+
+.cardOpen {
+  @apply w-[280px] h-[400px] bg-transparent border-2 border-dashed border-vector-blue/30 flex flex-col items-center justify-center p-5 cursor-pointer hover:bg-vector-blue/5 hover:border-vector-blue/60 transition-colors;
+}
+
+.iconAdd {
+  composes: msoBase;
+  @apply text-vector-blue/30 group-hover:text-vector-blue text-[32px] transition-transform;
+}
+
+.titleOpen {
+  @apply text-[9px] text-vector-blue/30 group-hover:text-vector-blue uppercase tracking-[0.2em];
+}
+
+.descOpen {
+  @apply text-[7px] text-vector-blue/20 font-mono mt-2 group-hover:text-vector-blue/50;
+}
+
+.cardExecuting {
+  @apply w-[280px] h-[380px] bg-[#0D0221] flex flex-col p-6 relative overflow-hidden;
+  box-shadow: 0 0 15px rgba(125, 249, 255, 0.4), inset 0 0 10px rgba(125, 249, 255, 0.2);
+  border: 2px solid #7df9ff;
+}
+
+.executingBg {
+  @apply absolute inset-0 opacity-10 pointer-events-none;
+  background-image: radial-gradient(#7DF9FF 1px, transparent 1px);
+  background-size: 15px 15px;
+}
+
+.executingHeader {
+  @apply flex justify-between items-start mb-6 relative z-10;
+}
+
+.executingTime {
+  @apply text-lg font-mono text-vector-white;
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+}
+
+.closeBtn {
+  @apply text-vector-white/30 hover:text-vector-white transition-colors;
+}
+
+.iconCloseSm {
+  composes: msoBase;
+  @apply text-[16px];
+}
+
+.executingBody {
+  @apply relative z-10 flex-1 flex flex-col;
+}
+
+.executingTitle {
+  @apply text-sm text-vector-white mb-4 uppercase tracking-tighter leading-snug;
+}
+
+.executingDesc {
+  @apply text-[11px] text-vector-white/70 font-mono mb-6 leading-loose border-l-2 border-vector-blue/40 pl-3;
+}
+
+.btnWrapperBot {
+  @apply mt-auto;
+}
+
+.startBtn {
+  @apply w-full bg-vector-blue text-vector-bg py-3 text-[9px] transition-all hover:brightness-110 active:scale-95 uppercase tracking-widest font-bold;
+}
+
+.cardActive {
+  @apply w-[280px] h-[380px] bg-[#0D0221] border border-vector-blue shadow-card-glow hover:shadow-card-glow-hover flex flex-col p-5 cursor-pointer;
+}
+
+.activeHeader {
+  @apply flex justify-between items-center mb-4;
+}
+
+.activeId {
+  @apply text-[8px] text-vector-blue/60 uppercase tracking-widest opacity-70;
+}
+
+.activeContent {
+  @apply flex-1 flex flex-col justify-center;
+}
+
+.activeTitle {
+  @apply text-xs text-vector-white uppercase leading-relaxed;
+}
+
+.activeDesc {
+  @apply text-[9px] text-vector-white/40 font-mono mt-2 leading-relaxed;
+}
+
+.activeFooter {
+  @apply mt-auto flex flex-col gap-2;
+}
+
+.activeDuration {
+  @apply text-[8px] text-vector-blue/60 border border-vector-blue/20 px-2 py-1 uppercase tracking-tighter w-fit opacity-70;
+}

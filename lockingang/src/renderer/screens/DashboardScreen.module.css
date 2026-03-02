@@ -1,0 +1,176 @@
+/* ── Root layout ── */
+.container {
+  @apply h-screen flex overflow-hidden bg-vector-bg text-vector-white font-terminal relative;
+}
+
+.main {
+  @apply flex-1 flex flex-col min-w-0 bg-transparent relative z-10;
+}
+
+.contentArea {
+  @apply flex-1 flex overflow-hidden;
+}
+
+/* ── Left briefing panel ── */
+.briefingPanel {
+  @apply w-72 flex-shrink-0 border-r border-vector-blue/20 flex flex-col overflow-y-auto bg-vector-bg/30;
+}
+
+.briefingPanel::-webkit-scrollbar {
+  width: 4px;
+}
+
+.briefingPanel::-webkit-scrollbar-track {
+  background: #0d0221;
+}
+
+.briefingPanel::-webkit-scrollbar-thumb {
+  background: #7df9ff;
+}
+
+/* ── Section blocks ── */
+.studentHeader {
+  @apply px-5 py-4 border-b border-vector-blue/20;
+}
+
+.masterySection {
+  @apply px-5 py-4 border-b border-vector-blue/20;
+}
+
+.urgencySection {
+  @apply px-5 py-4 border-b border-vector-blue/20;
+}
+
+.forecastSection {
+  @apply px-5 py-4;
+}
+
+/* ── Section labels ── */
+.briefingLabel {
+  @apply text-[8px] text-vector-blue/50 font-mono tracking-widest uppercase mb-1;
+}
+
+.sectionLabel {
+  @apply text-[8px] text-vector-blue/50 font-mono tracking-widest uppercase mb-3;
+}
+
+/* ── Student header ── */
+.statusRow {
+  @apply flex items-center gap-2;
+}
+
+.pulseDot {
+  @apply h-2 w-2 bg-green-400 animate-pulse;
+}
+
+.studentName {
+  @apply text-[10px] text-vector-white font-mono tracking-widest;
+}
+
+.sessionInfo {
+  @apply text-[8px] text-vector-white/40 font-mono mt-0.5;
+}
+
+/* ── Mastery overview ── */
+.masteryList {
+  @apply flex flex-col gap-2;
+}
+
+.masteryLabelRow {
+  @apply flex justify-between items-center mb-1;
+}
+
+.masteryLabel {
+  @apply text-[8px] font-mono tracking-widest;
+  /* color applied inline (data-driven) */
+}
+
+.masteryCount {
+  @apply text-[8px] font-mono text-vector-white/50;
+}
+
+.barTrack {
+  @apply h-1 bg-vector-white/5 w-full;
+}
+
+.barFill {
+  @apply h-full transition-all duration-700;
+  /* width and background applied inline (data-driven) */
+}
+
+/* ── Urgency queue ── */
+.urgencyList {
+  @apply flex flex-col gap-2;
+}
+
+.urgencyBtn {
+  @apply flex items-center gap-3 p-2 border transition-all text-left;
+  /* borderColor applied inline (data-driven) */
+  /* 'group' must be applied directly in JSX — it emits no CSS */
+}
+
+.urgencyIcon {
+  @apply text-base shrink-0;
+  /* color applied inline (data-driven) */
+}
+
+.nodeInfo {
+  @apply flex-1 min-w-0;
+}
+
+.nodeLabel {
+  @apply text-[9px] font-mono text-vector-white truncate;
+}
+
+.masteryRow {
+  @apply flex items-center gap-2 mt-0.5;
+}
+
+.miniBarTrack {
+  @apply h-1 flex-1 bg-vector-white/5;
+}
+
+.miniBarFill {
+  @apply h-full;
+  /* width and background applied inline (data-driven) */
+}
+
+.masteryPct {
+  @apply text-[8px] font-mono;
+  /* color applied inline (data-driven) */
+}
+
+.dueBadge {
+  @apply text-[7px] font-mono tracking-widest shrink-0 px-1.5 py-0.5 border;
+  /* color and borderColor applied inline (data-driven) */
+}
+
+.quizMeBtn {
+  @apply w-full mt-3 py-2 border border-red-500/50 text-red-400 text-[8px] font-mono tracking-widest uppercase hover:bg-red-500/10 transition-all flex items-center justify-center gap-2;
+}
+
+.quizMeIcon {
+  @apply text-sm;
+}
+
+/* ── Forgetting forecast ── */
+.forecastChart {
+  @apply flex items-end gap-1 h-16;
+}
+
+.forecastBar {
+  @apply flex-1 flex flex-col items-center gap-1;
+}
+
+.forecastBarFill {
+  @apply w-full transition-all duration-500;
+  /* height, background, minHeight applied inline (data-driven) */
+}
+
+.forecastDay {
+  @apply text-[6px] font-mono text-vector-white/30;
+}
+
+.forecastNote {
+  @apply text-[7px] text-vector-white/30 font-mono mt-2;
+}

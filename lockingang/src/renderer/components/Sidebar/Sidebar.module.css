@@ -1,0 +1,80 @@
+
+.sidebar {
+  @apply w-64 flex-shrink-0 border-r border-vector-blue flex flex-col justify-between h-full bg-vector-bg/80 backdrop-blur-sm z-20;
+}
+
+.headerBox {
+  @apply p-6 border-b border-vector-blue;
+}
+
+.headerFlex {
+  @apply flex flex-col gap-4;
+}
+
+.profileFlex {
+  @apply flex items-center gap-4;
+}
+
+.profilePicBorder {
+  @apply h-12 w-12 border border-vector-blue p-1;
+}
+
+.profilePic {
+  @apply h-full w-full bg-cover bg-center;
+  image-rendering: pixelated;
+}
+
+.profileTextFlex {
+  @apply flex flex-col gap-1;
+}
+
+.appTitle {
+  @apply text-[10px] leading-tight uppercase tracking-tighter text-vector-blue;
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+}
+
+.studentId {
+  @apply text-[8px] text-vector-white/70 uppercase;
+}
+
+.navGroup {
+  @apply flex flex-col gap-1 p-3 mt-2;
+}
+
+.navLink {
+  @apply flex items-center gap-3 px-3 py-3 border transition-all;
+}
+
+.navLinkActive {
+  @apply border-[#7DF9FF] bg-[#7DF9FF]/10 text-white;
+}
+
+.navLinkInactive {
+  @apply border-transparent text-white/60 hover:text-[#7DF9FF] hover:border-[#7DF9FF]/30;
+}
+
+.navIcon {
+  @apply text-[18px];
+  font-family: 'Material Symbols Outlined';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 18px;
+  display: inline-block;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+}
+
+.navIconActive {
+  @apply text-[#7DF9FF];
+}
+
+.navLabel {
+  @apply text-[9px] tracking-widest uppercase;
+}
