@@ -78,8 +78,8 @@ const MissionCompleteScreen = ({ task, timeSpentSeconds = 25 * 60, onReEnter, on
                         {/* Header */}
                         <div className="flex flex-col items-center gap-1">
                             <div className="flex items-center gap-2 text-vector-blue/50 text-[8px] font-mono tracking-widest mb-1">
-                                <span className="material-symbols-outlined text-sm">terminal</span>
-                                <span>SYSTEM_LOG: {new Date().toISOString().slice(0, 10)}</span>
+                                <p className="material-symbols-outlined text-sm">terminal</p>
+                                <p>SYSTEM_LOG: {new Date().toISOString().slice(0, 10)}</p>
                             </div>
                             <h1
                                 className="text-3xl font-bold tracking-widest text-vector-white uppercase terminal-text"

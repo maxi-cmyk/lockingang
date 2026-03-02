@@ -7,9 +7,9 @@ import ZenModeTimer from "./ZenModeTimer";
 import MissionCompleteScreen from "./MissionCompleteScreen";
 
 const URGENCY = [
-  { id: "COMMON_DIST",     label: "Common Distributions", mastery: 0.20, status: "critical", dueIn: "NOW",  icon: "bar_chart" },
-  { id: "NORMAL_DIST",     label: "Normal Distribution",  mastery: 0.15, status: "critical", dueIn: "5h",   icon: "area_chart" },
-  { id: "CENTRAL_LIMIT",   label: "Central Limit Thm",    mastery: 0.48, status: "active",   dueIn: "2d",   icon: "trending_up" },
+  { id: "COMMON_DIST", label: "Common Distributions", mastery: 0.20, status: "critical", dueIn: "NOW", icon: "bar_chart" },
+  { id: "NORMAL_DIST", label: "Normal Distribution", mastery: 0.15, status: "critical", dueIn: "5h", icon: "area_chart" },
+  { id: "CENTRAL_LIMIT", label: "Central Limit Thm", mastery: 0.48, status: "active", dueIn: "2d", icon: "trending_up" },
 ];
 
 const FORECAST = [
@@ -24,7 +24,7 @@ const FORECAST = [
 
 const statusColor = (s) => {
   if (s === "critical") return "#FF4444";
-  if (s === "active")   return "#FFB800";
+  if (s === "active") return "#FFB800";
   return "#7DF9FF";
 };
 
@@ -41,7 +41,7 @@ const DashboardScreen = () => {
   const handleReturnToBase = () => { setPhase("dashboard"); setActiveTask(null); };
 
   return (
-    <div className="h-screen flex overflow-hidden bg-vector-bg text-vector-white font-terminal relative">
+    <div className="h-screen flex overflow-hidden bg-vector-bg text-vector-white font-terminal relative [&_p]:!text-base">
       <div className="scanline" />
       <Sidebar />
 
@@ -58,7 +58,7 @@ const DashboardScreen = () => {
               <p className="text-[8px] text-vector-blue/50 font-mono tracking-widest uppercase mb-1">DAILY_BRIEFING</p>
               <div className="flex items-center gap-2">
                 <div className="h-2 w-2 bg-green-400 animate-pulse" />
-                <span className="text-[10px] text-vector-white font-mono tracking-widest">MARTY — CS105 STATS</span>
+                <p className="text-[10px] text-vector-white font-mono tracking-widest">MARTY — CS105 STATS</p>
               </div>
               <p className="text-[8px] text-vector-white/40 font-mono mt-0.5">11 nodes tracked · Session #14</p>
             </div>
@@ -68,14 +68,14 @@ const DashboardScreen = () => {
               <p className="text-[8px] text-vector-blue/50 font-mono tracking-widest uppercase mb-3">MASTERY_OVERVIEW</p>
               <div className="flex flex-col gap-2">
                 {[
-                  { label: "MASTERED",  count: 5, total: 11, color: "#7DF9FF" },
+                  { label: "MASTERED", count: 5, total: 11, color: "#7DF9FF" },
                   { label: "IN PROGRESS", count: 4, total: 11, color: "#FFB800" },
-                  { label: "CRITICAL",  count: 2, total: 11, color: "#FF4444" },
+                  { label: "CRITICAL", count: 2, total: 11, color: "#FF4444" },
                 ].map(({ label, count, total, color }) => (
                   <div key={label}>
                     <div className="flex justify-between items-center mb-1">
-                      <span className="text-[8px] font-mono tracking-widest" style={{ color }}>{label}</span>
-                      <span className="text-[8px] font-mono text-vector-white/50">{count}/{total}</span>
+                      <p className="text-[8px] font-mono tracking-widest" style={{ color }}>{label}</p>
+                      <p className="text-[8px] font-mono text-vector-white/50">{count}/{total}</p>
                     </div>
                     <div className="h-1 bg-vector-white/5 w-full">
                       <div
@@ -101,12 +101,12 @@ const DashboardScreen = () => {
                     onMouseEnter={e => e.currentTarget.style.borderColor = statusColor(node.status)}
                     onMouseLeave={e => e.currentTarget.style.borderColor = `${statusColor(node.status)}30`}
                   >
-                    <span
+                    <p
                       className="material-symbols-outlined text-base shrink-0"
                       style={{ color: statusColor(node.status) }}
                     >
                       {node.icon}
-                    </span>
+                    </p>
                     <div className="flex-1 min-w-0">
                       <p className="text-[9px] font-mono text-vector-white truncate">{node.label}</p>
                       <div className="flex items-center gap-2 mt-0.5">
@@ -116,17 +116,17 @@ const DashboardScreen = () => {
                             style={{ width: `${node.mastery * 100}%`, background: statusColor(node.status) }}
                           />
                         </div>
-                        <span className="text-[8px] font-mono" style={{ color: statusColor(node.status) }}>
+                        <p className="text-[8px] font-mono" style={{ color: statusColor(node.status) }}>
                           {Math.round(node.mastery * 100)}%
-                        </span>
+                        </p>
                       </div>
                     </div>
-                    <span
+                    <p
                       className="text-[7px] font-mono tracking-widest shrink-0 px-1.5 py-0.5 border"
                       style={{ color: statusColor(node.status), borderColor: `${statusColor(node.status)}50` }}
                     >
                       {node.dueIn}
-                    </span>
+                    </p>
                   </button>
                 ))}
               </div>
@@ -134,7 +134,7 @@ const DashboardScreen = () => {
                 onClick={() => navigate("/quiz?node=COMMON_DIST")}
                 className="w-full mt-3 py-2 border border-red-500/50 text-red-400 text-[8px] font-mono tracking-widest uppercase hover:bg-red-500/10 transition-all flex items-center justify-center gap-2"
               >
-                <span className="material-symbols-outlined text-sm">psychology</span>
+                <p className="material-symbols-outlined text-sm">psychology</p>
                 QUIZ ME NOW
               </button>
             </div>
@@ -153,7 +153,7 @@ const DashboardScreen = () => {
                         minHeight: 4,
                       }}
                     />
-                    <span className="text-[6px] font-mono text-vector-white/30">{day}</span>
+                    <p className="text-[6px] font-mono text-vector-white/30">{day}</p>
                   </div>
                 ))}
               </div>
