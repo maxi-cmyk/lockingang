@@ -8,9 +8,9 @@ const Sidebar = () => {
         <div className="p-6 border-b border-vector-blue">
           <div className="flex flex-col gap-4">
             <div className="flex items-center gap-4">
-              <div className="h-12 w-12 border border-vector-blue p-1">
+              <div className="h-12 w-12 shrink-0 aspect-square border border-vector-blue p-1">
                 <div
-                  className="h-full w-full bg-cover bg-center"
+                  className="w-full aspect-square bg-cover bg-center"
                   style={{
                     backgroundImage:
                       "url('https://lh3.googleusercontent.com/aida-public/AB6AXuCK4_TDWy0cSfYLlMGqh0G0ymA1sS4sdbcmibPn-99G80KZd5aA0NQnNnzXt2AMwCBUe0TIO_f1WwVlqYL1pyU1v3twe3FCrrDpt6mY4QQBvs1HlKfyQjvRrDQ9KNFctln1kG1NsBNTJJupSqwWLbXbelTehaq_Ii5qCKeDKf__KdhmEAELoeuL3QOKwfMONyGl8HH_Uk6-ULycqolDmiyO6glhUa0ZWF0biFKMmUlEXSaRPP0-XPuwh7Xkm5b2AayPNr5eLJnZFUQ')",
@@ -18,11 +18,11 @@ const Sidebar = () => {
                   }}
                 ></div>
               </div>
-              <div className="flex flex-col gap-1">
-                <h1 className="text-[10px] leading-tight terminal-text uppercase tracking-tighter text-vector-blue">
+              <div className="flex flex-col gap-1 min-w-0 overflow-hidden">
+                <h1 className="text-[10px] leading-tight terminal-text uppercase tracking-tighter text-vector-blue truncate">
                   LOCK_IN_GANG_OS
                 </h1>
-                <p className="text-[8px] text-vector-white/70 uppercase">
+                <p className="text-[8px] text-vector-white/70 uppercase truncate">
                   Student_ID: #8842
                 </p>
               </div>
