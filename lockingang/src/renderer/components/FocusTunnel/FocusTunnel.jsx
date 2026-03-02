@@ -39,7 +39,7 @@ const FocusTunnel = ({ onStart }) => {
             Focus_Tunnel
           </h2>
         </div>
-        <p className="text-[9px] text-vector-blue/60 font-mono mt-1 pl-8">
+        <p className="text-[1rem] text-vector-blue/60 font-mono mt-1 pl-8">
           ACTIVE QUEUE [3_SLOTS] — CS105 STATS SESSION
         </p>
       </div>

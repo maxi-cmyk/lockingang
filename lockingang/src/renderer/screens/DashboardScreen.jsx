@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../components/Sidebar/Sidebar";
-import Header from "../components/Header/Header";
+
 import FocusTunnel from "../components/FocusTunnel/FocusTunnel";
 import ZenModeTimer from "./ZenModeTimer";
 import MissionCompleteScreen from "./MissionCompleteScreen";
@@ -80,7 +80,6 @@ const DashboardScreen = () => {
       <Sidebar />
 
       <main className={styles.main}>
-        <Header />
 
         <div className={styles.contentArea}>
           {/* ── Left briefing panel ── */}
@@ -145,9 +144,9 @@ const DashboardScreen = () => {
                     className={`group ${styles.urgencyBtn}`}
                     style={{ borderColor: `${statusColor(node.status)}30` }}
                     onMouseEnter={(e) =>
-                      (e.currentTarget.style.borderColor = statusColor(
-                        node.status,
-                      ))
+                    (e.currentTarget.style.borderColor = statusColor(
+                      node.status,
+                    ))
                     }
                     onMouseLeave={(e) =>
                       (e.currentTarget.style.borderColor = `${statusColor(node.status)}30`)

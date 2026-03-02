@@ -9,7 +9,7 @@ import dummyData from "./data/dummyGraph.json";
 // where each node has: id, label, type, icon, status, position:{x,y}, payload
 // and each edge has: from, to, type, status
 //
-// We convert to the internal "flat" shape used by VectorGraphScreen.
+// We convert to the internal "flat" shape used by KnowledgeTreeScreen.
 function adaptBackendData({ nodes: rawNodes, edges: rawEdges }) {
     // Build a connectedTo map from the separate edges array
     const outboundEdges = {};
@@ -47,7 +47,7 @@ export const adaptAndReloadNodes = (backendGraphResponse) => {
     listeners.forEach((fn) => fn(nodes));
 };
 
-// Call this once when VectorGraphScreen mounts.
+// Call this once when KnowledgeTreeScreen mounts.
 // It will try to reach the Python backend via Electron IPC.
 // If the backend is not running, it silently keeps the dummy data.
 export const initNodes = async () => {

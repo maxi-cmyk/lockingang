@@ -1,0 +1,245 @@
+.container {
+    @apply h-screen flex overflow-hidden bg-vector-bg text-vector-white font-terminal relative;
+}
+
+.mainContent {
+    @apply flex-1 flex overflow-hidden relative;
+}
+
+.chatColumn {
+    @apply flex-1 flex flex-col relative h-full;
+}
+
+.chatArea {
+    @apply flex-1 overflow-y-auto p-6 flex flex-col gap-5;
+}
+
+.sessionHeader {
+    @apply flex items-center justify-center my-2;
+}
+
+.dividerLine {
+    @apply h-px bg-vector-blue/20 w-16;
+}
+
+.sessionLabel {
+    @apply mx-4 text-[8px] font-mono text-vector-white/40 tracking-widest uppercase;
+}
+
+.botMessageRow {
+    @apply flex gap-4 max-w-3xl;
+}
+
+.userMessageRow {
+    @apply flex gap-4 max-w-3xl self-end flex-row-reverse;
+}
+
+.avatarWrapper {
+    @apply shrink-0;
+}
+
+.botAvatar {
+    @apply size-10 border border-vector-blue bg-vector-bg flex items-center justify-center;
+}
+
+.botIcon {
+    @apply text-vector-blue text-xl;
+}
+
+.userAvatar {
+    @apply size-10 border border-vector-white/40 bg-vector-bg flex items-center justify-center;
+}
+
+.userIcon {
+    @apply text-vector-white text-xl;
+}
+
+.messageContent {
+    @apply flex flex-col gap-1;
+}
+
+.userMessageContent {
+    @apply flex flex-col gap-1 items-end;
+}
+
+.messageHeader {
+    @apply flex items-center gap-2;
+}
+
+.botName {
+    @apply text-vector-blue font-bold text-[9px] tracking-widest uppercase;
+}
+
+.userName {
+    @apply text-vector-white font-bold text-[9px] tracking-widest uppercase;
+}
+
+.messageTime {
+    @apply text-[8px] text-vector-white/40 font-mono;
+}
+
+.botBubble {
+    @apply border border-vector-blue bg-vector-blue/5 p-4 text-vector-blue text-xs font-mono leading-relaxed shadow-card-glow relative;
+}
+
+.userBubble {
+    @apply border 
+    border-vector-white/30 
+    bg-vector-white/5 p-4 
+    text-vector-white 
+    text-xs 
+    font-mono 
+    leading-relaxed relative;
+}
+
+.cornerTL {
+    @apply absolute top-0 left-0 w-2 h-2 border-t border-l border-vector-blue;
+}
+
+.cornerTR {
+    @apply absolute top-0 right-0 w-2 h-2 border-t border-r border-vector-blue;
+}
+
+.cornerBL {
+    @apply absolute bottom-0 left-0 w-2 h-2 border-b border-l border-vector-blue;
+}
+
+.cornerBR {
+    @apply absolute bottom-0 right-0 w-2 h-2 border-b border-r border-vector-blue;
+}
+
+.userCornerTL {
+    @apply absolute top-0 left-0 w-2 h-2 border-t border-l border-vector-white/30;
+}
+
+.userCornerBR {
+    @apply absolute bottom-0 right-0 w-2 h-2 border-b border-r border-vector-white/30;
+}
+
+.messageText {
+    @apply whitespace-pre-wrap font-mono;
+}
+
+.typingBubble {
+    @apply flex items-center gap-2 border border-vector-blue/30 bg-vector-blue/5 px-4 py-3;
+}
+
+.typingText {
+    @apply text-vector-blue/60 text-[9px] font-mono animate-pulse;
+}
+
+.typingDots {
+    @apply flex gap-1;
+}
+
+.typingDot {
+    @apply h-1.5 w-1.5 bg-vector-blue animate-bounce rounded-full;
+}
+
+.inputArea {
+    @apply p-4 bg-vector-bg border-t border-vector-blue/30 relative z-20 shrink-0;
+}
+
+.inputContainer {
+    @apply max-w-4xl mx-auto flex flex-col gap-2;
+}
+
+.inputRow {
+    @apply flex items-stretch gap-0 relative;
+}
+
+.textareaWrapper {
+    @apply flex-1 bg-transparent relative;
+}
+
+.textarea {
+    @apply w-full bg-vector-bg border border-vector-blue/30 text-vector-white font-mono placeholder:text-vector-white/30 focus:border-vector-blue focus:ring-1 focus:ring-vector-blue focus:outline-none p-4 min-h-[60px] resize-none text-xs;
+}
+
+.textareaCornerDeco {
+    @apply absolute top-0 right-0 w-0 h-0 border-t-[10px] border-t-vector-blue border-l-[10px] border-l-transparent pointer-events-none;
+}
+
+.sendButton {
+    @apply px-6 bg-vector-blue text-vector-bg font-bold font-mono tracking-widest hover:brightness-110 transition-all flex items-center gap-2 border-r border-t border-b border-vector-blue text-xs disabled:opacity-40;
+}
+
+.sendText {
+    @apply hidden md:inline;
+}
+
+.sendIcon {
+    /* No @apply needed for icon, handled in className directly to avoid material-symbols-outlined conflicts */
+}
+
+.hintRow {
+    @apply flex justify-between items-center text-[8px] text-vector-white/30 font-mono px-1 tracking-widest;
+}
+
+.taskPanel {
+    @apply w-64 flex-shrink-0 border-l border-vector-blue/20 flex flex-col bg-vector-bg/50;
+}
+
+.panelHeader {
+    @apply px-4 py-3 border-b border-vector-blue/20;
+}
+
+.panelTitle {
+    @apply text-[8px] text-vector-blue/60 font-mono tracking-widest uppercase;
+}
+
+.taskListArea {
+    @apply flex-1 overflow-y-auto p-4;
+}
+
+.emptyTaskState {
+    @apply flex flex-col items-center justify-center h-32 gap-2;
+}
+
+.emptyTaskIcon {
+    @apply text-vector-blue/20 text-3xl;
+}
+
+.emptyTaskText {
+    @apply text-[8px] text-vector-white/20 font-mono text-center;
+}
+
+.taskList {
+    @apply flex flex-col gap-3;
+}
+
+.taskCard {
+    @apply border border-vector-blue/20 bg-vector-blue/5 p-3;
+}
+
+.taskCardContent {
+    @apply flex items-start gap-2;
+}
+
+.taskCheckIcon {
+    @apply text-green-400 text-sm mt-0.5;
+}
+
+.taskText {
+    @apply text-[9px] font-mono text-vector-white;
+}
+
+.taskSchedule {
+    @apply text-[8px] font-mono text-vector-blue/60 mt-1;
+}
+
+.scheduleIcon {
+    @apply text-[11px] align-middle;
+}
+
+.taskPriority {
+    @apply text-[7px] font-mono tracking-widest px-1.5 py-0.5 mt-1 inline-block border;
+}
+
+.priorityHigh {
+    @apply border-red-500/40 text-red-400;
+}
+
+.priorityLow {
+    @apply border-vector-blue/30 text-vector-blue/60;
+}

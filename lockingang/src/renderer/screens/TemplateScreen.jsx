@@ -151,34 +151,6 @@ const TemplateScreen = () => {
             <Sidebar />
 
             <div className="flex-1 flex flex-col overflow-hidden">
-                <header className="h-14 border-b border-vector-blue flex items-center justify-between px-6 backdrop-blur-md bg-vector-bg/40 z-10 shrink-0">
-                    <div className="flex items-center gap-2">
-                        <span className="text-[10px] text-vector-white/60 font-mono tracking-wider">KNOWLEDGE_BASE</span>
-                        <span className="text-[10px] text-vector-blue font-bold">&gt;&gt;</span>
-                        <span className="text-[10px] text-vector-blue font-mono tracking-wider terminal-text">TEMPLATE_UPLOADER</span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                        {demoPhase === "loading" && (
-                            <div className="flex items-center gap-2">
-                                <div className="h-2 w-2 rounded-full bg-vector-blue animate-ping" />
-                                <span className="text-[8px] text-vector-blue font-mono tracking-widest uppercase">ANALYSING...</span>
-                            </div>
-                        )}
-                        {demoPhase === "complete" && (
-                            <div className="flex items-center gap-2">
-                                <div className="h-2 w-2 rounded-full bg-green-400" />
-                                <span className="text-[8px] text-green-400 font-mono tracking-widest uppercase">TREE GENERATED</span>
-                            </div>
-                        )}
-                        {demoPhase === "idle" && (
-                            <div className="flex items-center gap-2">
-                                <div className="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse" />
-                                <span className="text-[8px] text-vector-white/40 font-mono tracking-widest uppercase">RAG_PIPELINE READY</span>
-                            </div>
-                        )}
-                    </div>
-                </header>
-
                 <main className="flex-1 overflow-y-auto p-8 flex flex-col gap-6 custom-scrollbar">
                     <div>
                         <h1 className="text-2xl font-bold tracking-widest text-vector-white uppercase terminal-text"

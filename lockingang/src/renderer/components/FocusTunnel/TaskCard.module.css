@@ -26,11 +26,11 @@
 }
 
 .titleOpen {
-  @apply text-[9px] text-vector-blue/30 group-hover:text-vector-blue uppercase tracking-[0.2em];
+  @apply text-[0.7rem] text-vector-blue/30 group-hover:text-vector-blue uppercase tracking-[0.2em];
 }
 
 .descOpen {
-  @apply text-[7px] text-vector-blue/20 font-mono mt-2 group-hover:text-vector-blue/50;
+  @apply text-[1rem] text-vector-blue/20 font-mono mt-2 group-hover:text-vector-blue/50;
 }
 
 .cardExecuting {
@@ -73,6 +73,7 @@
 
 .executingDesc {
   @apply text-[11px] text-vector-white/70 font-mono mb-6 leading-loose border-l-2 border-vector-blue/40 pl-3;
+  line-height: 0;
 }
 
 .btnWrapperBot {
@@ -80,7 +81,7 @@
 }
 
 .startBtn {
-  @apply w-full bg-vector-blue text-vector-bg py-3 text-[9px] transition-all hover:brightness-110 active:scale-95 uppercase tracking-widest font-bold;
+  @apply w-full bg-vector-blue text-vector-bg py-3 text-[1rem] transition-all hover:brightness-110 active:scale-95 uppercase tracking-widest font-bold;
 }
 
 .cardActive {
@@ -92,7 +93,7 @@
 }
 
 .activeId {
-  @apply text-[8px] text-vector-blue/60 uppercase tracking-widest opacity-70;
+  @apply text-[0.5rem] text-vector-blue/60 uppercase tracking-widest opacity-70;
 }
 
 .activeContent {
@@ -104,7 +105,7 @@
 }
 
 .activeDesc {
-  @apply text-[9px] text-vector-white/40 font-mono mt-2 leading-relaxed;
+  @apply text-[1rem] text-vector-white/40 font-mono mt-2 leading-relaxed;
 }
 
 .activeFooter {

@@ -180,26 +180,7 @@ const QuizScreen = () => {
       <Sidebar />
 
       <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Header */}
-        <header className="h-14 border-b border-vector-blue flex items-center justify-between px-6 backdrop-blur-md bg-vector-bg/40 z-10 shrink-0">
-          <div className="flex items-center gap-2">
-            <span className="text-[10px] text-vector-white/60 font-mono tracking-wider">SYSTEM_PROCESS</span>
-            <span className="text-[10px] text-vector-blue font-bold">&gt;&gt;</span>
-            <span className="text-[10px] text-vector-blue font-mono tracking-wider terminal-text">
-              NODE_VALIDATION: [{quiz.nodeLabel.toUpperCase().replace(/ /g, "_")}]
-            </span>
-          </div>
-          <div className="flex items-center gap-4">
-            <span className="text-[9px] text-vector-white/40 font-mono">
-              Q {questionIdx + 1} / {quiz.questions.length}
-            </span>
-            <button onClick={() => navigate(-1)}
-              className="flex items-center gap-2 border border-vector-blue/30 hover:border-vector-blue bg-vector-blue/10 hover:bg-vector-blue/20 text-vector-blue text-[9px] tracking-widest uppercase h-8 px-4 transition-all">
-              <span className="truncate">EXIT_QUIZ</span>
-              <span className="material-symbols-outlined text-base">logout</span>
-            </button>
-          </div>
-        </header>
+
 
         <main className="flex-1 overflow-y-auto custom-scrollbar py-6 px-6">
           <div className="w-full max-w-6xl mx-auto flex flex-col gap-6">

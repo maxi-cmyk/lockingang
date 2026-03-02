@@ -12,14 +12,14 @@ const getNodeColors = (status, isSelected) => {
   if (isSelected) return { border: "#7DF9FF", icon: "#7DF9FF", glow: "0 0 24px rgba(125,249,255,0.7)", label: "#7DF9FF" };
   switch (status) {
     case "completed": return { border: "#7DF9FF", icon: "#7DF9FF", glow: "0 0 8px rgba(125,249,255,0.3)", label: "rgba(125,249,255,0.85)" };
-    case "active":    return { border: "#FFB800", icon: "#FFB800", glow: "0 0 8px rgba(255,184,0,0.25)", label: "rgba(255,184,0,0.9)" };
-    case "critical":  return { border: "#FF4444", icon: "#FF4444", glow: "0 0 12px rgba(255,68,68,0.5)", label: "rgba(255,68,68,0.9)" };
-    case "locked":    return { border: "rgba(125,249,255,0.18)", icon: "rgba(125,249,255,0.2)", glow: "none", label: "rgba(125,249,255,0.25)" };
-    default:          return { border: "rgba(125,249,255,0.45)", icon: "rgba(125,249,255,0.55)", glow: "none", label: "rgba(125,249,255,0.6)" };
+    case "active": return { border: "#FFB800", icon: "#FFB800", glow: "0 0 8px rgba(255,184,0,0.25)", label: "rgba(255,184,0,0.9)" };
+    case "critical": return { border: "#FF4444", icon: "#FF4444", glow: "0 0 12px rgba(255,68,68,0.5)", label: "rgba(255,68,68,0.9)" };
+    case "locked": return { border: "rgba(125,249,255,0.18)", icon: "rgba(125,249,255,0.2)", glow: "none", label: "rgba(125,249,255,0.25)" };
+    default: return { border: "rgba(125,249,255,0.45)", icon: "rgba(125,249,255,0.55)", glow: "none", label: "rgba(125,249,255,0.6)" };
   }
 };
 
-const VectorGraphScreen = () => {
+const KnowledgeTreeScreen = () => {
   const [showBriefing, setShowBriefing] = useState(false);
   const [nodes, setNodes] = useState(() => getNodes());
 
@@ -241,14 +241,7 @@ const VectorGraphScreen = () => {
       <Sidebar />
 
       <div className="flex-1 flex flex-col relative overflow-hidden">
-        {/* Header */}
-        <header className="h-14 border-b border-vector-blue flex items-center justify-between px-6 backdrop-blur-md bg-vector-bg/40 z-10 shrink-0">
-          <div className="flex items-center gap-2">
-            <span className="text-[10px] text-vector-white/60 font-mono tracking-wider">KNOWLEDGE_BASE</span>
-            <span className="text-[10px] text-vector-blue font-bold">&gt;&gt;</span>
-            <span className="text-[10px] text-vector-blue font-mono tracking-wider terminal-text">VECTOR_GRAPH</span>
-          </div>
-        </header>
+
 
         {/* Grid background (NOT transformed — it tiles across the full viewport) */}
         <div
@@ -573,4 +566,4 @@ const VectorGraphScreen = () => {
 };
 
 
-export default VectorGraphScreen;
+export default KnowledgeTreeScreen;

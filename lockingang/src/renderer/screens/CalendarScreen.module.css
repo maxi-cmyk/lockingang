@@ -1,0 +1,188 @@
+.container {
+    @apply h-screen flex overflow-hidden bg-vector-bg text-vector-white font-terminal relative;
+}
+
+.mainContent {
+    @apply flex-1 flex overflow-hidden;
+}
+
+.calendarArea {
+    @apply flex-1 flex flex-col p-6 min-w-0;
+}
+
+.monthHeader {
+    @apply flex items-center justify-between mb-4;
+}
+
+.monthTitle {
+    @apply text-xl font-bold tracking-widest terminal-text;
+    text-shadow: 0 0 20px rgba(125, 249, 255, 0.3);
+}
+
+.schedulerInfo {
+    @apply flex items-center gap-2 text-[8px] text-vector-white/40 font-mono;
+}
+
+.pulseDot {
+    @apply h-2 w-2 bg-vector-blue animate-pulse;
+}
+
+.daysGrid {
+    @apply grid grid-cols-7 gap-1 mb-1;
+}
+
+.dayLabel {
+    @apply text-center text-[8px] font-mono tracking-widest text-vector-blue/50 py-2;
+}
+
+.cellsGrid {
+    @apply grid grid-cols-7 gap-1 flex-1;
+}
+
+.emptyCell {
+    @apply border border-vector-blue/5 bg-transparent;
+}
+
+.calendarCell {
+    @apply border p-1.5 cursor-pointer transition-all relative overflow-hidden flex flex-col min-h-[60px];
+}
+
+.cellDayNumber {
+    @apply flex items-center justify-between mb-1;
+}
+
+.dayText {
+    @apply text-[9px] font-mono;
+}
+
+.todayIndicator {
+    @apply ml-1 text-[7px] text-vector-blue;
+}
+
+.blockContainer {
+    @apply flex flex-col gap-0.5;
+}
+
+.blockPill {
+    @apply w-full px-1 py-0.5 text-[6px] font-mono truncate;
+}
+
+.moreBlocks {
+    @apply text-[6px] font-mono text-vector-white/30;
+}
+
+.detailPanel {
+    @apply w-72 flex-shrink-0 border-l border-vector-blue/20 flex flex-col bg-vector-bg/30 overflow-y-auto custom-scrollbar;
+}
+
+.detailHeader {
+    @apply px-4 py-3 border-b border-vector-blue/20;
+}
+
+.detailTitle {
+    @apply text-[8px] text-vector-blue/50 font-mono tracking-widest uppercase;
+}
+
+.todayStatus {
+    @apply flex items-center gap-1.5 mt-1;
+}
+
+.todayPulse {
+    @apply h-1.5 w-1.5 bg-vector-blue animate-pulse;
+}
+
+.todayLabel {
+    @apply text-[8px] text-vector-blue font-mono tracking-widest;
+}
+
+.detailContent {
+    @apply flex-1 p-4;
+}
+
+.emptyState {
+    @apply flex flex-col items-center justify-center h-32 gap-2;
+}
+
+.emptyIcon {
+    @apply text-vector-blue/20 text-3xl;
+}
+
+.emptyText {
+    @apply text-[8px] text-vector-white/20 font-mono text-center;
+}
+
+.blockList {
+    @apply flex flex-col gap-3;
+}
+
+.blockCard {
+    @apply border p-3 relative overflow-hidden;
+}
+
+.blockBorder {
+    @apply absolute left-0 top-0 bottom-0 w-0.5;
+}
+
+.blockHeader {
+    @apply flex items-start justify-between gap-2 mb-2;
+}
+
+.blockHeaderInner {
+    @apply flex items-center gap-2;
+}
+
+.blockIcon {
+    @apply text-sm;
+}
+
+.blockTitle {
+    @apply text-[9px] font-mono font-bold;
+}
+
+.blockMeta {
+    @apply flex items-center gap-4 text-[8px] font-mono text-vector-white/40;
+}
+
+.masteryContainer {
+    @apply mt-2;
+}
+
+.masteryLabels {
+    @apply flex justify-between mb-1;
+}
+
+.masteryLabelText {
+    @apply text-[7px] font-mono text-vector-white/30;
+}
+
+.masteryValue {
+    @apply text-[7px] font-mono;
+}
+
+.masteryTrack {
+    @apply h-1 bg-vector-white/5;
+}
+
+.masteryFill {
+    @apply h-full;
+}
+
+.examMeta {
+    @apply mt-2 text-[8px] font-mono text-yellow-400/80;
+}
+
+.quizButton {
+    @apply w-full mt-2 py-1.5 border text-[8px] font-mono tracking-widest uppercase transition-all hover:opacity-80;
+}
+
+.legendPanel {
+    @apply p-4 border-t border-vector-blue/20;
+}
+
+.legendTitle {
+    @apply text-[7px] font-mono text-vector-white/20 tracking-widest uppercase mb-2;
+}
+
+.legendText {
+    @apply text-[8px] font-mono text-vector-white/40 leading-relaxed;
+}

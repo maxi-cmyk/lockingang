@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import Sidebar from "../components/Sidebar/Sidebar";
+import styles from "./ChatbotScreen.module.css";
 
 // Preset AI response logic
 const getBotResponse = (userText) => {
@@ -55,7 +56,7 @@ const ChatbotScreen = () => {
 
   const now = () => {
     const d = new Date();
-    return `${String(d.getHours()).padStart(2,"0")}:${String(d.getMinutes()).padStart(2,"0")}:${String(d.getSeconds()).padStart(2,"0")}`;
+    return `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}:${String(d.getSeconds()).padStart(2, "0")}`;
   };
 
   // Handle brain dump arriving from ZenMode
@@ -101,76 +102,59 @@ const ChatbotScreen = () => {
   };
 
   return (
-    <div className="h-screen flex overflow-hidden bg-vector-bg text-vector-white font-terminal relative">
+    <div className={styles.container}>
       <div className="scanline" />
       <Sidebar />
 
-      <main className="flex-1 flex overflow-hidden relative">
+      <main className={styles.mainContent}>
         {/* Chat column */}
-        <div className="flex-1 flex flex-col relative h-full">
-          <header className="h-14 border-b border-vector-blue flex items-center justify-between px-6 backdrop-blur-md bg-vector-bg/40 z-10 shrink-0">
-            <div className="flex items-center gap-2">
-              <span className="text-[10px] text-vector-white/60 font-mono tracking-wider">CHATBOT</span>
-              <span className="text-[10px] text-vector-blue font-bold">&gt;&gt;</span>
-              <span className="text-[10px] text-vector-blue font-mono tracking-wider terminal-text">NEURAL_LIAISON_V1.0</span>
-            </div>
-            <div className="flex items-center gap-4">
-              <div className="px-3 py-1 border border-vector-blue/30 bg-vector-bg text-[8px] text-vector-blue tracking-widest">
-                <p>SYSTEM_ONLINE</p>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <div className="h-2 w-2 bg-green-500 animate-pulse" />
-                <span className="text-[8px] text-vector-blue tracking-widest">LIVE</span>
-              </div>
-            </div>
-          </header>
-
+        <div className={styles.chatColumn}>
           {/* Chat area */}
-          <div ref={chatRef} className="flex-1 overflow-y-auto p-6 flex flex-col gap-5 custom-scrollbar">
-            <div className="flex items-center justify-center my-2">
-              <div className="h-px bg-vector-blue/20 w-16" />
-              <span className="mx-4 text-[8px] font-mono text-vector-white/40 tracking-widest uppercase">TODAY — STUDY SESSION</span>
-              <div className="h-px bg-vector-blue/20 w-16" />
+          <div ref={chatRef} className={`${styles.chatArea} custom-scrollbar`}>
+            <div className={styles.sessionHeader}>
+              <div className={styles.dividerLine} />
+              <span className={styles.sessionLabel}>TODAY — STUDY SESSION</span>
+              <div className={styles.dividerLine} />
             </div>
 
             {messages.map((msg) => (
               msg.from === "bot" ? (
-                <div key={msg.id} className="flex gap-4 max-w-3xl">
-                  <div className="shrink-0">
-                    <div className="size-10 border border-vector-blue bg-vector-bg flex items-center justify-center">
-                      <span className="material-symbols-outlined text-vector-blue text-xl">smart_toy</span>
+                <div key={msg.id} className={styles.botMessageRow}>
+                  <div className={styles.avatarWrapper}>
+                    <div className={styles.botAvatar}>
+                      <span className={`material-symbols-outlined ${styles.botIcon}`}>smart_toy</span>
                     </div>
                   </div>
-                  <div className="flex flex-col gap-1">
-                    <div className="flex items-center gap-2">
-                      <span className="text-vector-blue font-bold text-[9px] tracking-widest uppercase">NEURAL_LIAISON</span>
-                      <span className="text-[8px] text-vector-white/40 font-mono">{msg.time}</span>
+                  <div className={styles.messageContent}>
+                    <div className={styles.messageHeader}>
+                      <span className={styles.botName}>NEURAL_LIAISON</span>
+                      <span className={styles.messageTime}>{msg.time}</span>
                     </div>
-                    <div className="border border-vector-blue bg-vector-blue/5 p-4 text-vector-blue text-xs font-mono leading-relaxed shadow-card-glow relative">
-                      <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-vector-blue" />
-                      <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-vector-blue" />
-                      <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-vector-blue" />
-                      <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-vector-blue" />
-                      <pre className="whitespace-pre-wrap font-mono">{msg.text}</pre>
+                    <div className={styles.botBubble}>
+                      <div className={styles.cornerTL} />
+                      <div className={styles.cornerTR} />
+                      <div className={styles.cornerBL} />
+                      <div className={styles.cornerBR} />
+                      <pre className={styles.messageText}>{msg.text}</pre>
                     </div>
                   </div>
                 </div>
               ) : (
-                <div key={msg.id} className="flex gap-4 max-w-3xl self-end flex-row-reverse">
-                  <div className="shrink-0">
-                    <div className="size-10 border border-vector-white/40 bg-vector-bg flex items-center justify-center">
-                      <span className="material-symbols-outlined text-vector-white text-xl">person</span>
+                <div key={msg.id} className={styles.userMessageRow}>
+                  <div className={styles.avatarWrapper}>
+                    <div className={styles.userAvatar}>
+                      <span className={`material-symbols-outlined ${styles.userIcon}`}>person</span>
                     </div>
                   </div>
-                  <div className="flex flex-col gap-1 items-end">
-                    <div className="flex items-center gap-2">
-                      <span className="text-[8px] text-vector-white/40 font-mono">{msg.time}</span>
-                      <span className="text-vector-white font-bold text-[9px] tracking-widest uppercase">MARTY</span>
+                  <div className={styles.userMessageContent}>
+                    <div className={styles.messageHeader}>
+                      <span className={styles.messageTime}>{msg.time}</span>
+                      <span className={styles.userName}>MARTY</span>
                     </div>
-                    <div className="border border-vector-white/30 bg-vector-white/5 p-4 text-vector-white text-xs font-mono leading-relaxed relative">
-                      <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-vector-white/30" />
-                      <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-vector-white/30" />
-                      <pre className="whitespace-pre-wrap font-mono">{msg.text}</pre>
+                    <div className={styles.userBubble}>
+                      <div className={styles.userCornerTL} />
+                      <div className={styles.userCornerBR} />
+                      <pre className={styles.messageText}>{msg.text}</pre>
                     </div>
                   </div>
                 </div>
@@ -178,17 +162,17 @@ const ChatbotScreen = () => {
             ))}
 
             {isTyping && (
-              <div className="flex gap-4 max-w-3xl">
-                <div className="shrink-0">
-                  <div className="size-10 border border-vector-blue bg-vector-bg flex items-center justify-center">
-                    <span className="material-symbols-outlined text-vector-blue text-xl">smart_toy</span>
+              <div className={styles.botMessageRow}>
+                <div className={styles.avatarWrapper}>
+                  <div className={styles.botAvatar}>
+                    <span className={`material-symbols-outlined ${styles.botIcon}`}>smart_toy</span>
                   </div>
                 </div>
-                <div className="flex items-center gap-2 border border-vector-blue/30 bg-vector-blue/5 px-4 py-3">
-                  <span className="text-vector-blue/60 text-[9px] font-mono animate-pulse">PROCESSING</span>
-                  <div className="flex gap-1">
-                    {[0,1,2].map(i => (
-                      <div key={i} className="h-1.5 w-1.5 bg-vector-blue animate-bounce rounded-full"
+                <div className={styles.typingBubble}>
+                  <span className={styles.typingText}>PROCESSING</span>
+                  <div className={styles.typingDots}>
+                    {[0, 1, 2].map(i => (
+                      <div key={i} className={styles.typingDot}
                         style={{ animationDelay: `${i * 0.15}s` }} />
                     ))}
                   </div>
@@ -198,30 +182,30 @@ const ChatbotScreen = () => {
           </div>
 
           {/* Input */}
-          <div className="p-4 bg-vector-bg border-t border-vector-blue/30 relative z-20 shrink-0">
-            <div className="max-w-4xl mx-auto flex flex-col gap-2">
-              <div className="flex items-stretch gap-0 relative">
-                <div className="flex-1 bg-transparent relative">
+          <div className={styles.inputArea}>
+            <div className={styles.inputContainer}>
+              <div className={styles.inputRow}>
+                <div className={styles.textareaWrapper}>
                   <textarea
                     ref={inputRef}
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     onKeyDown={handleKeyDown}
-                    className="w-full bg-vector-bg border border-vector-blue/30 text-vector-white font-mono placeholder:text-vector-white/30 focus:border-vector-blue focus:ring-1 focus:ring-vector-blue focus:outline-none p-4 min-h-[60px] resize-none text-xs"
+                    className={styles.textarea}
                     placeholder="DUMP A THOUGHT, ASK A QUESTION, OR REQUEST HELP..."
                   />
-                  <div className="absolute top-0 right-0 w-0 h-0 border-t-[10px] border-t-vector-blue border-l-[10px] border-l-transparent pointer-events-none" />
+                  <div className={styles.textareaCornerDeco} />
                 </div>
                 <button
                   onClick={() => sendMessage()}
                   disabled={!input.trim() || isTyping}
-                  className="px-6 bg-vector-blue text-vector-bg font-bold font-mono tracking-widest hover:brightness-110 transition-all flex items-center gap-2 border-r border-t border-b border-vector-blue text-xs disabled:opacity-40"
+                  className={styles.sendButton}
                 >
-                  <span className="hidden md:inline">SEND</span>
-                  <span className="material-symbols-outlined">arrow_forward</span>
+                  <span className={styles.sendText}>SEND</span>
+                  <span className={`material-symbols-outlined ${styles.sendIcon}`}>arrow_forward</span>
                 </button>
               </div>
-              <div className="flex justify-between items-center text-[8px] text-vector-white/30 font-mono px-1 tracking-widest">
+              <div className={styles.hintRow}>
                 <span>TRY: "buy milk" or "quiz me on distributions"</span>
                 <span>ENTER TO SEND · SHIFT+ENTER FOR NEWLINE</span>
               </div>
@@ -230,33 +214,32 @@ const ChatbotScreen = () => {
         </div>
 
         {/* Task panel */}
-        <div className="w-64 flex-shrink-0 border-l border-vector-blue/20 flex flex-col bg-vector-bg/50">
-          <div className="px-4 py-3 border-b border-vector-blue/20">
-            <p className="text-[8px] text-vector-blue/60 font-mono tracking-widest uppercase">AUTO_SCHEDULED_TASKS</p>
+        <div className={styles.taskPanel}>
+          <div className={styles.panelHeader}>
+            <p className={styles.panelTitle}>AUTO_SCHEDULED_TASKS</p>
           </div>
-          <div className="flex-1 overflow-y-auto p-4 custom-scrollbar">
+          <div className={`${styles.taskListArea} custom-scrollbar`}>
             {tasks.length === 0 ? (
-              <div className="flex flex-col items-center justify-center h-32 gap-2">
-                <span className="material-symbols-outlined text-vector-blue/20 text-3xl">task_alt</span>
-                <p className="text-[8px] text-vector-white/20 font-mono text-center">Dump thoughts in chat — tasks appear here</p>
+              <div className={styles.emptyTaskState}>
+                <span className={`material-symbols-outlined ${styles.emptyTaskIcon}`}>task_alt</span>
+                <p className={styles.emptyTaskText}>Dump thoughts in chat — tasks appear here</p>
               </div>
             ) : (
-              <div className="flex flex-col gap-3">
+              <div className={styles.taskList}>
                 {tasks.map((task) => (
-                  <div key={task.id} className="border border-vector-blue/20 bg-vector-blue/5 p-3">
-                    <div className="flex items-start gap-2">
-                      <span className="material-symbols-outlined text-green-400 text-sm mt-0.5">check_circle</span>
+                  <div key={task.id} className={styles.taskCard}>
+                    <div className={styles.taskCardContent}>
+                      <span className={`material-symbols-outlined ${styles.taskCheckIcon}`}>check_circle</span>
                       <div>
-                        <p className="text-[9px] font-mono text-vector-white">{task.text}</p>
-                        <p className="text-[8px] font-mono text-vector-blue/60 mt-1">
-                          <span className="material-symbols-outlined text-[11px] align-middle">schedule</span>
+                        <p className={styles.taskText}>{task.text}</p>
+                        <p className={styles.taskSchedule}>
+                          <span className={`material-symbols-outlined ${styles.scheduleIcon}`}>schedule</span>
                           {" "}{task.scheduled}
                         </p>
-                        <span className={`text-[7px] font-mono tracking-widest px-1.5 py-0.5 mt-1 inline-block border ${
-                          task.priority === "HIGH"
-                            ? "border-red-500/40 text-red-400"
-                            : "border-vector-blue/30 text-vector-blue/60"
-                        }`}>
+                        <span className={`${styles.taskPriority} ${task.priority === "HIGH"
+                            ? styles.priorityHigh
+                            : styles.priorityLow
+                          }`}>
                           {task.priority}
                         </span>
                       </div>

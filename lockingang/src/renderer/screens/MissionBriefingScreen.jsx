@@ -30,41 +30,7 @@ const MissionBriefingScreen = ({
       <div className="absolute right-[-5%] top-[15%] w-[500px] h-[500px] border border-vector-blue/10 rounded-full z-0 opacity-20 pointer-events-none"></div>
       <div className="absolute left-[-10%] bottom-[-10%] w-[800px] h-[800px] border border-vector-blue/5 rounded-full z-0 opacity-10 pointer-events-none"></div>
 
-      {/* Header */}
-      <header className="relative z-20 h-14 flex items-center justify-between whitespace-nowrap border-b border-vector-blue/20 bg-vector-bg/90 backdrop-blur-sm px-6">
-        <div className="flex items-center gap-4 text-vector-blue">
-          <div className="text-vector-blue animate-pulse">
-            <span className="material-symbols-outlined text-xl">radar</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-[10px] text-vector-white/60 font-mono tracking-wider">MISSION_BRIEFING</span>
-            <span className="text-[10px] text-vector-blue font-bold">&gt;&gt;</span>
-            <span className="text-[10px] text-vector-blue font-mono tracking-wider terminal-text">OP_CODE: 0x77A</span>
-          </div>
-        </div>
 
-        <div className="flex gap-3">
-          <button className="flex items-center justify-center border border-vector-blue/30 hover:border-vector-blue hover:bg-vector-blue/10 transition-colors size-8 text-vector-blue">
-            <span className="material-symbols-outlined text-base">terminal</span>
-          </button>
-          <button className="flex items-center justify-center border border-vector-blue/30 hover:border-vector-blue hover:bg-vector-blue/10 transition-colors size-8 text-vector-blue">
-            <span className="material-symbols-outlined text-base">settings</span>
-          </button>
-          <div className="h-8 w-px bg-vector-blue/20 mx-1"></div>
-          <div className="flex items-center gap-2 px-3 h-8 bg-vector-blue/10 border border-vector-blue/20">
-            <div className="w-2 h-2 bg-green-500 animate-pulse"></div>
-            <span className="text-[8px] font-bold text-vector-blue tracking-widest uppercase">SYSTEM_ONLINE</span>
-          </div>
-          {onClose && (
-            <button
-              onClick={onClose}
-              className="ml-2 flex items-center justify-center border border-red-500/30 hover:border-red-500/80 hover:bg-red-500/10 transition-colors size-8 text-red-500"
-            >
-              <span className="material-symbols-outlined text-base">close</span>
-            </button>
-          )}
-        </div>
-      </header>
 
       {/* Main Content */}
       <main className="relative z-10 flex-1 flex flex-col items-center justify-center p-6 sm:p-12 overflow-y-auto w-full">
