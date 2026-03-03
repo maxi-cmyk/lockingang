@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>lockingang — Project Document</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@300;400;500;600;700&display=swap');
+
+  :root {
+    --bg: #0D0221;
+    --cyan: #7DF9FF;
+    --cyan-dim: rgba(125,249,255,0.15);
+    --cyan-border: rgba(125,249,255,0.35);
+    --white: #FFFFFF;
+    --white-dim: rgba(255,255,255,0.6);
+    --white-faint: rgba(255,255,255,0.08);
+    --green: #00FF80;
+    --yellow: #FFD700;
+    --red: #FF4444;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--white);
+    font-family: 'Inter', sans-serif;
+    font-size: 10.5pt;
+    line-height: 1.7;
+  }
+
+  /* ── Cover Page ─────────────────────────────────────────── */
+  .cover {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border-bottom: 1px solid var(--cyan-border);
+    padding: 60px 40px;
+    position: relative;
+    page-break-after: always;
+  }
+
+  .cover::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(125,249,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(125,249,255,0.04) 1px, transparent 1px);
+    background-size: 50px 50px;
+    pointer-events: none;
+  }
+
+  .cover-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 8pt;
+    color: var(--cyan);
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    opacity: 0.7;
+  }
+
+  .cover h1 {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 52pt;
+    letter-spacing: 0.12em;
+    color: var(--white);
+    text-shadow: 0 0 40px rgba(125,249,255,0.5), 0 0 80px rgba(125,249,255,0.2);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .cover-sub {
+    font-size: 13pt;
+    color: var(--cyan);
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    font-weight: 300;
+    margin-bottom: 48px;
+  }
+
+  .cover-meta {
+    display: flex;
+    gap: 48px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 8pt;
+    color: var(--white-dim);
+    letter-spacing: 0.2em;
+  }
+
+  .cover-meta span { color: var(--cyan); }
+
+  /* ── Page layout ─────────────────────────────────────────── */
+  .page {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 56px 56px;
+  }
+
+  /* ── Section headers ────────────────────────────────────── */
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 28px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--cyan-border);
+    page-break-before: always;
+    padding-top: 40px;
+  }
+
+  .section-header:first-child { page-break-before: avoid; }
+
+  .section-num {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 8pt;
+    color: var(--cyan);
+    opacity: 0.6;
+    letter-spacing: 0.2em;
+    min-width: 40px;
+  }
+
+  .section-header h2 {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 14pt;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--white);
+  }
+
+  /* ── Sub-headers ─────────────────────────────────────────── */
+  h3 {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10pt;
+    color: var(--cyan);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin: 28px 0 12px;
+  }
+
+  h4 {
+    font-size: 9.5pt;
+    font-weight: 600;
+    color: var(--white);
+    margin: 20px 0 8px;
+    letter-spacing: 0.05em;
+  }
+
+  /* ── Body text ───────────────────────────────────────────── */
+  p { margin-bottom: 12px; color: var(--white-dim); }
+
+  /* ── Cards / callout boxes ───────────────────────────────── */
+  .card {
+    border: 1px solid var(--cyan-border);
+    background: var(--white-faint);
+    padding: 20px 24px;
+    margin-bottom: 16px;
+  }
+
+  .card-title {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 8pt;
+    color: var(--cyan);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  /* ── Tables ──────────────────────────────────────────────── */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0 24px;
+    font-size: 9.5pt;
+  }
+
+  th {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 7.5pt;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--cyan);
+    border-bottom: 1px solid var(--cyan-border);
+    padding: 8px 12px;
+    text-align: left;
+    background: var(--white-faint);
+  }
+
+  td {
+    padding: 9px 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    color: var(--white-dim);
+    vertical-align: top;
+  }
+
+  tr:last-child td { border-bottom: none; }
+
+  /* ── Lists ───────────────────────────────────────────────── */
+  ul, ol {
+    padding-left: 20px;
+    margin-bottom: 14px;
+    color: var(--white-dim);
+  }
+
+  li { margin-bottom: 6px; }
+
+  /* ── Inline code / badges ────────────────────────────────── */
+  code {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 8.5pt;
+    color: var(--cyan);
+    background: var(--cyan-dim);
+    padding: 1px 6px;
+    border-radius: 2px;
+  }
+
+  /* ── Status badges ───────────────────────────────────────── */
+  .badge {
+    display: inline-block;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 7pt;
+    letter-spacing: 0.15em;
+    padding: 2px 8px;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  .badge-blue  { background: rgba(125,249,255,0.1); color: var(--cyan); border: 1px solid var(--cyan-border); }
+  .badge-green { background: rgba(0,255,128,0.1);   color: var(--green); border: 1px solid rgba(0,255,128,0.3); }
+  .badge-yellow{ background: rgba(255,215,0,0.1);   color: var(--yellow); border: 1px solid rgba(255,215,0,0.3); }
+  .badge-red   { background: rgba(255,68,68,0.1);   color: var(--red);  border: 1px solid rgba(255,68,68,0.3); }
+
+  /* ── Grid layouts ────────────────────────────────────────── */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-bottom: 20px; }
+
+  /* ── Formula box ─────────────────────────────────────────── */
+  .formula {
+    border-left: 3px solid var(--cyan);
+    background: var(--white-faint);
+    padding: 14px 20px;
+    margin: 16px 0;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10pt;
+    color: var(--white);
+    letter-spacing: 0.05em;
+  }
+
+  /* ── Divider ─────────────────────────────────────────────── */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--cyan-border);
+    margin: 28px 0;
+  }
+
+  /* ── Flow steps ──────────────────────────────────────────── */
+  .flow-step {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 10px;
+    align-items: flex-start;
+  }
+  .flow-num {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 8pt;
+    color: var(--cyan);
+    background: var(--cyan-dim);
+    min-width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .flow-text { color: var(--white-dim); font-size: 9.5pt; }
+  .flow-text strong { color: var(--white); font-weight: 600; }
+
+  /* ── Print ───────────────────────────────────────────────── */
+  @media print {
+    body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .page-break { page-break-before: always; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════════ COVER -->
+<div class="cover">
+  <div class="cover-label">Project Document · Version 1.0 · 2026</div>
+  <h1>lockingang</h1>
+  <div class="cover-sub">AI Learning State Engine</div>
+  <div class="cover-meta">
+    <div>PLATFORM <span>Desktop (Electron)</span></div>
+    <div>STACK <span>React · Node.js · Python</span></div>
+    <div>STATUS <span>In Development</span></div>
+  </div>
+</div>
+
+<div class="page">
+
+<!-- ═══════════════════════════════════════════════════════ 1. EXECUTIVE SUMMARY -->
+<div class="section-header">
+  <div class="section-num">01</div>
+  <h2>Executive Summary</h2>
+</div>
+
+<p><strong style="color:white">lockingang</strong> is a local-first desktop application that solves the problem of passive, inefficient study for students and self-learners. Its core — the <em>Learning State Engine</em> — continuously models what a student knows, how fast they are forgetting it, and what single action they should take next to maximise long-term retention.</p>
+
+<div class="card">
+  <div class="card-title">The Core Problem</div>
+  <p style="margin:0">Students spend hours re-reading notes passively without knowing which topics they are actually forgetting. They cannot answer: <em>What am I genuinely weak at? Am I improving or regressing? What should I focus on right now?</em> lockingang solves this with a live, per-topic knowledge score that decays in real time, driving personalised quiz selection, intelligent scheduling, and AI-generated guidance.</p>
+</div>
+
+<div class="card">
+  <div class="card-title">Mathematical Analogy</div>
+  <p style="margin:0">Knowledge is modelled as a vector field <strong>V</strong> where each concept is a point. Without active review, entropy causes the magnitude of these vectors (mastery) to shrink toward zero. The engine acts as an <em>External Impulse Force</em> that calculates the necessary work (active recall) required to counteract decay and maintain high-energy mastery.</p>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ 2. DESIGN PRINCIPLES -->
+<div class="section-header">
+  <div class="section-num">02</div>
+  <h2>Design Principles</h2>
+</div>
+
+<div class="grid-2">
+  <div class="card">
+    <div class="card-title">1 — Constraint over Freedom</div>
+    <p style="margin:0">The Rule of 3 prevents choice paralysis. The active task queue has a hard limit of 3 items. Limitations are features.</p>
+  </div>
+  <div class="card">
+    <div class="card-title">2 — Active over Passive</div>
+    <p style="margin:0">Every interaction drives active recall. Re-reading is replaced by quizzes, and progress requires demonstrated understanding.</p>
+  </div>
+  <div class="card">
+    <div class="card-title">3 — Visual over Textual</div>
+    <p style="margin:0">The Fog of War overlay, forgetting forecasts, and colour-coded nodes make memory decay tangible and intuitive rather than abstract.</p>
+  </div>
+  <div class="card">
+    <div class="card-title">4 — Compassion over Shame</div>
+    <p style="margin:0">Bridge nodes and grandparent resets treat failure as structural data points to be solved — not personal flaws. The system adapts to the student.</p>
+  </div>
+  <div class="card">
+    <div class="card-title">5 — Explainable over Opaque</div>
+    <p style="margin:0">Every recommendation comes with reasoning. The student always understands <em>why</em> the system is suggesting a particular action.</p>
+  </div>
+  <div class="card">
+    <div class="card-title">6 — Adaptive over Static</div>
+    <p style="margin:0">The system continuously evolves its model of the student. Long gaps, bursts of activity, and shifting priorities are all handled gracefully.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ 3. TECH STACK -->
+<div class="section-header">
+  <div class="section-num">03</div>
+  <h2>Technical Stack</h2>
+</div>
+
+<table>
+  <thead>
+    <tr><th>Layer</th><th>Technology</th><th>Purpose</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>App Shell</td><td><code>Electron v40</code></td><td>Cross-platform desktop container</td></tr>
+    <tr><td>UI Framework</td><td><code>React 18</code> + <code>Tailwind CSS 3</code></td><td>Component-based UI with custom vector dark theme</td></tr>
+    <tr><td>Routing</td><td><code>React Router DOM v7</code></td><td>HashRouter SPA navigation across 6 tabs</td></tr>
+    <tr><td>Build Tool</td><td><code>Vite 7</code></td><td>Dev server (port 5173) and production bundler</td></tr>
+    <tr><td>Backend Logic</td><td><code>Python</code> (Node.js IPC bridge)</td><td>Knowledge graph engine, decay cycles, AI orchestration</td></tr>
+    <tr><td>Knowledge Graph</td><td>Custom DAG (<code>KnowledgeTree.py</code>)</td><td>Directed graph with BFS traversal, wall detection, bridge generation</td></tr>
+    <tr><td>AI / LLM</td><td><code>OpenAI GPT-4o</code></td><td>Quiz generation, content analysis, summarisation, OCR</td></tr>
+    <tr><td>Local Embeddings</td><td><code>Transformers.js</code> (sidecar HTTP)</td><td>768-float semantic vectors, fully local inference</td></tr>
+    <tr><td>Vector Search (local)</td><td><code>FAISS IndexFlatIP</code></td><td>Per-node cosine similarity search, scoped RAG retrieval</td></tr>
+    <tr><td>Vector Search (cloud)</td><td><code>Pinecone</code></td><td>Cloud semantic retrieval for the chatbot</td></tr>
+    <tr><td>Database</td><td><code>SQLite + WAL mode</code></td><td>Persistent node/edge storage, safe concurrent writes</td></tr>
+    <tr><td>Calendar</td><td><code>Google Calendar API</code></td><td>Auto-schedule and display review sessions</td></tr>
+    <tr><td>Task Management</td><td><code>Todoist API</code></td><td>Bidirectional task sync</td></tr>
+    <tr><td>External Quiz Source</td><td><code>Kahoot API</code></td><td>Community quiz content retrieval and adaptation</td></tr>
+    <tr><td>Auth (Calendar)</td><td><code>@google-cloud/local-auth</code></td><td>OAuth 2.0 desktop flow, token.json persistence</td></tr>
+  </tbody>
+</table>
+
+<!-- ═══════════════════════════════════════════════════════ 4. APP STRUCTURE -->
+<div class="section-header">
+  <div class="section-num">04</div>
+  <h2>Application Structure &amp; Architecture</h2>
+</div>
+
+<h3>Three-Layer Architecture</h3>
+
+<table>
+  <thead><tr><th>Layer</th><th>Technology</th><th>Entry Point</th></tr></thead>
+  <tbody>
+    <tr><td>Main Process</td><td>Electron + Node.js</td><td><code>src/main/main.js</code></td></tr>
+    <tr><td>Renderer (UI)</td><td>React SPA (Vite)</td><td><code>src/renderer/index.jsx</code></td></tr>
+    <tr><td>Backend Engine</td><td>Python</td><td><code>src/backend/node_logic/main.py</code></td></tr>
+  </tbody>
+</table>
+
+<p>The Electron main process hosts the React renderer via Vite dev server in development or a bundled <code>dist/index.html</code> in production. Context isolation is enabled; node integration is disabled. The IPC bridge in <code>preload.js</code> exposes safe APIs to the renderer via <code>window.electron.*</code>.</p>
+
+<h3>IPC Handlers (main.js)</h3>
+<table>
+  <thead><tr><th>Channel</th><th>Action</th></tr></thead>
+  <tbody>
+    <tr><td><code>google-auth</code></td><td>Trigger OAuth login flow, save token.json</td></tr>
+    <tr><td><code>calendar-get-events</code></td><td>Fetch upcoming Google Calendar events</td></tr>
+    <tr><td><code>calendar-create-event</code></td><td>Insert a review block into Google Calendar</td></tr>
+    <tr><td><code>calendar-delete-event</code></td><td>Remove a review block by event ID</td></tr>
+  </tbody>
+</table>
+
+<h3>Frontend File Structure</h3>
+<table>
+  <thead><tr><th>Path</th><th>Role</th></tr></thead>
+  <tbody>
+    <tr><td><code>src/renderer/index.jsx</code></td><td>React root with HashRouter and 6 route definitions</td></tr>
+    <tr><td><code>src/renderer/screens/</code></td><td>Full-page screen components (one per tab)</td></tr>
+    <tr><td><code>src/renderer/components/</code></td><td>Shared UI components (Sidebar, Header, FocusTunnel, TaskCard)</td></tr>
+    <tr><td><code>src/renderer/nodeStore.js</code></td><td>Lightweight reactive state store for the knowledge graph</td></tr>
+    <tr><td><code>src/renderer/styles/global.css</code></td><td>Global styles, scanline overlay, terminal font helpers</td></tr>
+  </tbody>
+</table>
+
+<h3>Backend File Structure</h3>
+<table>
+  <thead><tr><th>Path</th><th>Role</th></tr></thead>
+  <tbody>
+    <tr><td><code>src/backend/node_logic/node.py</code></td><td>Atomic learning unit — mastery, decay, FAISS index, quiz logic</td></tr>
+    <tr><td><code>src/backend/node_logic/KnowledgeTree.py</code></td><td>Directed graph — traversal, wall detection, scheduling analytics</td></tr>
+    <tr><td><code>src/backend/node_logic/main.py</code></td><td>Public API (~50 functions) — sole entry point for the IPC layer</td></tr>
+    <tr><td><code>src/backend/kahoot/</code></td><td>Kahoot search, evaluator, and question adapter pipeline</td></tr>
+    <tr><td><code>src/backend/quiz_generation/</code></td><td>RAG quiz fallback and diamond synthesis question generators</td></tr>
+    <tr><td><code>src/lib/googleAuth.js</code></td><td>Google OAuth 2.0 flow with token caching</td></tr>
+  </tbody>
+</table>
+
+<!-- ═══════════════════════════════════════════════════════ 5. TAB SPECIFICATIONS -->
+<div class="section-header">
+  <div class="section-num">05</div>
+  <h2>Tab Specifications</h2>
+</div>
+
+<table>
+  <thead><tr><th>Tab</th><th>Route</th></tr></thead>
+  <tbody>
+    <tr><td>Dashboard</td><td><code>/</code></td></tr>
+    <tr><td>Knowledge Tree</td><td><code>/knowledge-tree</code></td></tr>
+    <tr><td>Chatbot</td><td><code>/chatbot</code></td></tr>
+    <tr><td>Calendar &amp; Schedule</td><td><code>/calendar</code></td></tr>
+    <tr><td>Templates</td><td><code>/templates</code></td></tr>
+    <tr><td>Focus Tunnel</td><td><code>/focus-tunnel</code></td></tr>
+  </tbody>
+</table>
+
+<h3>Dashboard</h3>
+<p>The first screen a returning student sees. Displays the urgency queue (top nodes most in need of review), a mastery distribution overview, trend analysis (improving / stable / regressing), 7-day forgetting forecast, and integrated chatbot access. Also hosts the Focus Tunnel queue for task management.</p>
+
+<h3>Knowledge Tree</h3>
+<p>The heart of lockingang. An interactive, zoomable graph where each node represents a concept and each edge a relationship. Nodes are colour-coded by urgency:</p>
+<div class="grid-3">
+  <div class="card"><div class="card-title" style="color:var(--cyan)">Blue — Mastered</div><p style="margin:0;font-size:9pt">Live score &gt; 0.7. Node is strong.</p></div>
+  <div class="card"><div class="card-title" style="color:var(--yellow)">Yellow — Fading</div><p style="margin:0;font-size:9pt">Score 0.3–0.7. Review soon.</p></div>
+  <div class="card"><div class="card-title" style="color:var(--red)">Red — Critical</div><p style="margin:0;font-size:9pt">Score &lt; 0.3. Quiz due.</p></div>
+</div>
+<p><strong style="color:white">Edge types:</strong> <code>requires</code> (prerequisite), <code>is_a_type_of</code> (taxonomy), <code>related_to</code> (association), <code>bridges_to</code> (AI-generated transition).</p>
+<p><strong style="color:white">Visual Overlays:</strong> Fog of War (nodes &lt; 0.3 are dimmed), Forgetting Forecast (7-day heatmap), Urgency Pulse (animated glow on critical nodes).</p>
+
+<h3>Focus Tunnel</h3>
+<p>A distraction-free task execution environment. The active queue is hard-limited to 3 tasks (Rule of 3). Users add tasks by name and duration. Clicking Start enters Zen Mode — a full-screen countdown timer that counts down from the user-set duration. On completion, the student is prompted to connect the session to a Knowledge Tree node.</p>
+
+<h3>Chatbot</h3>
+<p>An agentic AI assistant deeply integrated with the student's knowledge graph. Capabilities include RAG-powered Q&amp;A (grounded in the student's own notes via Pinecone), graph manipulation via natural language, calendar and Todoist actions, and multi-day exam study plan generation.</p>
+
+<h3>Templates</h3>
+<p>A library of pre-built learning roadmaps. Students can browse, import, and clone community-shared trees. Importing clones the full structure (nodes, edges, notes, pre-made quizzes) into the student's own graph. Students can also export and share their own trees as templates.</p>
+
+<h3>Calendar &amp; Schedule</h3>
+<p>A unified weekly view combining Google Calendar events with lockingang's auto-scheduled review sessions. Events are colour-coded by node urgency. Review blocks can be dragged to reschedule within a 1-week window. Clicking a review block opens the relevant node's quiz panel.</p>
+
+<!-- ═══════════════════════════════════════════════════════ 6. FORGETTING CURVE ENGINE -->
+<div class="section-header">
+  <div class="section-num">06</div>
+  <h2>Forgetting Curve Engine</h2>
+</div>
+
+<p>Every node has a real-time competence score that decays continuously based on how long ago it was last reviewed and the node's individual decay rate.</p>
+
+<div class="formula">
+  live_score = stored_score × (0.5 ^ (days_elapsed / decay_rate))
+</div>
+
+<table>
+  <thead><tr><th>Parameter</th><th>Description</th></tr></thead>
+  <tbody>
+    <tr><td><code>stored_score</code></td><td>Mastery after the last quiz: 1.0 (correct) or 0.2 (incorrect)</td></tr>
+    <tr><td><code>days_elapsed</code></td><td>Fractional days since <code>last_reviewed</code> timestamp</td></tr>
+    <tr><td><code>decay_rate</code></td><td>Per-node half-life in days (default 5). Higher = slower decay.</td></tr>
+    <tr><td><code>live_score</code></td><td>Current effective mastery, clamped to [0.0, 1.0]</td></tr>
+  </tbody>
+</table>
+
+<p>A background decay cycle runs hourly. When a node transitions from blue → yellow, a review session is auto-scheduled. When it crosses yellow → red (or is within 24 hours of the scheduled quiz), it turns red and appears at the top of the urgency queue. Completing the quiz resets the decay clock.</p>
+
+<!-- ═══════════════════════════════════════════════════════ 7. QUIZ ENGINE -->
+<div class="section-header">
+  <div class="section-num">07</div>
+  <h2>Quiz Engine</h2>
+</div>
+
+<p>Every quiz interaction updates the student's competence scores and feeds the adaptive logic engine. The quiz flow is:</p>
+
+<div class="flow-step"><div class="flow-num">1</div><div class="flow-text"><strong>Kahoot Search</strong> — Query the Kahoot API with the node title as the search term. Retrieve top 5 candidate quizzes.</div></div>
+<div class="flow-step"><div class="flow-num">2</div><div class="flow-text"><strong>Kahoot Evaluation</strong> — GPT-4o scores each candidate for relevance (0–1) and difficulty. Accept if relevance ≥ 0.7, adapt/reword questions as needed.</div></div>
+<div class="flow-step"><div class="flow-num">3</div><div class="flow-text"><strong>RAG Fallback</strong> — If no Kahoot scores ≥ 0.7, embed the node title, retrieve top 6 chunks from the node's own FAISS index, and generate 5–10 MCQs via GPT-4o grounded strictly in the student's material.</div></div>
+<div class="flow-step"><div class="flow-num">4</div><div class="flow-text"><strong>Synthesis Questions (Diamond Problem)</strong> — If the node has 2+ parents, append 1–2 synthesis questions requiring integrated understanding from both parent concepts.</div></div>
+<div class="flow-step"><div class="flow-num">5</div><div class="flow-text"><strong>Scoring</strong> — Correct answer → mastery = 1.0. Incorrect → mastery = 0.2. Decay clock resets on every attempt.</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ 8. ADAPTIVE LOGIC -->
+<div class="section-header">
+  <div class="section-num">08</div>
+  <h2>Adaptive Logic Engine</h2>
+</div>
+
+<p>The adaptive engine identifies when a student is structurally stuck and intervenes automatically — without blame.</p>
+
+<h3>Wall Detection</h3>
+<p>If a student fails a child node's quiz <strong>3+ consecutive times</strong> while the parent node shows mastery (&gt; 0.7), the system flags it as <em>The Wall</em>. This indicates a gap in foundational understanding between the parent and child concepts.</p>
+
+<h3>Bridge Node Generation</h3>
+<p>Upon Wall detection, the system automatically generates a new <em>bridge node</em> between the parent and the difficult child. GPT-4o writes a 300–500 word introductory markdown note focused on the specific gap. The bridge node is inserted into the graph as: <code>parent → bridges_to → bridge → bridges_to → child</code>.</p>
+
+<h3>Grandparent Reset</h3>
+<p>If the wall persists (the bridge node already exists and the student still fails), the system escalates by resetting the <strong>grandparent</strong> node's mastery to 0.0, forcing a review of the deeper fundamentals driving the comprehension gap.</p>
+
+<!-- ═══════════════════════════════════════════════════════ 9. CONTENT INGESTION -->
+<div class="section-header">
+  <div class="section-num">09</div>
+  <h2>Content Ingestion Pipeline</h2>
+</div>
+
+<p>Students can upload raw study materials and the AI automatically structures them into a full knowledge tree.</p>
+
+<table>
+  <thead><tr><th>Step</th><th>Action</th></tr></thead>
+  <tbody>
+    <tr><td>1. Extraction</td><td>Text from PDFs (PyMuPDF), OCR of handwritten images (OpenAI Vision), direct read for Markdown/plaintext</td></tr>
+    <tr><td>2. Normalisation</td><td>GPT-4o converts raw content to clean, structured Markdown</td></tr>
+    <tr><td>3. Concept ID</td><td>GPT-4o identifies key concepts, returns JSON: <code>{title, description, complexity 1–5}</code></td></tr>
+    <tr><td>4. Tree Generation</td><td>GPT-4o infers hierarchical + prerequisite relationships, returns edge list</td></tr>
+    <tr><td>5. Note Attachment</td><td>Relevant sections matched to each concept node</td></tr>
+    <tr><td>6. Embedding &amp; Indexing</td><td>Transformers.js embeds each chunk (768-float), FAISS IndexFlatIP stores vectors per node</td></tr>
+    <tr><td>7. Student Review</td><td>Tree returned in <em>pending_review</em> state — student inspects, adjusts, confirms before SQLite commit</td></tr>
+  </tbody>
+</table>
+
+<!-- ═══════════════════════════════════════════════════════ 10. AUTO-SCHEDULER -->
+<div class="section-header">
+  <div class="section-num">10</div>
+  <h2>Auto-Scheduler</h2>
+</div>
+
+<p>Because lockingang tracks per-topic mastery, decay rates, and quiz history, it can schedule study sessions with precision rather than guesswork.</p>
+
+<h4>Forgetting Curve Optimiser</h4>
+<ul>
+  <li>Projects when each node will fall below the critical threshold (0.3)</li>
+  <li>Generates optimal review slots before the threshold is crossed</li>
+  <li>Auto-inserts review blocks into Google Calendar (colour-coded blue/yellow/red)</li>
+  <li>Sessions recalculated daily by the background decay cycle</li>
+</ul>
+
+<h4>Exam Preparation Mode</h4>
+<ul>
+  <li><strong>Scope Detection:</strong> Identifies all nodes relevant to the exam topic</li>
+  <li><strong>Gap Analysis:</strong> Highlights nodes below target competence (0.7)</li>
+  <li><strong>Plan Generation:</strong> Creates a multi-day plan front-loading weak topics</li>
+  <li><strong>Calendar Injection:</strong> Approved sessions scheduled with direct node links</li>
+</ul>
+
+<h4>Calendar Scheduling Rules</h4>
+<table>
+  <thead><tr><th>Node State</th><th>Calendar Action</th></tr></thead>
+  <tbody>
+    <tr><td><span class="badge badge-yellow">Yellow</span> (score crosses 0.7 → 0.3)</td><td>Auto-create review block a few days before projected decay</td></tr>
+    <tr><td><span class="badge badge-red">Red</span> (score &lt; 0.3 or ≤ 24h to quiz)</td><td>Update block to today/tomorrow, node turns red</td></tr>
+    <tr><td>Quiz completed → back to <span class="badge badge-blue">Blue</span></td><td>Delete the calendar event, reset decay clock</td></tr>
+    <tr><td>Manual reschedule (drag)</td><td>Allowed within 1-week window, updates Calendar event</td></tr>
+  </tbody>
+</table>
+
+<!-- ═══════════════════════════════════════════════════════ 11. GOOGLE CALENDAR INTEGRATION -->
+<div class="section-header">
+  <div class="section-num">11</div>
+  <h2>Google Calendar Integration</h2>
+</div>
+
+<p>Implemented via the Google Calendar API v3 with OAuth 2.0 desktop flow (<code>@google-cloud/local-auth</code>). Credentials are stored in <code>src/backend/calendar_logic/credentials.json</code> (gitignored). After the first login, a <code>token.json</code> is saved alongside it for token reuse.</p>
+
+<table>
+  <thead><tr><th>IPC Channel</th><th>Description</th></tr></thead>
+  <tbody>
+    <tr><td><code>window.electron.googleAuth()</code></td><td>Trigger OAuth browser login, save token</td></tr>
+    <tr><td><code>window.electron.calendarGetEvents()</code></td><td>Fetch next 20 upcoming events from primary calendar</td></tr>
+    <tr><td><code>window.electron.calendarCreateEvent(data)</code></td><td>Insert a review block event</td></tr>
+    <tr><td><code>window.electron.calendarDeleteEvent(id)</code></td><td>Delete a review block by event ID</td></tr>
+  </tbody>
+</table>
+
+<!-- ═══════════════════════════════════════════════════════ 12. IDEAL USER FLOW -->
+<div class="section-header">
+  <div class="section-num">12</div>
+  <h2>Ideal User Flow</h2>
+</div>
+
+<div class="flow-step"><div class="flow-num">1</div><div class="flow-text"><strong>First-Time Setup</strong> — Import a template or upload course materials. AI generates the knowledge tree. Connect Google Calendar and Todoist.</div></div>
+<div class="flow-step"><div class="flow-num">2</div><div class="flow-text"><strong>Daily Study Session</strong> — Check Dashboard briefing → move top urgency items to Focus Tunnel → enter Zen Mode → complete session. Stray thoughts captured via Brain Dump (Cmd+J). Decay clock recalculates overnight.</div></div>
+<div class="flow-step"><div class="flow-num">3</div><div class="flow-text"><strong>Exam Preparation</strong> — Tell the Chatbot your exam date. It proposes an N-day study plan and injects sessions into Google Calendar for confirmation.</div></div>
+<div class="flow-step"><div class="flow-num">4</div><div class="flow-text"><strong>Ongoing Adaptation</strong> — Wall Detection automatically inserts bridge nodes when a student repeatedly fails a concept. Grandparent resets escalate to deeper fundamentals when needed.</div></div>
+
+
+</div><!-- /page -->
+</body>
+</html>

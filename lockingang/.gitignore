@@ -24,6 +24,10 @@ out/
 .env.test.local
 .env.production.local
 
+# Google OAuth credentials
+credentials.json
+token.json
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
