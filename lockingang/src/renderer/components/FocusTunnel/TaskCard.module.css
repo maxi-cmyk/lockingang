@@ -26,11 +26,11 @@
 }
 
 .titleOpen {
-  @apply text-[9px] text-vector-blue/30 group-hover:text-vector-blue uppercase tracking-[0.2em];
+  @apply text-[11px] text-vector-blue/30 group-hover:text-vector-blue uppercase tracking-[0.2em];
 }
 
 .descOpen {
-  @apply text-[7px] text-vector-blue/20 font-mono mt-2 group-hover:text-vector-blue/50;
+  @apply text-[10px] text-vector-blue/20 font-mono mt-2 group-hover:text-vector-blue/50;
 }
 
 .cardExecuting {
@@ -68,11 +68,17 @@
 }
 
 .executingTitle {
-  @apply text-sm text-vector-white mb-4 uppercase tracking-tighter leading-snug;
+  @apply text-base text-vector-white mb-4 uppercase tracking-tighter leading-snug overflow-hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
 }
 
 .executingDesc {
-  @apply text-[11px] text-vector-white/70 font-mono mb-6 leading-loose border-l-2 border-vector-blue/40 pl-3;
+  @apply text-[12px] text-vector-white/70 font-mono mb-6 leading-loose border-l-2 border-vector-blue/40 pl-3 overflow-hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
 }
 
 .btnWrapperBot {
@@ -80,37 +86,43 @@
 }
 
 .startBtn {
-  @apply w-full bg-vector-blue text-vector-bg py-3 text-[9px] transition-all hover:brightness-110 active:scale-95 uppercase tracking-widest font-bold;
+  @apply w-full bg-vector-blue text-vector-bg py-3 text-[11px] transition-all hover:brightness-110 active:scale-95 uppercase tracking-widest font-bold;
 }
 
 .cardActive {
-  @apply w-[280px] h-[380px] bg-[#0D0221] border border-vector-blue shadow-card-glow hover:shadow-card-glow-hover flex flex-col p-5 cursor-pointer;
+  @apply w-[280px] h-[380px] bg-[#0D0221] border border-vector-blue shadow-card-glow hover:shadow-card-glow-hover flex flex-col p-5 cursor-pointer overflow-hidden;
 }
 
 .activeHeader {
-  @apply flex justify-between items-center mb-4;
+  @apply flex justify-between items-center mb-4 shrink-0;
 }
 
 .activeId {
-  @apply text-[8px] text-vector-blue/60 uppercase tracking-widest opacity-70;
+  @apply text-[10px] text-vector-blue/60 uppercase tracking-widest opacity-70 truncate;
 }
 
 .activeContent {
-  @apply flex-1 flex flex-col justify-center;
+  @apply flex-1 flex flex-col justify-center min-h-0 overflow-hidden;
 }
 
 .activeTitle {
-  @apply text-xs text-vector-white uppercase leading-relaxed;
+  @apply text-sm text-vector-white uppercase leading-snug overflow-hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
 }
 
 .activeDesc {
-  @apply text-[9px] text-vector-white/40 font-mono mt-2 leading-relaxed;
+  @apply text-[11px] text-vector-white/40 font-mono mt-2 leading-relaxed overflow-hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
 }
 
 .activeFooter {
-  @apply mt-auto flex flex-col gap-2;
+  @apply mt-auto flex flex-col gap-2 shrink-0;
 }
 
 .activeDuration {
-  @apply text-[8px] text-vector-blue/60 border border-vector-blue/20 px-2 py-1 uppercase tracking-tighter w-fit opacity-70;
+  @apply text-[10px] text-vector-blue/60 border border-vector-blue/20 px-2 py-1 uppercase tracking-tighter w-fit opacity-70;
 }

@@ -613,9 +613,45 @@ def _handle_frontend_message(message: dict) -> dict:
         _persist_node(target)
         return {"ok": True, "nodeId": node_id}
 
+    if function_call == "BuildTree":
+        # Reset the tree and populate it from an AI-generated node+edge list.
+        # nodes: [{title, description}]
+        # edges: [{parent, child, type}]
+        # Clear by removing all existing nodes (edges are implicitly removed)
+        for title in list(_tree.nodes.keys()):
+            try:
+                _tree.remove_node(title)
+            except Exception:
+                pass
+        _tree.nodes.clear()
+
+        nodes_data = message.get("nodes", [])
+        edges_data  = message.get("edges",  [])
+
+        for n in nodes_data:
+            title = (n.get("title") or "").strip()
+            if not title:
+                continue
+            new_node = _tree.add_node(title)
+            desc = (n.get("description") or "").strip()
+            if desc:
+                new_node.description = desc
+
+        for e in edges_data:
+            parent = (e.get("parent") or "").strip()
+            child  = (e.get("child")  or "").strip()
+            rel    = (e.get("type")   or "related_to").strip()
+            if parent in _tree.nodes and child in _tree.nodes:
+                try:
+                    _tree.add_edge(parent, child, rel)
+                except Exception:
+                    pass  # duplicate edge — non-fatal
+
+        return _build_graph_response()
+
     return {
         "error": f"Unsupported functionCall '{function_call}'",
-        "supported": ["MakeGraph", "AddNode", "UpdateNode"],
+        "supported": ["MakeGraph", "AddNode", "UpdateNode", "BuildTree"],
     }
 
 

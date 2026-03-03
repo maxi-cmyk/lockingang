@@ -1,149 +1,163 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../components/Sidebar/Sidebar";
-import { getNodes } from "../nodeStore";
+import { initFromTree } from "../studyStore";
+import { loadTreeIntoStore } from "../nodeStore";
+
+// ── Constants ─────────────────────────────────────────────────────────────────
 
 const ACCEPTED_TYPES = [
-    { ext: "md", label: "MARKDOWN", icon: "description", color: "text-vector-blue" },
-    { ext: "pdf", label: "PDF", icon: "picture_as_pdf", color: "text-red-400" },
-    { ext: "png,jpg,jpeg,webp", label: "IMAGE", icon: "image", color: "text-purple-400" },
-    { ext: "txt", label: "PLAINTEXT", icon: "article", color: "text-green-400" },
+    { ext: "pdf",      label: "PDF",       icon: "picture_as_pdf", color: "text-red-400"    },
+    { ext: "md",       label: "MARKDOWN",  icon: "description",    color: "text-vector-blue" },
+    { ext: "txt",      label: "PLAINTEXT", icon: "article",        color: "text-green-400"  },
+    { ext: "docx",     label: "WORD",      icon: "description",    color: "text-blue-400"   },
 ];
 
-const EXT_TO_TYPE = { md: "markdown", txt: "plaintext", pdf: "pdf", png: "image", jpg: "image", jpeg: "image", webp: "image" };
+const EXT_TO_MIME = {
+    pdf:  "application/pdf",
+    md:   "text/markdown",
+    txt:  "text/plain",
+    docx: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+};
 
-const DEMO_FILES = [
-    { id: "df1", name: "CS105_lecture_week1.pdf",        type: "pdf",      size: 2400000 },
-    { id: "df2", name: "CS105_lecture_week2.pdf",        type: "pdf",      size: 1900000 },
-    { id: "df3", name: "marty_notes_handwritten.png",    type: "image",    size: 870000  },
-    { id: "df4", name: "stats_past_paper_2024.pdf",      type: "pdf",      size: 3100000 },
-    { id: "df5", name: "probability_cheatsheet.md",      type: "markdown", size: 45000   },
-];
+const TREE_ACCEPTED = new Set([".pdf", ".md", ".txt", ".docx"]);
 
-const DEMO_NODES = [
-    "PROBABILITY",
-    "CONDITIONAL_PROB",
-    "BAYES_THEOREM",
-    "EXPECTATION_VARIANCE",
-    "COMMON_DISTRIBUTIONS",
-    "NORMAL_DIST",
-    "BINOMIAL_DIST",
-    "HYPOTHESIS_TESTING",
-    "CENTRAL_LIMIT_THEOREM",
-    "BAYESIAN_INFERENCE",
-    "CS105_STATS (root)",
-];
-
+// Animated scan lines shown while OpenAI is working
 const SCAN_LINES = [
     "INITIALISING NLP PIPELINE...",
-    "LOADING EMBEDDING MODEL: llama-text-embed-v2",
-    "EXTRACTING TEXT FROM 5 FILES...",
-    "CHUNKING: 400-word windows, 50-word overlap",
-    "EMBEDDING CHUNKS INTO VECTOR SPACE...",
-    "CLUSTERING SEMANTIC CONCEPTS...",
+    "EXTRACTING TEXT FROM DOCUMENT...",
+    "CHUNKING: 600-char windows, 100-char overlap",
+    "EMBEDDING CHUNKS INTO PINECONE VECTOR DB...",
+    "QUERYING GPT-4o FOR CONCEPT EXTRACTION...",
     "IDENTIFYING PREREQUISITE RELATIONSHIPS...",
-    "BUILDING KNOWLEDGE GRAPH...",
+    "BUILDING KNOWLEDGE GRAPH STRUCTURE...",
     "GENERATING NODE DESCRIPTIONS...",
     "FINALISING EDGE WEIGHTS...",
+    "PUSHING TREE TO KNOWLEDGE BASE...",
 ];
 
 const fmtSize = (b) => b >= 1e6 ? `${(b / 1e6).toFixed(1)}MB` : `${(b / 1e3).toFixed(0)}KB`;
 
+// ── Component ─────────────────────────────────────────────────────────────────
+
 const TemplateScreen = () => {
     const navigate = useNavigate();
-    const nodes = getNodes();
-    const defaultId = nodes.find((n) => n.isPrimary)?.id ?? nodes[0]?.id ?? "";
-    const [selectedNodeId, setSelectedNodeId] = useState(defaultId);
-    const [uploadedFiles, setUploadedFiles] = useState([]);
-    const [isDragging, setIsDragging] = useState(false);
     const fileInputRef = useRef(null);
+    const logRef       = useRef(null);
 
-    // Demo analysis state
-    const [demoPhase, setDemoPhase] = useState("idle"); // idle | loading | complete
-    const [scanLog, setScanLog] = useState([]);
-    const [discoveredNodes, setDiscoveredNodes] = useState([]);
-    const [scanLineIdx, setScanLineIdx] = useState(0);
-    const [nodeIdx, setNodeIdx] = useState(0);
-    const logRef = useRef(null);
+    const [uploadedFiles, setUploadedFiles] = useState([]);
+    const [isDragging,    setIsDragging]    = useState(false);
 
-    const selectedNode = nodes.find((n) => n.id === selectedNodeId);
+    // Pipeline state
+    const [phase,        setPhase]        = useState("idle");  // idle | loading | complete | error
+    const [scanLog,      setScanLog]      = useState([]);
+    const [scanLineIdx,  setScanLineIdx]  = useState(0);
+    const [result,       setResult]       = useState(null);    // { subject, nodes, edges }
+    const [errorMsg,     setErrorMsg]     = useState("");
+    const [liveNodes,    setLiveNodes]    = useState([]);      // nodes revealed one-by-one
 
-    const getFileType = (filename) => { const ext = filename.split(".").pop().toLowerCase(); return EXT_TO_TYPE[ext] ?? null; };
-    const isAccepted = (filename) => getFileType(filename) !== null;
+    // ── File handling ─────────────────────────────────────────────────────────
+
+    const getExt  = (name) => name.split(".").pop().toLowerCase();
+    const isValid = (name) => TREE_ACCEPTED.has("." + getExt(name));
 
     const processFiles = (files) => {
-        const newEntries = Array.from(files).filter((f) => isAccepted(f.name)).map((f) => ({
-            id: `${Date.now()}_${f.name}`, name: f.name, type: getFileType(f.name),
-            size: f.size, file: f, status: "pending", message: "",
-        }));
-        setUploadedFiles((prev) => [...prev, ...newEntries]);
+        const entries = Array.from(files)
+            .filter((f) => isValid(f.name))
+            .map((f) => ({
+                id: `${Date.now()}_${f.name}`, name: f.name,
+                size: f.size, file: f, status: "pending", message: "",
+            }));
+        if (entries.length === 0) {
+            alert("No supported files. Please use PDF, MD, TXT, or DOCX.");
+            return;
+        }
+        setUploadedFiles((prev) => [...prev, ...entries]);
     };
 
     const handleDrop = (e) => { e.preventDefault(); setIsDragging(false); processFiles(e.dataTransfer.files); };
     const removeFile = (id) => setUploadedFiles((prev) => prev.filter((f) => f.id !== id));
-    const clearDone = () => setUploadedFiles((prev) => prev.filter((f) => f.status !== "done"));
+
     const pendingCount = uploadedFiles.filter((f) => f.status === "pending").length;
-    const doneCount = uploadedFiles.filter((f) => f.status === "done").length;
+    const doneCount    = uploadedFiles.filter((f) => f.status === "done").length;
 
-    // ── DEMO: load preset files ───────────────────────────────────────────────
-    const loadDemoFiles = () => {
-        setUploadedFiles(DEMO_FILES.map((f) => ({ ...f, status: "pending", message: "" })));
-    };
+    // ── Scan-log animation (driven while phase === "loading") ─────────────────
 
-    // ── DEMO: run analysis animation ─────────────────────────────────────────
-    const runDemoAnalysis = () => {
-        if (uploadedFiles.length === 0) { loadDemoFiles(); return; }
-        setDemoPhase("loading");
-        setScanLog([]);
-        setDiscoveredNodes([]);
-        setScanLineIdx(0);
-        setNodeIdx(0);
-        // Mark all as uploading
-        setUploadedFiles((prev) => prev.map((f) => ({ ...f, status: "uploading" })));
-    };
-
-    // Drive the scan log animation
     useEffect(() => {
-        if (demoPhase !== "loading") return;
-        if (scanLineIdx < SCAN_LINES.length) {
-            const t = setTimeout(() => {
-                setScanLog((prev) => [...prev, SCAN_LINES[scanLineIdx]]);
-                setScanLineIdx((i) => i + 1);
-            }, 350 + Math.random() * 200);
-            return () => clearTimeout(t);
-        }
-    }, [demoPhase, scanLineIdx]);
-
-    // Drive the node discovery animation
-    useEffect(() => {
-        if (demoPhase !== "loading") return;
-        if (scanLineIdx < 5) return; // wait for scan to progress
-        if (nodeIdx < DEMO_NODES.length) {
-            const t = setTimeout(() => {
-                setDiscoveredNodes((prev) => [...prev, DEMO_NODES[nodeIdx]]);
-                setNodeIdx((i) => i + 1);
-            }, 400);
-            return () => clearTimeout(t);
-        } else if (scanLineIdx >= SCAN_LINES.length) {
-            // All done
-            const t = setTimeout(() => {
-                setDemoPhase("complete");
-                setUploadedFiles((prev) => prev.map((f) => ({ ...f, status: "done", message: "Indexed" })));
-            }, 600);
-            return () => clearTimeout(t);
-        }
-    }, [demoPhase, scanLineIdx, nodeIdx]);
+        if (phase !== "loading") return;
+        if (scanLineIdx >= SCAN_LINES.length) return;
+        const t = setTimeout(() => {
+            setScanLog((prev) => [...prev, SCAN_LINES[scanLineIdx]]);
+            setScanLineIdx((i) => i + 1);
+        }, 600 + Math.random() * 400);
+        return () => clearTimeout(t);
+    }, [phase, scanLineIdx]);
 
     // Auto-scroll log
     useEffect(() => {
         if (logRef.current) logRef.current.scrollTop = logRef.current.scrollHeight;
     }, [scanLog]);
 
-    const handleUploadAll = async () => {
-        const pending = uploadedFiles.filter((f) => f.status === "pending");
-        if (!pending.length) return;
-        runDemoAnalysis();
+    // ── Real build pipeline ───────────────────────────────────────────────────
+
+    const handleBuild = async () => {
+        const pending = uploadedFiles.filter((f) => f.status === "pending" && f.file instanceof File);
+        if (pending.length === 0) return;
+
+        // Pick the first valid file (the one to build the tree from)
+        const primary = pending[0];
+
+        setPhase("loading");
+        setScanLog([]);
+        setScanLineIdx(0);
+        setLiveNodes([]);
+        setResult(null);
+        setErrorMsg("");
+        setUploadedFiles((prev) =>
+            prev.map((f) => f.id === primary.id ? { ...f, status: "uploading" } : f)
+        );
+
+        try {
+            const buffer = await primary.file.arrayBuffer();
+            const mime   = EXT_TO_MIME[getExt(primary.name)] || "application/octet-stream";
+            const data   = await window.api.template.buildTree(buffer, primary.name, mime);
+
+            setResult(data);
+            setUploadedFiles((prev) =>
+                prev.map((f) => f.id === primary.id ? { ...f, status: "done", message: "Indexed" } : f)
+            );
+
+            // Populate study store + visual node store with the real tree data
+            initFromTree({ subject: data.subject, nodes: data.nodes, edges: data.edges });
+            loadTreeIntoStore(data.nodes, data.edges);
+
+            // Reveal nodes one-by-one for the cinematic feel
+            for (let i = 0; i < data.nodes.length; i++) {
+                await new Promise((r) => setTimeout(r, 220));
+                setLiveNodes((prev) => [...prev, data.nodes[i]]);
+            }
+
+            setPhase("complete");
+        } catch (err) {
+            setErrorMsg(err.message || "Unknown error");
+            setPhase("error");
+            setUploadedFiles((prev) =>
+                prev.map((f) => f.id === primary.id ? { ...f, status: "error", message: "Failed" } : f)
+            );
+        }
     };
+
+    const reset = () => {
+        setPhase("idle");
+        setUploadedFiles([]);
+        setScanLog([]);
+        setScanLineIdx(0);
+        setLiveNodes([]);
+        setResult(null);
+        setErrorMsg("");
+    };
+
+    // ── Render ────────────────────────────────────────────────────────────────
 
     return (
         <div className="h-screen flex overflow-hidden bg-vector-bg text-vector-white font-terminal relative">
@@ -151,6 +165,7 @@ const TemplateScreen = () => {
             <Sidebar />
 
             <div className="flex-1 flex flex-col overflow-hidden">
+                {/* Header */}
                 <header className="h-14 border-b border-vector-blue flex items-center justify-between px-6 backdrop-blur-md bg-vector-bg/40 z-10 shrink-0">
                     <div className="flex items-center gap-2">
                         <span className="text-[10px] text-vector-white/60 font-mono tracking-wider">KNOWLEDGE_BASE</span>
@@ -158,22 +173,28 @@ const TemplateScreen = () => {
                         <span className="text-[10px] text-vector-blue font-mono tracking-wider terminal-text">TEMPLATE_UPLOADER</span>
                     </div>
                     <div className="flex items-center gap-3">
-                        {demoPhase === "loading" && (
+                        {phase === "loading" && (
                             <div className="flex items-center gap-2">
                                 <div className="h-2 w-2 rounded-full bg-vector-blue animate-ping" />
-                                <span className="text-[8px] text-vector-blue font-mono tracking-widest uppercase">ANALYSING...</span>
+                                <span className="text-[8px] text-vector-blue font-mono tracking-widest">ANALYSING...</span>
                             </div>
                         )}
-                        {demoPhase === "complete" && (
+                        {phase === "complete" && (
                             <div className="flex items-center gap-2">
                                 <div className="h-2 w-2 rounded-full bg-green-400" />
-                                <span className="text-[8px] text-green-400 font-mono tracking-widest uppercase">TREE GENERATED</span>
+                                <span className="text-[8px] text-green-400 font-mono tracking-widest">TREE GENERATED</span>
                             </div>
                         )}
-                        {demoPhase === "idle" && (
+                        {phase === "error" && (
                             <div className="flex items-center gap-2">
+                                <div className="h-2 w-2 rounded-full bg-red-400" />
+                                <span className="text-[8px] text-red-400 font-mono tracking-widest">ERROR</span>
+                            </div>
+                        )}
+                        {phase === "idle" && (
+                            <div className="flex items-center gap-1.5">
                                 <div className="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse" />
-                                <span className="text-[8px] text-vector-white/40 font-mono tracking-widest uppercase">RAG_PIPELINE READY</span>
+                                <span className="text-[8px] text-vector-white/40 font-mono tracking-widest">RAG_PIPELINE READY</span>
                             </div>
                         )}
                     </div>
@@ -186,29 +207,12 @@ const TemplateScreen = () => {
                             UPLOAD_TEMPLATE
                         </h1>
                         <p className="text-[10px] text-vector-blue/60 font-mono tracking-wider mt-1">
-                            Drop your study materials. The AI reads everything and builds your knowledge tree automatically.
+                            Drop a study document. GPT-4o reads it and builds your knowledge tree automatically.
                         </p>
                     </div>
 
-                    {/* Demo quick-load banner */}
-                    {demoPhase === "idle" && uploadedFiles.length === 0 && (
-                        <div className="border border-vector-blue/30 bg-vector-blue/5 p-4 flex items-center justify-between">
-                            <div>
-                                <p className="text-[9px] text-vector-blue font-mono tracking-widest uppercase">DEMO: CS105 Course Materials</p>
-                                <p className="text-[8px] text-vector-white/40 font-mono mt-0.5">Load Marty's lecture PDFs, handwritten notes and past papers</p>
-                            </div>
-                            <button
-                                onClick={loadDemoFiles}
-                                className="px-4 py-2 border border-vector-blue text-vector-blue text-[8px] font-mono tracking-widest uppercase hover:bg-vector-blue/20 transition-all flex items-center gap-2"
-                            >
-                                <span className="material-symbols-outlined text-sm">auto_awesome</span>
-                                <p>LOAD FILES</p>
-                            </button>
-                        </div>
-                    )}
-
-                    {/* Main grid - hide when analysis complete */}
-                    {demoPhase !== "complete" && (
+                    {/* ── IDLE / LOADING ── */}
+                    {phase !== "complete" && (
                         <div className="grid grid-cols-[1fr_320px] gap-6">
                             <div className="flex flex-col gap-5">
 
@@ -217,20 +221,24 @@ const TemplateScreen = () => {
                                     onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
                                     onDragLeave={() => setIsDragging(false)}
                                     onDrop={handleDrop}
-                                    onClick={() => fileInputRef.current?.click()}
-                                    className={`relative border-2 border-dashed p-12 flex flex-col items-center justify-center gap-4 cursor-pointer transition-all
+                                    onClick={() => phase === "idle" && fileInputRef.current?.click()}
+                                    className={`relative border-2 border-dashed p-12 flex flex-col items-center justify-center gap-4 transition-all
+                                        ${phase === "idle" ? "cursor-pointer" : "cursor-default opacity-50 pointer-events-none"}
                                         ${isDragging ? "border-vector-blue bg-vector-blue/10" : "border-vector-blue/30 hover:border-vector-blue/60 hover:bg-vector-blue/5"}`}
                                     style={isDragging ? { boxShadow: "0 0 40px rgba(125,249,255,0.2)" } : {}}
                                 >
-                                    <input ref={fileInputRef} type="file" multiple accept=".md,.txt,.pdf,.png,.jpg,.jpeg,.webp"
-                                        className="hidden" onChange={(e) => processFiles(e.target.files)} />
+                                    <input ref={fileInputRef} type="file"
+                                        accept=".pdf,.md,.txt,.docx"
+                                        className="hidden"
+                                        onChange={(e) => processFiles(e.target.files)} />
                                     <span className="material-symbols-outlined text-[48px] transition-colors"
-                                        style={{ color: isDragging ? "#7DF9FF" : "rgba(125,249,255,0.3)" }}>cloud_upload</span>
+                                        style={{ color: isDragging ? "#7DF9FF" : "rgba(125,249,255,0.3)" }}>
+                                        cloud_upload
+                                    </span>
                                     <div className="text-center">
-                                        <p className="text-[11px] text-vector-white tracking-widest uppercase font-mono">DROP FILES HERE</p>
-                                        <p className="text-[9px] text-vector-white/40 font-mono mt-1">or click to browse · PDF, MD, IMG, TXT</p>
+                                        <p className="text-[11px] text-vector-white tracking-widest uppercase font-mono">DROP FILE HERE</p>
+                                        <p className="text-[9px] text-vector-white/40 font-mono mt-1">or click to browse · PDF, MD, TXT, DOCX</p>
                                     </div>
-                                    {isDragging && <div className="absolute inset-0 border-2 border-vector-blue animate-ping opacity-20 pointer-events-none" />}
                                 </div>
 
                                 {/* File queue */}
@@ -238,23 +246,19 @@ const TemplateScreen = () => {
                                     <div className="border border-vector-blue/30 bg-black/20">
                                         <div className="flex items-center justify-between px-4 py-3 border-b border-vector-blue/20">
                                             <span className="text-[8px] text-vector-blue/60 uppercase tracking-widest font-mono">
-                                                QUEUE ({uploadedFiles.length}) — {doneCount} INDEXED
+                                                QUEUE ({uploadedFiles.length})
                                             </span>
-                                            {doneCount > 0 && (
-                                                <button onClick={clearDone} className="text-[8px] text-vector-white/30 hover:text-vector-blue font-mono uppercase tracking-widest transition-colors">
-                                                    <p>CLEAR DONE</p>
-                                                </button>
-                                            )}
                                         </div>
                                         <div className="divide-y divide-vector-blue/10">
                                             {uploadedFiles.map((f) => (
                                                 <div key={f.id} className="flex items-center gap-3 px-4 py-3">
                                                     <span className={`material-symbols-outlined text-[18px] ${
-                                                        f.status === "done" ? "text-green-400" :
-                                                        f.status === "error" ? "text-red-400" :
+                                                        f.status === "done"      ? "text-green-400" :
+                                                        f.status === "error"     ? "text-red-400"   :
                                                         f.status === "uploading" ? "text-vector-blue animate-spin" :
                                                         "text-vector-white/30"}`}>
-                                                        {f.status === "done" ? "check_circle" : f.status === "error" ? "error" :
+                                                        {f.status === "done" ? "check_circle" :
+                                                         f.status === "error" ? "error" :
                                                          f.status === "uploading" ? "refresh" : "schedule"}
                                                     </span>
                                                     <div className="flex-1 min-w-0">
@@ -272,40 +276,54 @@ const TemplateScreen = () => {
                                         </div>
                                         <div className="px-4 py-3 border-t border-vector-blue/20">
                                             <button
-                                                onClick={handleUploadAll}
-                                                disabled={pendingCount === 0 || demoPhase === "loading"}
+                                                onClick={handleBuild}
+                                                disabled={pendingCount === 0 || phase === "loading"}
                                                 className="w-full py-3 bg-vector-blue text-vector-bg text-[9px] uppercase tracking-widest font-bold font-mono hover:brightness-110 transition-all disabled:opacity-40 flex items-center justify-center gap-2"
                                             >
                                                 <span className="material-symbols-outlined text-sm">
-                                                    {demoPhase === "loading" ? "hourglass_top" : "auto_awesome"}
+                                                    {phase === "loading" ? "hourglass_top" : "auto_awesome"}
                                                 </span>
-                                                <p>{demoPhase === "loading" ? "ANALYSING..." : `BUILD KNOWLEDGE TREE (${pendingCount} FILE${pendingCount !== 1 ? "S" : ""})`}</p>
+                                                <p>{phase === "loading" ? "ANALYSING..." : `BUILD KNOWLEDGE TREE (${pendingCount} FILE${pendingCount !== 1 ? "S" : ""})`}</p>
                                             </button>
                                         </div>
                                     </div>
                                 )}
 
                                 {/* Scan log */}
-                                {demoPhase === "loading" && scanLog.length > 0 && (
+                                {(phase === "loading" || phase === "error") && scanLog.length > 0 && (
                                     <div className="border border-vector-blue/20 bg-black/60">
                                         <div className="px-4 py-2 border-b border-vector-blue/20">
                                             <span className="text-[8px] text-vector-blue/60 font-mono tracking-widest uppercase">AI_PIPELINE_LOG</span>
                                         </div>
-                                        <div ref={logRef} className="p-4 max-h-36 overflow-y-auto custom-scrollbar font-mono text-[9px] space-y-1">
+                                        <div ref={logRef} className="p-4 max-h-40 overflow-y-auto custom-scrollbar font-mono text-[9px] space-y-1">
                                             {scanLog.map((line, i) => (
                                                 <div key={i} className="flex items-center gap-2 text-vector-blue/70">
                                                     <span className="text-vector-blue/30">&gt;</span>
                                                     <span>{line}</span>
                                                 </div>
                                             ))}
-                                            {demoPhase === "loading" && (
+                                            {phase === "loading" && (
                                                 <div className="flex items-center gap-2 text-vector-blue/40">
                                                     <span>&gt;</span>
                                                     <span className="animate-pulse">_</span>
                                                 </div>
                                             )}
+                                            {phase === "error" && (
+                                                <div className="flex items-center gap-2 text-red-400">
+                                                    <span>&gt;</span>
+                                                    <span>ERROR: {errorMsg}</span>
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
+                                )}
+
+                                {/* Error action */}
+                                {phase === "error" && (
+                                    <button onClick={reset}
+                                        className="px-6 py-3 border border-red-500/40 text-red-400 text-[9px] font-mono tracking-widest uppercase hover:bg-red-500/10 transition-all w-fit">
+                                        RESET &amp; TRY AGAIN
+                                    </button>
                                 )}
                             </div>
 
@@ -319,20 +337,21 @@ const TemplateScreen = () => {
                                                 <span className={`material-symbols-outlined text-[20px] ${color}`}>{icon}</span>
                                                 <div>
                                                     <p className={`text-[9px] font-bold uppercase tracking-widest font-mono ${color}`}>{label}</p>
-                                                    <p className="text-[8px] text-vector-white/30 font-mono">.{ext.replace(",", " .")}</p>
+                                                    <p className="text-[8px] text-vector-white/30 font-mono">.{ext}</p>
                                                 </div>
                                             </div>
                                         ))}
                                     </div>
                                 </div>
+
                                 <div className="border border-vector-blue/20 bg-black/10 p-5">
                                     <p className="text-[8px] text-vector-blue/50 uppercase tracking-widest font-mono mb-3">PIPELINE_OVERVIEW</p>
                                     {[
-                                        { step: "01", label: "TEXT_EXTRACT", desc: "Read file content (PDF/OCR for images)" },
-                                        { step: "02", label: "CHUNK", desc: "400-word windows, 50-word overlap" },
-                                        { step: "03", label: "EMBED", desc: "768-float vectors via Transformers.js" },
-                                        { step: "04", label: "CONCEPT_MAP", desc: "Cluster semantics → identify nodes" },
-                                        { step: "05", label: "FAISS_INDEX", desc: "Per-node IndexFlatIP for RAG queries" },
+                                        { step: "01", label: "TEXT_EXTRACT",  desc: "Read file, strip formatting" },
+                                        { step: "02", label: "CHUNK + EMBED", desc: "600-char windows → Pinecone vectors" },
+                                        { step: "03", label: "CONCEPT_MAP",   desc: "GPT-4o identifies key concepts" },
+                                        { step: "04", label: "TREE_BUILD",    desc: "Nodes + prerequisite edges created" },
+                                        { step: "05", label: "GRAPH_RENDER",  desc: "Interactive VectorGraph populated" },
                                     ].map(({ step, label, desc }) => (
                                         <div key={step} className="flex gap-3 mb-3 last:mb-0">
                                             <span className="text-[8px] text-vector-blue/40 font-mono shrink-0 pt-0.5">{step}</span>
@@ -344,25 +363,23 @@ const TemplateScreen = () => {
                                     ))}
                                 </div>
 
-                                {/* Live node discovery panel */}
-                                {demoPhase === "loading" && discoveredNodes.length > 0 && (
+                                {/* Live node discovery */}
+                                {phase === "loading" && liveNodes.length > 0 && (
                                     <div className="border border-vector-blue/30 bg-black/20 p-4">
                                         <p className="text-[8px] text-vector-blue/50 uppercase tracking-widest font-mono mb-3">
-                                            NODES_DISCOVERED ({discoveredNodes.length}/{DEMO_NODES.length})
+                                            NODES_DISCOVERED ({liveNodes.length})
                                         </p>
                                         <div className="flex flex-col gap-1.5">
-                                            {discoveredNodes.map((n) => (
-                                                <div key={n} className="flex items-center gap-2">
+                                            {liveNodes.map((n) => (
+                                                <div key={n.title} className="flex items-center gap-2">
                                                     <span className="material-symbols-outlined text-green-400 text-sm">check_circle</span>
-                                                    <span className="text-[9px] font-mono text-vector-white/70">{n}</span>
+                                                    <span className="text-[9px] font-mono text-vector-white/70">{n.title}</span>
                                                 </div>
                                             ))}
-                                            {nodeIdx < DEMO_NODES.length && (
-                                                <div className="flex items-center gap-2">
-                                                    <span className="material-symbols-outlined text-vector-blue text-sm animate-spin">refresh</span>
-                                                    <span className="text-[9px] font-mono text-vector-blue/50 animate-pulse">scanning...</span>
-                                                </div>
-                                            )}
+                                            <div className="flex items-center gap-2">
+                                                <span className="material-symbols-outlined text-vector-blue text-sm animate-spin">refresh</span>
+                                                <span className="text-[9px] font-mono text-vector-blue/50 animate-pulse">scanning...</span>
+                                            </div>
                                         </div>
                                     </div>
                                 )}
@@ -370,8 +387,8 @@ const TemplateScreen = () => {
                         </div>
                     )}
 
-                    {/* ── COMPLETE STATE ── */}
-                    {demoPhase === "complete" && (
+                    {/* ── COMPLETE ── */}
+                    {phase === "complete" && result && (
                         <div className="flex flex-col gap-6">
                             {/* Success banner */}
                             <div className="border border-green-500/50 bg-green-500/5 p-6 relative overflow-hidden"
@@ -384,20 +401,17 @@ const TemplateScreen = () => {
                                             KNOWLEDGE TREE GENERATED
                                         </h2>
                                         <p className="text-[10px] text-vector-white/60 font-mono mt-1">
-                                            AI analysed 5 files · identified 11 core concepts · built 11 prerequisite edges
+                                            Subject: <span className="text-vector-blue">{result.subject}</span>
+                                            {" · "}AI analysed {(result.text_len / 1000).toFixed(1)}k chars
                                         </p>
                                         <div className="flex gap-6 mt-3">
                                             <div>
-                                                <p className="text-[8px] text-vector-white/40 font-mono uppercase tracking-widest">Nodes Created</p>
-                                                <p className="text-2xl font-bold text-green-400 font-mono">11</p>
+                                                <p className="text-[8px] text-vector-white/40 font-mono uppercase tracking-widest">Nodes</p>
+                                                <p className="text-2xl font-bold text-green-400 font-mono">{result.nodes.length}</p>
                                             </div>
                                             <div>
-                                                <p className="text-[8px] text-vector-white/40 font-mono uppercase tracking-widest">Edges Mapped</p>
-                                                <p className="text-2xl font-bold text-green-400 font-mono">11</p>
-                                            </div>
-                                            <div>
-                                                <p className="text-[8px] text-vector-white/40 font-mono uppercase tracking-widest">Chunks Indexed</p>
-                                                <p className="text-2xl font-bold text-green-400 font-mono">247</p>
+                                                <p className="text-[8px] text-vector-white/40 font-mono uppercase tracking-widest">Edges</p>
+                                                <p className="text-2xl font-bold text-green-400 font-mono">{result.edges.length}</p>
                                             </div>
                                         </div>
                                     </div>
@@ -410,10 +424,15 @@ const TemplateScreen = () => {
                                     <span className="text-[8px] text-vector-blue/60 font-mono tracking-widest uppercase">GENERATED_NODES</span>
                                 </div>
                                 <div className="grid grid-cols-2 divide-x divide-vector-blue/10">
-                                    {DEMO_NODES.map((n) => (
-                                        <div key={n} className="flex items-center gap-2 px-4 py-2.5 border-b border-vector-blue/10">
-                                            <span className="material-symbols-outlined text-green-400 text-sm">check_circle</span>
-                                            <span className="text-[9px] font-mono text-vector-white/70">{n}</span>
+                                    {result.nodes.map((n) => (
+                                        <div key={n.title} className="flex items-start gap-2 px-4 py-2.5 border-b border-vector-blue/10">
+                                            <span className="material-symbols-outlined text-green-400 text-sm mt-0.5 shrink-0">check_circle</span>
+                                            <div>
+                                                <p className="text-[9px] font-mono text-vector-white/80">{n.title}</p>
+                                                {n.description && (
+                                                    <p className="text-[7px] font-mono text-vector-white/30 mt-0.5 leading-relaxed">{n.description}</p>
+                                                )}
+                                            </div>
                                         </div>
                                     ))}
                                 </div>
@@ -428,7 +447,7 @@ const TemplateScreen = () => {
                                     <p>VIEW KNOWLEDGE TREE</p>
                                 </button>
                                 <button
-                                    onClick={() => { setDemoPhase("idle"); setUploadedFiles([]); setScanLog([]); setDiscoveredNodes([]); }}
+                                    onClick={reset}
                                     className="px-6 py-4 border border-vector-blue/30 text-vector-blue text-[9px] font-mono tracking-widest uppercase hover:bg-vector-blue/10 transition-all"
                                 >
                                     <p>RESET</p>
