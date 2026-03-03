@@ -268,7 +268,7 @@ const KnowledgeTreeScreen = () => {
             <div className={styles.hudOverlay}>
               <p className={styles.hudTotalNodes}>NODES: {nodes.length}</p>
               <p>LINKS: {edges.length}</p>
-              <p>ZOOM: {Math.round(scale * 100)}%</p>
+              {/* <p>ZOOM: {Math.round(scale * 100)}%</p>
               <p>
                 BACKEND:{" "}
                 <span className={
@@ -278,7 +278,7 @@ const KnowledgeTreeScreen = () => {
                 }>
                   {backendStatus === "live" ? "LIVE" : backendStatus === "offline" ? "OFFLINE" : "..."}
                 </span>
-              </p>
+              </p> */}
             </div>
 
             {/* Connection banner */}

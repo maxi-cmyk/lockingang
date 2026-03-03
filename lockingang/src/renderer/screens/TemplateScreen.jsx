@@ -294,7 +294,7 @@ const TemplateScreen = () => {
                                                 <span className={`material-symbols-outlined text-[20px] ${color}`}>{icon}</span>
                                                 <div>
                                                     <p className={`${styles.formatLabel} ${color}`}>{label}</p>
-                                                    <p className={styles.formatExt}>.{ext.replace(",", " .")}</p>
+                                                    <p className={styles.formatExt}>.{ext}</p>
                                                 </div>
                                             </div>
                                         ))}

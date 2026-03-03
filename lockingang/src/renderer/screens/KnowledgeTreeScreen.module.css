@@ -19,7 +19,7 @@
 }
 
 .hudOverlay {
-    @apply absolute top-6 left-8 z-20 space-y-1 text-[9px] tracking-widest uppercase text-vector-blue/60 pointer-events-none bg-vector-bg px-4 py-3 border border-vector-blue/30 rounded-md shadow-lg;
+    @apply absolute top-6 left-8 z-20 space-y-1 text-[1rem] tracking-widest uppercase text-vector-blue/60 pointer-events-none bg-vector-bg px-4 py-3 border border-vector-blue/30 rounded-md shadow-lg;
 }
 
 .hudOverlay p {
@@ -63,11 +63,11 @@
 }
 
 .bannerTitle {
-    @apply text-vector-blue font-bold text-[9px] tracking-widest uppercase;
+    @apply text-vector-blue font-bold text-[1rem] tracking-widest uppercase;
 }
 
 .bannerText {
-    @apply text-vector-white/70 text-[9px] mt-1 leading-relaxed font-mono;
+    @apply text-vector-white/70 text-[1rem] mt-1 leading-relaxed font-mono;
 }
 
 .nodeHighlight {
@@ -115,15 +115,15 @@
 }
 
 .payloadLabel {
-    @apply text-[7px] text-vector-blue/40 font-mono tracking-widest uppercase mb-2;
+    @apply text-[1rem] text-vector-blue/40 font-mono tracking-widest uppercase mb-2;
 }
 
 .payloadTextarea {
-    @apply w-full bg-black/60 border border-vector-blue/20 p-3 text-vector-white/70 text-[10px] font-mono leading-relaxed resize-none outline-none focus:border-vector-blue/60 transition-colors;
+    @apply w-full bg-black/60 border border-vector-blue/20 p-3 text-vector-white/70 text-[0.8rem] font-mono leading-relaxed resize-none outline-none focus:border-vector-blue/60 transition-colors;
 }
 
 .saveButton {
-    @apply w-full flex items-center justify-center gap-2 py-2.5 border transition-all text-[10px] tracking-widest uppercase font-mono;
+    @apply w-full flex items-center justify-center gap-2 py-2.5 border transition-all text-[1rem] tracking-widest uppercase font-mono;
 }
 
 .saveButtonSuccess {
@@ -167,7 +167,7 @@
 }
 
 .controlButton {
-    @apply px-6 py-2 flex items-center gap-2 transition-all tracking-widest uppercase font-mono text-[9px];
+    @apply px-6 py-2 flex items-center gap-2 transition-all tracking-widest uppercase font-mono text-[1rem];
 }
 
 .autoSortButton {
