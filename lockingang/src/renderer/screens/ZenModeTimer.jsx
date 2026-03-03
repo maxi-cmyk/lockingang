@@ -72,15 +72,15 @@ const ZenModeTimer = ({ task, onComplete, onGiveUp }) => {
             <div className="relative z-10 flex justify-between items-start px-8 pt-6">
                 <div className="flex items-center gap-2">
                     <div className="h-1.5 w-1.5 bg-vector-blue animate-pulse" />
-                    <span className="text-[8px] text-vector-blue tracking-widest uppercase font-mono">ZEN_MODE_ENGAGED</span>
+                    <span className="text-[10px] text-vector-blue tracking-widest uppercase font-mono">ZEN_MODE_ENGAGED</span>
                 </div>
                 <div className="flex flex-col items-center gap-1">
-                    <span className="text-[8px] text-vector-blue/60 tracking-widest uppercase font-mono">CURRENT_OBJECTIVE</span>
+                    <span className="text-[10px] text-vector-blue/60 tracking-widest uppercase font-mono">CURRENT_OBJECTIVE</span>
                     <h1 className="text-sm text-vector-white tracking-[0.2em] uppercase font-bold terminal-text border-b border-vector-blue/40 pb-1">
                         {task?.title ?? "FOCUS_SESSION"}
                     </h1>
                 </div>
-                <span className="text-[8px] text-vector-white/30 tracking-widest uppercase font-mono">NO_DISTRACTIONS</span>
+                <span className="text-[10px] text-vector-white/30 tracking-widest uppercase font-mono">NO_DISTRACTIONS</span>
             </div>
 
             {/* Timer display */}
@@ -115,10 +115,10 @@ const ZenModeTimer = ({ task, onComplete, onGiveUp }) => {
                     <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-2">
                             <span className="text-vector-blue text-xs">&gt;</span>
-                            <span className="text-[8px] text-vector-blue/50 tracking-widest uppercase">BRAIN DUMP — press Enter to log thought</span>
+                            <span className="text-[10px] text-vector-blue/50 tracking-widest uppercase">BRAIN DUMP — press Enter to log thought</span>
                         </div>
                         {queuedDumps.length > 0 && (
-                            <span className="text-[8px] text-green-400 font-mono">{queuedDumps.length} logged</span>
+                            <span className="text-[10px] text-green-400 font-mono">{queuedDumps.length} logged</span>
                         )}
                     </div>
                     <div className="flex gap-2">
@@ -133,7 +133,7 @@ const ZenModeTimer = ({ task, onComplete, onGiveUp }) => {
                         {brainDump.trim() && (
                             <button
                                 onClick={handleDump}
-                                className="self-end px-3 py-1 border border-vector-blue/50 text-vector-blue text-[8px] font-mono tracking-widest uppercase hover:bg-vector-blue/10 transition-all"
+                                className="self-end px-3 py-1 border border-vector-blue/50 text-vector-blue text-[10px] font-mono tracking-widest uppercase hover:bg-vector-blue/10 transition-all"
                             >
                                 LOG
                             </button>
@@ -150,8 +150,8 @@ const ZenModeTimer = ({ task, onComplete, onGiveUp }) => {
                     >
                         <span className="material-symbols-outlined text-green-400 text-base">check_circle</span>
                         <div>
-                            <p className="text-[9px] text-green-400 font-mono tracking-widest uppercase">THOUGHT LOGGED → NEURAL_LIAISON</p>
-                            <p className="text-[8px] text-vector-white/50 font-mono mt-0.5">"{dumpToast.text}" will be processed when you finish</p>
+                            <p className="text-[11px] text-green-400 font-mono tracking-widest uppercase">THOUGHT LOGGED → NEURAL_LIAISON</p>
+                            <p className="text-[10px] text-vector-white/50 font-mono mt-0.5">"{dumpToast.text}" will be processed when you finish</p>
                         </div>
                     </div>
                 )}
@@ -163,14 +163,14 @@ const ZenModeTimer = ({ task, onComplete, onGiveUp }) => {
                         className="flex flex-col items-center gap-1 px-10 py-3 border border-vector-white/20 bg-vector-bg text-vector-white/50 hover:border-vector-white/50 hover:text-vector-white transition-all"
                     >
                         <span className="material-symbols-outlined text-lg">logout</span>
-                        <span className="text-[9px] tracking-widest uppercase font-mono">GIVE UP</span>
+                        <span className="text-[11px] tracking-widest uppercase font-mono">GIVE UP</span>
                     </button>
                     <button
                         onClick={handleComplete}
                         className="flex flex-col items-center gap-1 px-10 py-3 border-2 border-vector-blue bg-vector-blue/10 text-vector-blue hover:bg-vector-blue/20 transition-all shadow-[0_0_20px_rgba(125,249,255,0.3)]"
                     >
                         <span className="material-symbols-outlined text-lg">check_circle</span>
-                        <span className="text-[9px] tracking-widest uppercase font-bold font-mono">
+                        <span className="text-[11px] tracking-widest uppercase font-bold font-mono">
                             {queuedDumps.length > 0 ? "COMPLETE + SEND TO LIAISON" : "COMPLETE"}
                         </span>
                     </button>
@@ -178,7 +178,7 @@ const ZenModeTimer = ({ task, onComplete, onGiveUp }) => {
             </div>
 
             {/* Bottom HUD */}
-            <div className="relative z-10 flex justify-between items-center px-8 pb-4 text-[8px] text-vector-white/20 font-mono tracking-widest">
+            <div className="relative z-10 flex justify-between items-center px-8 pb-4 text-[10px] text-vector-white/20 font-mono tracking-widest">
                 <span>THOUGHTS_QUEUED: {queuedDumps.length}</span>
                 <span>MEM_USAGE: 54% &nbsp;&nbsp; FOCUS_LEVEL: MAX</span>
             </div>

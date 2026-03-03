@@ -41,13 +41,13 @@ const INITIAL_MESSAGES = [
 const ChatbotScreen = () => {
   const location = useLocation();
   const fileInputRef = useRef(null);
-  const chatRef      = useRef(null);
-  const inputRef     = useRef(null);
+  const chatRef = useRef(null);
+  const inputRef = useRef(null);
 
-  const [messages,    setMessages]    = useState(INITIAL_MESSAGES);
-  const [tasks,       setTasks]       = useState([]);
-  const [input,       setInput]       = useState("");
-  const [isTyping,    setIsTyping]    = useState(false);
+  const [messages, setMessages] = useState(INITIAL_MESSAGES);
+  const [tasks, setTasks] = useState([]);
+  const [input, setInput] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
   const [serverOnline, setServerOnline] = useState(null);   // null = checking
   const [attachedFile, setAttachedFile] = useState(null);   // { name, type, buffer }
   const [uploadStatus, setUploadStatus] = useState(null);   // "uploading" | "done" | "error"
@@ -89,7 +89,7 @@ const ChatbotScreen = () => {
       setInput("");
 
       const userMsg = {
-        id:   `u_${Date.now()}`,
+        id: `u_${Date.now()}`,
         from: "user",
         time: timestamp(),
         text: trimmed,
@@ -108,7 +108,7 @@ const ChatbotScreen = () => {
         }
 
         const botMsg = {
-          id:   `b_${Date.now()}`,
+          id: `b_${Date.now()}`,
           from: "bot",
           time: timestamp(),
           text: displayText,
@@ -136,7 +136,7 @@ const ChatbotScreen = () => {
         }
 
         const errMsg = {
-          id:   `e_${Date.now()}`,
+          id: `e_${Date.now()}`,
           from: "bot",
           time: timestamp(),
           text: errorText,
@@ -174,7 +174,7 @@ const ChatbotScreen = () => {
 
     // Show a "uploading…" system message
     const uploadingMsg = {
-      id:   `sys_up_${Date.now()}`,
+      id: `sys_up_${Date.now()}`,
       from: "bot",
       time: timestamp(),
       text: `INGESTING FILE: "${attachedFile.name}"\n> Chunking and embedding — please wait...`,
@@ -191,7 +191,7 @@ const ChatbotScreen = () => {
       setAttachedFile(null);
 
       const doneMsg = {
-        id:   `sys_done_${Date.now()}`,
+        id: `sys_done_${Date.now()}`,
         from: "bot",
         time: timestamp(),
         text:
@@ -203,7 +203,7 @@ const ChatbotScreen = () => {
     } catch (err) {
       setUploadStatus("error");
       const errMsg = {
-        id:   `sys_err_${Date.now()}`,
+        id: `sys_err_${Date.now()}`,
         from: "bot",
         time: timestamp(),
         text: `UPLOAD FAILED: ${err.message}`,
@@ -237,9 +237,9 @@ const ChatbotScreen = () => {
           {/* Header */}
           <header className="h-14 border-b border-vector-blue flex items-center justify-between px-6 backdrop-blur-md bg-vector-bg/40 z-10 shrink-0">
             <div className="flex items-center gap-2">
-              <span className="text-[10px] text-vector-white/60 font-mono tracking-wider">CHATBOT</span>
-              <span className="text-[10px] text-vector-blue font-bold">&gt;&gt;</span>
-              <span className="text-[10px] text-vector-blue font-mono tracking-wider terminal-text">
+              <span className="text-[12px] text-vector-white/60 font-mono tracking-wider">CHATBOT</span>
+              <span className="text-[12px] text-vector-blue font-bold">&gt;&gt;</span>
+              <span className="text-[12px] text-vector-blue font-mono tracking-wider terminal-text">
                 NEURAL_LIAISON_V2.0 · RAG
               </span>
             </div>
@@ -253,11 +253,11 @@ const ChatbotScreen = () => {
                 ) : (
                   <div className="h-2 w-2 bg-red-500 rounded-full" />
                 )}
-                <span className="text-[8px] text-vector-blue tracking-widest font-mono">
+                <span className="text-[10px] text-vector-blue tracking-widest font-mono">
                   {serverOnline === null ? "CHECKING" : serverOnline ? "ONLINE" : "OFFLINE"}
                 </span>
               </div>
-              <div className="px-3 py-1 border border-vector-blue/30 bg-vector-bg text-[8px] text-vector-blue tracking-widest">
+              <div className="px-3 py-1 border border-vector-blue/30 bg-vector-bg text-[10px] text-vector-blue tracking-widest">
                 PINECONE · OPENAI
               </div>
             </div>
@@ -267,7 +267,7 @@ const ChatbotScreen = () => {
           <div ref={chatRef} className="flex-1 overflow-y-auto p-6 flex flex-col gap-5 custom-scrollbar">
             <div className="flex items-center justify-center my-2">
               <div className="h-px bg-vector-blue/20 w-16" />
-              <span className="mx-4 text-[8px] font-mono text-vector-white/40 tracking-widest uppercase">
+              <span className="mx-4 text-[10px] font-mono text-vector-white/40 tracking-widest uppercase">
                 RAG SESSION
               </span>
               <div className="h-px bg-vector-blue/20 w-16" />
@@ -283,10 +283,10 @@ const ChatbotScreen = () => {
                   </div>
                   <div className="flex flex-col gap-1">
                     <div className="flex items-center gap-2">
-                      <span className="text-vector-blue font-bold text-[9px] tracking-widest uppercase">
+                      <span className="text-vector-blue font-bold text-[11px] tracking-widest uppercase">
                         NEURAL_LIAISON
                       </span>
-                      <span className="text-[8px] text-vector-white/40 font-mono">{msg.time}</span>
+                      <span className="text-[10px] text-vector-white/40 font-mono">{msg.time}</span>
                     </div>
                     <div className="border border-vector-blue bg-vector-blue/5 p-4 text-vector-blue text-xs font-mono leading-relaxed shadow-card-glow relative">
                       <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-vector-blue" />
@@ -306,8 +306,8 @@ const ChatbotScreen = () => {
                   </div>
                   <div className="flex flex-col gap-1 items-end">
                     <div className="flex items-center gap-2">
-                      <span className="text-[8px] text-vector-white/40 font-mono">{msg.time}</span>
-                      <span className="text-vector-white font-bold text-[9px] tracking-widest uppercase">MARTY</span>
+                      <span className="text-[10px] text-vector-white/40 font-mono">{msg.time}</span>
+                      <span className="text-vector-white font-bold text-[11px] tracking-widest uppercase">MARTY</span>
                     </div>
                     <div className="border border-vector-white/30 bg-vector-white/5 p-4 text-vector-white text-xs font-mono leading-relaxed relative">
                       <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-vector-white/30" />
@@ -327,7 +327,7 @@ const ChatbotScreen = () => {
                   </div>
                 </div>
                 <div className="flex items-center gap-2 border border-vector-blue/30 bg-vector-blue/5 px-4 py-3">
-                  <span className="text-vector-blue/60 text-[9px] font-mono animate-pulse">
+                  <span className="text-vector-blue/60 text-[11px] font-mono animate-pulse">
                     QUERYING RAG
                   </span>
                   <div className="flex gap-1">
@@ -352,16 +352,16 @@ const ChatbotScreen = () => {
               {attachedFile && (
                 <div className="flex items-center gap-2 px-3 py-1.5 border border-vector-blue/40 bg-vector-blue/10 w-fit">
                   <span className="material-symbols-outlined text-vector-blue text-sm">attach_file</span>
-                  <span className="text-[9px] font-mono text-vector-blue truncate max-w-[200px]">
+                  <span className="text-[11px] font-mono text-vector-blue truncate max-w-[200px]">
                     {attachedFile.name}
                   </span>
                   {uploadStatus === "uploading" ? (
-                    <span className="text-[8px] font-mono text-yellow-400 animate-pulse">UPLOADING…</span>
+                    <span className="text-[10px] font-mono text-yellow-400 animate-pulse">UPLOADING…</span>
                   ) : (
                     <>
                       <button
                         onClick={uploadAttachment}
-                        className="text-[8px] font-mono text-green-400 hover:text-green-300 tracking-widest border border-green-500/30 px-2 py-0.5 hover:bg-green-500/10 transition-colors"
+                        className="text-[10px] font-mono text-green-400 hover:text-green-300 tracking-widest border border-green-500/30 px-2 py-0.5 hover:bg-green-500/10 transition-colors"
                       >
                         INGEST
                       </button>
@@ -419,7 +419,7 @@ const ChatbotScreen = () => {
                 </button>
               </div>
 
-              <div className="flex justify-between items-center text-[8px] text-vector-white/30 font-mono px-1 tracking-widest">
+              <div className="flex justify-between items-center text-[10px] text-vector-white/30 font-mono px-1 tracking-widest">
                 <span>
                   ATTACH: PDF · DOCX · TXT · MD · CSV → auto-indexed into Pinecone
                 </span>
@@ -432,7 +432,7 @@ const ChatbotScreen = () => {
         {/* ── Side panel (tasks) ───────────────────────────────────────────── */}
         <div className="w-64 flex-shrink-0 border-l border-vector-blue/20 flex flex-col bg-vector-bg/50">
           <div className="px-4 py-3 border-b border-vector-blue/20">
-            <p className="text-[8px] text-vector-blue/60 font-mono tracking-widest uppercase">
+            <p className="text-[10px] text-vector-blue/60 font-mono tracking-widest uppercase">
               AUTO_SCHEDULED_TASKS
             </p>
           </div>
@@ -440,7 +440,7 @@ const ChatbotScreen = () => {
             {tasks.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-32 gap-2">
                 <span className="material-symbols-outlined text-vector-blue/20 text-3xl">task_alt</span>
-                <p className="text-[8px] text-vector-white/20 font-mono text-center">
+                <p className="text-[10px] text-vector-white/20 font-mono text-center">
                   Tasks extracted by the AI appear here
                 </p>
               </div>
@@ -453,17 +453,16 @@ const ChatbotScreen = () => {
                         check_circle
                       </span>
                       <div>
-                        <p className="text-[9px] font-mono text-vector-white">{task.text}</p>
-                        <p className="text-[8px] font-mono text-vector-blue/60 mt-1">
-                          <span className="material-symbols-outlined text-[11px] align-middle">schedule</span>
+                        <p className="text-[11px] font-mono text-vector-white">{task.text}</p>
+                        <p className="text-[10px] font-mono text-vector-blue/60 mt-1">
+                          <span className="material-symbols-outlined text-[13px] align-middle">schedule</span>
                           {" "}{task.scheduled}
                         </p>
                         <span
-                          className={`text-[7px] font-mono tracking-widest px-1.5 py-0.5 mt-1 inline-block border ${
-                            task.priority === "HIGH"
+                          className={`text-[9px] font-mono tracking-widest px-1.5 py-0.5 mt-1 inline-block border ${task.priority === "HIGH"
                               ? "border-red-500/40 text-red-400"
                               : "border-vector-blue/30 text-vector-blue/60"
-                          }`}
+                            }`}
                         >
                           {task.priority}
                         </span>
@@ -477,7 +476,7 @@ const ChatbotScreen = () => {
 
           {/* Knowledge base status */}
           <div className="px-4 py-3 border-t border-vector-blue/20">
-            <p className="text-[8px] text-vector-blue/60 font-mono tracking-widest uppercase mb-2">
+            <p className="text-[10px] text-vector-blue/60 font-mono tracking-widest uppercase mb-2">
               KNOWLEDGE_BASE
             </p>
             <div className="flex items-center gap-2">
@@ -485,15 +484,14 @@ const ChatbotScreen = () => {
                 database
               </span>
               <div>
-                <p className="text-[8px] font-mono text-vector-white/60">Pinecone Vector DB</p>
-                <p className={`text-[7px] font-mono tracking-widest ${
-                  serverOnline ? "text-green-400" : "text-red-400"
-                }`}>
+                <p className="text-[10px] font-mono text-vector-white/60">Pinecone Vector DB</p>
+                <p className={`text-[9px] font-mono tracking-widest ${serverOnline ? "text-green-400" : "text-red-400"
+                  }`}>
                   {serverOnline === null ? "CHECKING..." : serverOnline ? "CONNECTED" : "OFFLINE"}
                 </p>
               </div>
             </div>
-            <p className="text-[7px] font-mono text-vector-white/30 mt-2 leading-relaxed">
+            <p className="text-[9px] font-mono text-vector-white/30 mt-2 leading-relaxed">
               Attach files above to add to your knowledge base. All uploads are chunked &amp; embedded automatically.
             </p>
           </div>

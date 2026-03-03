@@ -102,13 +102,13 @@ const CalendarScreen = () => {
         {/* Header */}
         <header className="h-14 border-b border-vector-blue flex items-center justify-between px-6 backdrop-blur-md bg-vector-bg/40 z-10 shrink-0">
           <div className="flex items-center gap-2">
-            <span className="text-[10px] text-vector-white/60 font-mono tracking-wider">SYSTEM</span>
-            <span className="text-[10px] text-vector-blue font-bold">&gt;&gt;</span>
-            <span className="text-[10px] text-vector-blue font-mono tracking-wider terminal-text">
+            <span className="text-[12px] text-vector-white/60 font-mono tracking-wider">SYSTEM</span>
+            <span className="text-[12px] text-vector-blue font-bold">&gt;&gt;</span>
+            <span className="text-[12px] text-vector-blue font-mono tracking-wider terminal-text">
               CALENDAR_SCHEDULE — {MONTH_NAMES[month]} {year}
             </span>
           </div>
-          <div className="flex items-center gap-3 text-[8px] font-mono">
+          <div className="flex items-center gap-3 text-[10px] font-mono">
             {[
               { label: "RESCHEDULED", color: "#FF4444" },
               { label: "REVIEW",      color: "#FFB800" },
@@ -127,13 +127,13 @@ const CalendarScreen = () => {
           /* ── Empty state ── */
           <div className="flex-1 flex flex-col items-center justify-center gap-4 text-center">
             <span className="material-symbols-outlined text-vector-blue/20 text-6xl">calendar_month</span>
-            <p className="text-[11px] text-vector-white/30 font-mono leading-relaxed">
+            <p className="text-[13px] text-vector-white/30 font-mono leading-relaxed">
               No study plan yet.<br />
               Upload a document in <span className="text-vector-blue/50">Template</span> to auto-schedule nodes.
             </p>
             <button
               onClick={() => navigate("/template")}
-              className="mt-2 px-6 py-2 border border-vector-blue/40 text-vector-blue text-[9px] font-mono tracking-widest uppercase hover:bg-vector-blue/10 transition-all"
+              className="mt-2 px-6 py-2 border border-vector-blue/40 text-vector-blue text-[11px] font-mono tracking-widest uppercase hover:bg-vector-blue/10 transition-all"
             >
               BUILD STUDY TREE
             </button>
@@ -147,7 +147,7 @@ const CalendarScreen = () => {
                   style={{ textShadow: "0 0 20px rgba(125,249,255,0.3)" }}>
                   {MONTH_NAMES[month]} {year}
                 </h2>
-                <div className="flex items-center gap-2 text-[8px] text-vector-white/40 font-mono">
+                <div className="flex items-center gap-2 text-[10px] text-vector-white/40 font-mono">
                   <span className="h-2 w-2 bg-vector-blue animate-pulse" />
                   <span>AUTO-SCHEDULED — 1 NODE / DAY · SPACED REPETITION</span>
                 </div>
@@ -156,7 +156,7 @@ const CalendarScreen = () => {
               {/* Day headers */}
               <div className="grid grid-cols-7 gap-1 mb-1">
                 {DAYS.map((d) => (
-                  <div key={d} className="text-center text-[8px] font-mono tracking-widest text-vector-blue/50 py-2">
+                  <div key={d} className="text-center text-[10px] font-mono tracking-widest text-vector-blue/50 py-2">
                     {d}
                   </div>
                 ))}
@@ -185,14 +185,14 @@ const CalendarScreen = () => {
                     >
                       <div className="flex items-center justify-between mb-1">
                         <span
-                          className="text-[9px] font-mono"
+                          className="text-[11px] font-mono"
                           style={{
                             color: isToday ? "#7DF9FF" : "rgba(255,255,255,0.5)",
                             fontWeight: isToday ? "bold" : "normal",
                           }}
                         >
                           {day}
-                          {isToday && <span className="ml-1 text-[7px] text-vector-blue">●</span>}
+                          {isToday && <span className="ml-1 text-[9px] text-vector-blue">●</span>}
                         </span>
                       </div>
                       <div className="flex flex-col gap-0.5">
@@ -201,7 +201,7 @@ const CalendarScreen = () => {
                           return (
                             <div
                               key={i}
-                              className="w-full px-1 py-0.5 text-[6px] font-mono truncate"
+                              className="w-full px-1 py-0.5 text-[8px] font-mono truncate"
                               style={{ background: bsc.bg, color: bsc.text, border: `1px solid ${bsc.border}30` }}
                             >
                               {b.label}
@@ -209,7 +209,7 @@ const CalendarScreen = () => {
                           );
                         })}
                         {blocks.length > 2 && (
-                          <span className="text-[6px] font-mono text-vector-white/30">+{blocks.length - 2} more</span>
+                          <span className="text-[8px] font-mono text-vector-white/30">+{blocks.length - 2} more</span>
                         )}
                       </div>
                     </div>
@@ -221,13 +221,13 @@ const CalendarScreen = () => {
             {/* Day detail panel */}
             <div className="w-72 flex-shrink-0 border-l border-vector-blue/20 flex flex-col bg-vector-bg/30 overflow-y-auto custom-scrollbar">
               <div className="px-4 py-3 border-b border-vector-blue/20">
-                <p className="text-[8px] text-vector-blue/50 font-mono tracking-widest uppercase">
+                <p className="text-[10px] text-vector-blue/50 font-mono tracking-widest uppercase">
                   {MONTH_NAMES[month]} {selectedDay}, {year}
                 </p>
                 {selectedDay === todayDate && (
                   <div className="flex items-center gap-1.5 mt-1">
                     <div className="h-1.5 w-1.5 bg-vector-blue animate-pulse" />
-                    <span className="text-[8px] text-vector-blue font-mono tracking-widest">TODAY</span>
+                    <span className="text-[10px] text-vector-blue font-mono tracking-widest">TODAY</span>
                   </div>
                 )}
               </div>
@@ -236,7 +236,7 @@ const CalendarScreen = () => {
                 {selectedBlocks.length === 0 ? (
                   <div className="flex flex-col items-center justify-center h-32 gap-2">
                     <span className="material-symbols-outlined text-vector-blue/20 text-3xl">event_available</span>
-                    <p className="text-[8px] text-vector-white/20 font-mono text-center">No nodes scheduled</p>
+                    <p className="text-[10px] text-vector-white/20 font-mono text-center">No nodes scheduled</p>
                   </div>
                 ) : (
                   <div className="flex flex-col gap-3">
@@ -253,17 +253,17 @@ const CalendarScreen = () => {
                             <span className="material-symbols-outlined text-sm" style={{ color: sc.text }}>
                               {statusIcon(block.status)}
                             </span>
-                            <span className="text-[9px] font-mono font-bold" style={{ color: sc.text }}>
+                            <span className="text-[11px] font-mono font-bold" style={{ color: sc.text }}>
                               {block.label}
                             </span>
                           </div>
                           {block.status === "rescheduled" && (
-                            <p className="text-[7px] font-mono text-red-400/70 mb-1">Rescheduled — low quiz score</p>
+                            <p className="text-[9px] font-mono text-red-400/70 mb-1">Rescheduled — low quiz score</p>
                           )}
                           <div className="mt-1">
                             <div className="flex justify-between mb-1">
-                              <span className="text-[7px] font-mono text-vector-white/30">MASTERY</span>
-                              <span className="text-[7px] font-mono" style={{ color: sc.text }}>
+                              <span className="text-[9px] font-mono text-vector-white/30">MASTERY</span>
+                              <span className="text-[9px] font-mono" style={{ color: sc.text }}>
                                 {Math.round(block.mastery * 100)}%
                               </span>
                             </div>
@@ -273,7 +273,7 @@ const CalendarScreen = () => {
                           </div>
                           <button
                             onClick={() => navigate(`/quiz?node=${encodeURIComponent(block.nodeId)}`)}
-                            className="w-full mt-2 py-1.5 border text-[8px] font-mono tracking-widest uppercase transition-all hover:opacity-80"
+                            className="w-full mt-2 py-1.5 border text-[10px] font-mono tracking-widest uppercase transition-all hover:opacity-80"
                             style={{ borderColor: sc.border + "60", color: sc.text }}
                           >
                             LAUNCH QUIZ
@@ -286,8 +286,8 @@ const CalendarScreen = () => {
               </div>
 
               <div className="p-4 border-t border-vector-blue/20">
-                <p className="text-[7px] font-mono text-vector-white/20 tracking-widest uppercase mb-2">STUDY_PLAN</p>
-                <p className="text-[8px] font-mono text-vector-white/40 leading-relaxed">
+                <p className="text-[9px] font-mono text-vector-white/20 tracking-widest uppercase mb-2">STUDY_PLAN</p>
+                <p className="text-[10px] font-mono text-vector-white/40 leading-relaxed">
                   1 node scheduled per day. Failed quizzes are rescheduled automatically.
                 </p>
               </div>

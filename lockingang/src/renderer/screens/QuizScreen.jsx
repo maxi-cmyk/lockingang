@@ -11,7 +11,7 @@ const MasteryBar = ({ mastery }) => {
   return (
     <div>
       <div className="flex justify-between items-center mb-1.5">
-        <span className="text-[8px] font-mono tracking-widest uppercase" style={{ color }}>
+        <span className="text-[10px] font-mono tracking-widest uppercase" style={{ color }}>
           MASTERY: {Math.round(mastery * 100)}% — {label}
         </span>
       </div>
@@ -32,7 +32,7 @@ const QuizScreen = () => {
   const studyState = getState();
   const studyNode = studyState.nodes.find((n) => n.id === nodeId);
   const nodeLabel = studyNode?.label || nodeId;
-  const nodeDesc  = studyNode?.description || "";
+  const nodeDesc = studyNode?.description || "";
 
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -142,8 +142,8 @@ const QuizScreen = () => {
         <div className="flex-1 flex flex-col items-center justify-center gap-6">
           <span className="material-symbols-outlined text-vector-blue text-[60px] animate-spin">refresh</span>
           <div className="text-center">
-            <p className="text-[11px] text-vector-blue font-mono tracking-widest">GENERATING QUIZ</p>
-            <p className="text-[9px] text-vector-white/40 font-mono mt-1">GPT-4o is building questions for: {nodeLabel}</p>
+            <p className="text-[13px] text-vector-blue font-mono tracking-widest">GENERATING QUIZ</p>
+            <p className="text-[11px] text-vector-white/40 font-mono mt-1">GPT-4o is building questions for: {nodeLabel}</p>
           </div>
         </div>
       </div>
@@ -159,17 +159,17 @@ const QuizScreen = () => {
         <div className="flex-1 flex flex-col items-center justify-center gap-6 p-12">
           <span className="material-symbols-outlined text-red-400 text-[60px]">error</span>
           <div className="text-center">
-            <p className="text-red-400 font-mono tracking-widest text-[11px] uppercase">QUIZ LOAD FAILED</p>
-            <p className="text-[9px] text-vector-white/50 font-mono mt-2 max-w-md">{loadError || "No questions generated."}</p>
-            <p className="text-[8px] text-vector-white/30 font-mono mt-1">Check that the chatbot server is running (port 5001).</p>
+            <p className="text-red-400 font-mono tracking-widest text-[13px] uppercase">QUIZ LOAD FAILED</p>
+            <p className="text-[11px] text-vector-white/50 font-mono mt-2 max-w-md">{loadError || "No questions generated."}</p>
+            <p className="text-[10px] text-vector-white/30 font-mono mt-1">Check that the chatbot server is running (port 5001).</p>
           </div>
           <div className="flex gap-4">
             <button onClick={() => navigate(-1)}
-              className="px-8 py-3 border border-vector-blue/40 text-vector-blue text-[9px] font-mono tracking-widest uppercase hover:bg-vector-blue/10 transition-all">
+              className="px-8 py-3 border border-vector-blue/40 text-vector-blue text-[11px] font-mono tracking-widest uppercase hover:bg-vector-blue/10 transition-all">
               GO BACK
             </button>
             <button onClick={() => window.location.reload()}
-              className="px-8 py-3 bg-vector-blue text-vector-bg text-[9px] font-bold font-mono tracking-widest uppercase hover:brightness-110 transition-all">
+              className="px-8 py-3 bg-vector-blue text-vector-bg text-[11px] font-bold font-mono tracking-widest uppercase hover:brightness-110 transition-all">
               RETRY
             </button>
           </div>
@@ -193,9 +193,9 @@ const QuizScreen = () => {
           {/* Header */}
           <header className="h-14 border-b border-vector-blue flex items-center justify-between px-6 backdrop-blur-md bg-vector-bg/40 z-10 shrink-0">
             <div className="flex items-center gap-2">
-              <span className="text-[11px] text-vector-white/60 font-mono tracking-wider">SESSION_COMPLETE</span>
-              <span className="text-[11px] text-vector-blue font-bold">&gt;&gt;</span>
-              <span className="text-[11px] text-vector-blue font-mono tracking-wider terminal-text">
+              <span className="text-[13px] text-vector-white/60 font-mono tracking-wider">SESSION_COMPLETE</span>
+              <span className="text-[13px] text-vector-blue font-bold">&gt;&gt;</span>
+              <span className="text-[13px] text-vector-blue font-mono tracking-wider terminal-text">
                 PERFORMANCE_REVIEW: [{nodeLabel.toUpperCase().replace(/ /g, "_")}]
               </span>
             </div>
@@ -216,22 +216,22 @@ const QuizScreen = () => {
                     <h2 className="text-2xl font-bold tracking-widest terminal-text" style={{ color: passedScore ? "#7DF9FF" : "#FF4444" }}>
                       {passedScore ? "SESSION COMPLETE" : "REVIEW REQUIRED"}
                     </h2>
-                    <p className="text-[12px] text-vector-white/60 font-mono mt-1">{nodeLabel}</p>
+                    <p className="text-[14px] text-vector-white/60 font-mono mt-1">{nodeLabel}</p>
                     <div className="flex gap-8 mt-3">
                       <div>
-                        <p className="text-[10px] text-vector-white/40 font-mono uppercase">Score</p>
+                        <p className="text-[12px] text-vector-white/40 font-mono uppercase">Score</p>
                         <p className="text-2xl font-bold font-mono" style={{ color: passedScore ? "#7DF9FF" : "#FF4444" }}>
                           {correctCount}/{questions.length} ({scorePercent}%)
                         </p>
                       </div>
                       <div>
-                        <p className="text-[10px] text-vector-white/40 font-mono uppercase">Mastery</p>
+                        <p className="text-[12px] text-vector-white/40 font-mono uppercase">Mastery</p>
                         <p className="text-2xl font-bold font-mono" style={{ color: passedScore ? "#7DF9FF" : "#FF4444" }}>
                           {Math.round(mastery * 100)}%
                         </p>
                       </div>
                       <div>
-                        <p className="text-[10px] text-vector-white/40 font-mono uppercase">XP</p>
+                        <p className="text-[12px] text-vector-white/40 font-mono uppercase">XP</p>
                         <p className="text-2xl font-bold text-vector-blue font-mono">+{xp}</p>
                       </div>
                     </div>
@@ -244,8 +244,8 @@ const QuizScreen = () => {
                 <div className="border border-red-500/50 bg-red-500/5 p-4 flex items-center gap-3">
                   <span className="material-symbols-outlined text-red-400 text-xl">replay</span>
                   <div>
-                    <p className="text-[11px] text-red-400 font-mono tracking-widest uppercase">Node Rescheduled</p>
-                    <p className="text-[10px] text-vector-white/60 font-mono mt-0.5">
+                    <p className="text-[13px] text-red-400 font-mono tracking-widest uppercase">Node Rescheduled</p>
+                    <p className="text-[12px] text-vector-white/60 font-mono mt-0.5">
                       "{nodeLabel}" has been added back to your calendar for an extra review session.
                     </p>
                   </div>
@@ -257,7 +257,7 @@ const QuizScreen = () => {
                 <div className="border border-green-500/20 bg-green-500/3">
                   <div className="px-4 py-3 border-b border-green-500/20 flex items-center gap-2">
                     <span className="material-symbols-outlined text-green-400 text-base">check_circle</span>
-                    <span className="text-[11px] text-green-400 font-mono tracking-widest uppercase">
+                    <span className="text-[13px] text-green-400 font-mono tracking-widest uppercase">
                       Correct ({correctAnswers.length})
                     </span>
                   </div>
@@ -265,7 +265,7 @@ const QuizScreen = () => {
                     {correctAnswers.map((a, i) => (
                       <div key={i} className="px-4 py-3 flex items-start gap-3">
                         <span className="material-symbols-outlined text-green-400 text-sm mt-0.5 shrink-0">check</span>
-                        <p className="text-[11px] font-mono text-vector-white/70">{a.question.text}</p>
+                        <p className="text-[13px] font-mono text-vector-white/70">{a.question.text}</p>
                       </div>
                     ))}
                   </div>
@@ -277,7 +277,7 @@ const QuizScreen = () => {
                 <div className="border border-red-500/30 bg-red-500/3">
                   <div className="px-4 py-3 border-b border-red-500/20 flex items-center gap-2">
                     <span className="material-symbols-outlined text-red-400 text-base">cancel</span>
-                    <span className="text-[11px] text-red-400 font-mono tracking-widest uppercase">
+                    <span className="text-[13px] text-red-400 font-mono tracking-widest uppercase">
                       Needs Review ({wrongAnswers.length})
                     </span>
                   </div>
@@ -288,22 +288,22 @@ const QuizScreen = () => {
                       return (
                         <div key={i} className="px-4 py-4 flex flex-col gap-3">
                           {/* Question */}
-                          <p className="text-[12px] font-mono text-vector-white/90 leading-relaxed">{a.question.text}</p>
+                          <p className="text-[14px] font-mono text-vector-white/90 leading-relaxed">{a.question.text}</p>
 
                           {/* Your answer vs correct */}
                           <div className="flex flex-col gap-1.5">
                             <div className="flex items-start gap-2 p-2 border border-red-500/30 bg-red-500/5">
                               <span className="material-symbols-outlined text-red-400 text-sm shrink-0 mt-0.5">cancel</span>
                               <div>
-                                <span className="text-[9px] text-red-400/70 font-mono uppercase tracking-widest block mb-0.5">Your answer</span>
-                                <span className="text-[11px] font-mono text-red-400">{a.selected}. {selectedOpt?.text || a.selected}</span>
+                                <span className="text-[11px] text-red-400/70 font-mono uppercase tracking-widest block mb-0.5">Your answer</span>
+                                <span className="text-[13px] font-mono text-red-400">{a.selected}. {selectedOpt?.text || a.selected}</span>
                               </div>
                             </div>
                             <div className="flex items-start gap-2 p-2 border border-green-500/30 bg-green-500/5">
                               <span className="material-symbols-outlined text-green-400 text-sm shrink-0 mt-0.5">check_circle</span>
                               <div>
-                                <span className="text-[9px] text-green-400/70 font-mono uppercase tracking-widest block mb-0.5">Correct answer</span>
-                                <span className="text-[11px] font-mono text-green-400">{a.question.correct}. {correctOpt?.text || a.question.correct}</span>
+                                <span className="text-[11px] text-green-400/70 font-mono uppercase tracking-widest block mb-0.5">Correct answer</span>
+                                <span className="text-[13px] font-mono text-green-400">{a.question.correct}. {correctOpt?.text || a.question.correct}</span>
                               </div>
                             </div>
                           </div>
@@ -311,8 +311,8 @@ const QuizScreen = () => {
                           {/* Explanation */}
                           {a.question.explanation && (
                             <div className="border-l-2 border-vector-blue/40 pl-3">
-                              <p className="text-[9px] text-vector-blue/60 font-mono uppercase tracking-widest mb-1">Explanation</p>
-                              <p className="text-[11px] font-mono text-vector-white/70 leading-relaxed">{a.question.explanation}</p>
+                              <p className="text-[11px] text-vector-blue/60 font-mono uppercase tracking-widest mb-1">Explanation</p>
+                              <p className="text-[13px] font-mono text-vector-white/70 leading-relaxed">{a.question.explanation}</p>
                             </div>
                           )}
                         </div>
@@ -335,15 +335,15 @@ const QuizScreen = () => {
                       .then((r) => { setQuestions(r.questions || []); setLoading(false); })
                       .catch((e) => { setLoadError(e.message); setLoading(false); });
                   }}
-                  className="px-8 py-3 border border-vector-blue text-vector-blue text-[11px] font-mono tracking-widest uppercase hover:bg-vector-blue/10 transition-all">
+                  className="px-8 py-3 border border-vector-blue text-vector-blue text-[13px] font-mono tracking-widest uppercase hover:bg-vector-blue/10 transition-all">
                   RETRY
                 </button>
                 <button onClick={() => navigate("/knowledge-tree")}
-                  className="flex-1 py-3 bg-vector-blue text-vector-bg text-[11px] font-bold font-mono tracking-widest uppercase hover:brightness-110 transition-all">
+                  className="flex-1 py-3 bg-vector-blue text-vector-bg text-[13px] font-bold font-mono tracking-widest uppercase hover:brightness-110 transition-all">
                   VIEW KNOWLEDGE TREE
                 </button>
                 <button onClick={() => navigate("/")}
-                  className="px-8 py-3 border border-vector-white/20 text-vector-white/60 text-[11px] font-mono tracking-widest uppercase hover:bg-vector-white/5 transition-all">
+                  className="px-8 py-3 border border-vector-white/20 text-vector-white/60 text-[13px] font-mono tracking-widest uppercase hover:bg-vector-white/5 transition-all">
                   DASHBOARD
                 </button>
               </div>
@@ -366,16 +366,16 @@ const QuizScreen = () => {
         {/* Header */}
         <header className="h-14 border-b border-vector-blue flex items-center justify-between px-6 backdrop-blur-md bg-vector-bg/40 z-10 shrink-0">
           <div className="flex items-center gap-2">
-            <span className="text-[10px] text-vector-white/60 font-mono tracking-wider">SYSTEM_PROCESS</span>
-            <span className="text-[10px] text-vector-blue font-bold">&gt;&gt;</span>
-            <span className="text-[10px] text-vector-blue font-mono tracking-wider terminal-text">
+            <span className="text-[12px] text-vector-white/60 font-mono tracking-wider">SYSTEM_PROCESS</span>
+            <span className="text-[12px] text-vector-blue font-bold">&gt;&gt;</span>
+            <span className="text-[12px] text-vector-blue font-mono tracking-wider terminal-text">
               NODE_VALIDATION: [{nodeLabel.toUpperCase().replace(/ /g, "_")}]
             </span>
           </div>
           <div className="flex items-center gap-4">
-            <span className="text-[9px] text-vector-white/40 font-mono">Q {questionIdx + 1} / {questions.length}</span>
+            <span className="text-[11px] text-vector-white/40 font-mono">Q {questionIdx + 1} / {questions.length}</span>
             <button onClick={() => navigate(-1)}
-              className="flex items-center gap-2 border border-vector-blue/30 hover:border-vector-blue bg-vector-blue/10 hover:bg-vector-blue/20 text-vector-blue text-[9px] tracking-widest uppercase h-8 px-4 transition-all">
+              className="flex items-center gap-2 border border-vector-blue/30 hover:border-vector-blue bg-vector-blue/10 hover:bg-vector-blue/20 text-vector-blue text-[11px] tracking-widest uppercase h-8 px-4 transition-all">
               EXIT_QUIZ <span className="material-symbols-outlined text-base">logout</span>
             </button>
           </div>
@@ -397,10 +397,10 @@ const QuizScreen = () => {
                 <div className="flex items-start gap-3">
                   <span className="material-symbols-outlined text-red-400 text-2xl">warning</span>
                   <div>
-                    <h3 className="text-red-400 font-bold text-[10px] tracking-widest uppercase terminal-text">
+                    <h3 className="text-red-400 font-bold text-[12px] tracking-widest uppercase terminal-text">
                       WALL_DETECTED — {nodeLabel}
                     </h3>
-                    <p className="text-[9px] text-vector-white/70 font-mono mt-1">
+                    <p className="text-[11px] text-vector-white/70 font-mono mt-1">
                       Repeated failures detected. This node will be rescheduled for additional review.
                     </p>
                   </div>
@@ -419,7 +419,7 @@ const QuizScreen = () => {
                   <div className="absolute bottom-0 right-0 w-2 h-2 border-b-2 border-r-2 border-vector-blue" />
 
                   <div className="px-6 py-4 border-b border-vector-blue/20 flex justify-between items-center bg-vector-blue/5">
-                    <h3 className="text-vector-blue font-bold tracking-widest text-[9px] flex items-center gap-2 uppercase">
+                    <h3 className="text-vector-blue font-bold tracking-widest text-[11px] flex items-center gap-2 uppercase">
                       <span className="material-symbols-outlined text-base">psychology</span>
                       NODE_QUERY_{String(questionIdx + 1).padStart(3, "0")} // {nodeLabel.toUpperCase().replace(/ /g, "_")}
                     </h3>
@@ -430,7 +430,7 @@ const QuizScreen = () => {
                     <div className="w-full h-28 bg-black/40 border border-vector-blue/10 overflow-hidden relative mb-2">
                       <div className="absolute inset-0 opacity-20"
                         style={{ backgroundImage: "radial-gradient(#7DF9FF 1px, transparent 1px)", backgroundSize: "20px 20px" }} />
-                      <div className="text-vector-blue/50 font-mono text-[9px] p-4 z-10 relative leading-relaxed whitespace-pre">
+                      <div className="text-vector-blue/50 font-mono text-[11px] p-4 z-10 relative leading-relaxed whitespace-pre">
                         {question.context || `> ANALYSING: ${nodeLabel.toUpperCase()}\n> LOADING CONTEXT...`}
                         {"\n"}<span className="animate-pulse">_</span>
                       </div>
@@ -447,11 +447,11 @@ const QuizScreen = () => {
                         className="group relative flex items-center w-full p-4 bg-vector-bg border transition-all text-left"
                         style={{ borderColor: s.border, background: s.bg, cursor: answered ? "default" : "pointer" }}>
                         <div className="absolute left-0 top-0 bottom-0 w-1 transition-colors" style={{ background: s.accent }} />
-                        <span className="flex items-center justify-center size-8 font-bold mr-4 transition-colors shrink-0 text-[9px]"
+                        <span className="flex items-center justify-center size-8 font-bold mr-4 transition-colors shrink-0 text-[11px]"
                           style={{ color: s.text, border: `1px solid ${s.accent}` }}>
                           {letter}
                         </span>
-                        <span className="font-mono text-xs" style={{ color: s.text }}>{text}</span>
+                        <span className="font-mono text-sm" style={{ color: s.text }}>{text}</span>
                         {answered && letter === question.correct && (
                           <span className="ml-auto shrink-0 material-symbols-outlined text-green-400 text-base">check_circle</span>
                         )}
@@ -465,7 +465,7 @@ const QuizScreen = () => {
 
                 {answered && (
                   <button onClick={handleNext}
-                    className="w-full py-3 bg-vector-blue text-vector-bg text-[9px] font-bold uppercase tracking-widest font-mono hover:brightness-110 transition-all flex items-center justify-center gap-2">
+                    className="w-full py-3 bg-vector-blue text-vector-bg text-[11px] font-bold uppercase tracking-widest font-mono hover:brightness-110 transition-all flex items-center justify-center gap-2">
                     <span className="material-symbols-outlined text-sm">arrow_forward</span>
                     {questionIdx < questions.length - 1 ? "NEXT QUESTION" : "COMPLETE SESSION"}
                   </button>
@@ -479,14 +479,14 @@ const QuizScreen = () => {
                     <div className="absolute -right-4 -top-4 text-vector-blue/5 group-hover:text-vector-blue/10 transition-colors">
                       <span className="material-symbols-outlined text-[80px]">local_fire_department</span>
                     </div>
-                    <p className="text-vector-blue/70 text-[8px] font-bold tracking-widest uppercase z-10">XP Earned</p>
+                    <p className="text-vector-blue/70 text-[10px] font-bold tracking-widest uppercase z-10">XP Earned</p>
                     <p className="text-vector-blue text-3xl font-bold leading-tight z-10 font-mono">+{xp}</p>
                   </div>
                   <div className="flex flex-col gap-1 p-4 bg-vector-bg border border-red-500/30 relative overflow-hidden group">
                     <div className="absolute -right-4 -top-4 text-red-500/5 group-hover:text-red-500/10 transition-colors">
                       <span className="material-symbols-outlined text-[80px]">warning</span>
                     </div>
-                    <p className="text-red-400/70 text-[8px] font-bold tracking-widest uppercase z-10">Mistakes</p>
+                    <p className="text-red-400/70 text-[10px] font-bold tracking-widest uppercase z-10">Mistakes</p>
                     <p className="text-red-400 text-3xl font-bold leading-tight z-10 font-mono">{wrongCount}</p>
                   </div>
                 </div>
@@ -494,33 +494,37 @@ const QuizScreen = () => {
                 {/* Node context */}
                 <div className="flex flex-col grow bg-vector-bg border border-vector-blue/20 overflow-hidden">
                   <div className="px-4 py-3 border-b border-vector-blue/20 bg-vector-blue/5">
-                    <h4 className="text-vector-white font-bold text-[9px] tracking-widest uppercase">Node_Context</h4>
+                    <h4 className="text-vector-white font-bold text-[11px] tracking-widest uppercase">Node_Context</h4>
                   </div>
                   <div className="relative h-32 bg-black/60 w-full flex items-center justify-center overflow-hidden border-b border-vector-blue/20">
                     <div className="absolute inset-0 opacity-20" style={{ backgroundImage: "radial-gradient(#7DF9FF 1px, transparent 1px)", backgroundSize: "20px 20px" }} />
                     <div className="relative z-10 flex flex-col items-center">
                       <div className="size-14 border-2 flex items-center justify-center mb-2"
-                        style={{ borderColor: mastery >= 0.7 ? "#7DF9FF" : mastery >= 0.3 ? "#FFB800" : "#FF4444",
-                          boxShadow: `0 0 16px ${mastery >= 0.7 ? "rgba(125,249,255,0.4)" : mastery >= 0.3 ? "rgba(255,184,0,0.3)" : "rgba(255,68,68,0.4)"}` }}>
+                        style={{
+                          borderColor: mastery >= 0.7 ? "#7DF9FF" : mastery >= 0.3 ? "#FFB800" : "#FF4444",
+                          boxShadow: `0 0 16px ${mastery >= 0.7 ? "rgba(125,249,255,0.4)" : mastery >= 0.3 ? "rgba(255,184,0,0.3)" : "rgba(255,68,68,0.4)"}`
+                        }}>
                         <span className="material-symbols-outlined text-2xl"
                           style={{ color: mastery >= 0.7 ? "#7DF9FF" : mastery >= 0.3 ? "#FFB800" : "#FF4444" }}>
                           blur_on
                         </span>
                       </div>
-                      <div className="px-3 py-1 text-[9px] font-mono border"
-                        style={{ color: mastery >= 0.7 ? "#7DF9FF" : mastery >= 0.3 ? "#FFB800" : "#FF4444",
-                          borderColor: mastery >= 0.7 ? "#7DF9FF40" : mastery >= 0.3 ? "#FFB80040" : "#FF444440" }}>
+                      <div className="px-3 py-1 text-[11px] font-mono border"
+                        style={{
+                          color: mastery >= 0.7 ? "#7DF9FF" : mastery >= 0.3 ? "#FFB800" : "#FF4444",
+                          borderColor: mastery >= 0.7 ? "#7DF9FF40" : mastery >= 0.3 ? "#FFB80040" : "#FF444440"
+                        }}>
                         MASTERY: {Math.round(mastery * 100)}%
                       </div>
                     </div>
                   </div>
                   <div className="p-4 flex flex-col gap-2">
                     {nodeDesc && (
-                      <p className="text-[9px] font-mono text-vector-white/50 leading-relaxed">{nodeDesc}</p>
+                      <p className="text-[11px] font-mono text-vector-white/50 leading-relaxed">{nodeDesc}</p>
                     )}
                     <div className="mt-auto">
                       <button onClick={() => navigate("/knowledge-tree")}
-                        className="w-full py-2 border border-vector-blue/30 text-vector-blue text-[9px] font-bold uppercase tracking-widest hover:bg-vector-blue hover:text-vector-bg transition-all">
+                        className="w-full py-2 border border-vector-blue/30 text-vector-blue text-[11px] font-bold uppercase tracking-widest hover:bg-vector-blue hover:text-vector-bg transition-all">
                         EXPLORE GRAPH
                       </button>
                     </div>
@@ -532,7 +536,7 @@ const QuizScreen = () => {
         </main>
 
         <footer className="border-t border-vector-blue/20 bg-vector-bg py-2 px-6 shrink-0">
-          <div className="flex justify-between items-center text-[8px] uppercase font-mono tracking-widest text-vector-blue/40">
+          <div className="flex justify-between items-center text-[10px] uppercase font-mono tracking-widest text-vector-blue/40">
             <span>System_Status: OPERATIONAL</span>
             <span>Node: {nodeId} · Wrong: {wrongCount} · Mastery: {Math.round(mastery * 100)}%</span>
             <span>Focus_Mode: ACTIVE</span>

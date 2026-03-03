@@ -7,16 +7,16 @@ import { loadTreeIntoStore } from "../nodeStore";
 // ── Constants ─────────────────────────────────────────────────────────────────
 
 const ACCEPTED_TYPES = [
-    { ext: "pdf",      label: "PDF",       icon: "picture_as_pdf", color: "text-red-400"    },
-    { ext: "md",       label: "MARKDOWN",  icon: "description",    color: "text-vector-blue" },
-    { ext: "txt",      label: "PLAINTEXT", icon: "article",        color: "text-green-400"  },
-    { ext: "docx",     label: "WORD",      icon: "description",    color: "text-blue-400"   },
+    { ext: "pdf", label: "PDF", icon: "picture_as_pdf", color: "text-red-400" },
+    { ext: "md", label: "MARKDOWN", icon: "description", color: "text-vector-blue" },
+    { ext: "txt", label: "PLAINTEXT", icon: "article", color: "text-green-400" },
+    { ext: "docx", label: "WORD", icon: "description", color: "text-blue-400" },
 ];
 
 const EXT_TO_MIME = {
-    pdf:  "application/pdf",
-    md:   "text/markdown",
-    txt:  "text/plain",
+    pdf: "application/pdf",
+    md: "text/markdown",
+    txt: "text/plain",
     docx: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
 };
 
@@ -43,22 +43,22 @@ const fmtSize = (b) => b >= 1e6 ? `${(b / 1e6).toFixed(1)}MB` : `${(b / 1e3).toF
 const TemplateScreen = () => {
     const navigate = useNavigate();
     const fileInputRef = useRef(null);
-    const logRef       = useRef(null);
+    const logRef = useRef(null);
 
     const [uploadedFiles, setUploadedFiles] = useState([]);
-    const [isDragging,    setIsDragging]    = useState(false);
+    const [isDragging, setIsDragging] = useState(false);
 
     // Pipeline state
-    const [phase,        setPhase]        = useState("idle");  // idle | loading | complete | error
-    const [scanLog,      setScanLog]      = useState([]);
-    const [scanLineIdx,  setScanLineIdx]  = useState(0);
-    const [result,       setResult]       = useState(null);    // { subject, nodes, edges }
-    const [errorMsg,     setErrorMsg]     = useState("");
-    const [liveNodes,    setLiveNodes]    = useState([]);      // nodes revealed one-by-one
+    const [phase, setPhase] = useState("idle");  // idle | loading | complete | error
+    const [scanLog, setScanLog] = useState([]);
+    const [scanLineIdx, setScanLineIdx] = useState(0);
+    const [result, setResult] = useState(null);    // { subject, nodes, edges }
+    const [errorMsg, setErrorMsg] = useState("");
+    const [liveNodes, setLiveNodes] = useState([]);      // nodes revealed one-by-one
 
     // ── File handling ─────────────────────────────────────────────────────────
 
-    const getExt  = (name) => name.split(".").pop().toLowerCase();
+    const getExt = (name) => name.split(".").pop().toLowerCase();
     const isValid = (name) => TREE_ACCEPTED.has("." + getExt(name));
 
     const processFiles = (files) => {
@@ -79,7 +79,7 @@ const TemplateScreen = () => {
     const removeFile = (id) => setUploadedFiles((prev) => prev.filter((f) => f.id !== id));
 
     const pendingCount = uploadedFiles.filter((f) => f.status === "pending").length;
-    const doneCount    = uploadedFiles.filter((f) => f.status === "done").length;
+    const doneCount = uploadedFiles.filter((f) => f.status === "done").length;
 
     // ── Scan-log animation (driven while phase === "loading") ─────────────────
 
@@ -119,8 +119,8 @@ const TemplateScreen = () => {
 
         try {
             const buffer = await primary.file.arrayBuffer();
-            const mime   = EXT_TO_MIME[getExt(primary.name)] || "application/octet-stream";
-            const data   = await window.api.template.buildTree(buffer, primary.name, mime);
+            const mime = EXT_TO_MIME[getExt(primary.name)] || "application/octet-stream";
+            const data = await window.api.template.buildTree(buffer, primary.name, mime);
 
             setResult(data);
             setUploadedFiles((prev) =>
@@ -168,33 +168,33 @@ const TemplateScreen = () => {
                 {/* Header */}
                 <header className="h-14 border-b border-vector-blue flex items-center justify-between px-6 backdrop-blur-md bg-vector-bg/40 z-10 shrink-0">
                     <div className="flex items-center gap-2">
-                        <span className="text-[10px] text-vector-white/60 font-mono tracking-wider">KNOWLEDGE_BASE</span>
-                        <span className="text-[10px] text-vector-blue font-bold">&gt;&gt;</span>
-                        <span className="text-[10px] text-vector-blue font-mono tracking-wider terminal-text">TEMPLATE_UPLOADER</span>
+                        <span className="text-[12px] text-vector-white/60 font-mono tracking-wider">KNOWLEDGE_BASE</span>
+                        <span className="text-[12px] text-vector-blue font-bold">&gt;&gt;</span>
+                        <span className="text-[12px] text-vector-blue font-mono tracking-wider terminal-text">TEMPLATE_UPLOADER</span>
                     </div>
                     <div className="flex items-center gap-3">
                         {phase === "loading" && (
                             <div className="flex items-center gap-2">
                                 <div className="h-2 w-2 rounded-full bg-vector-blue animate-ping" />
-                                <span className="text-[8px] text-vector-blue font-mono tracking-widest">ANALYSING...</span>
+                                <span className="text-[10px] text-vector-blue font-mono tracking-widest">ANALYSING...</span>
                             </div>
                         )}
                         {phase === "complete" && (
                             <div className="flex items-center gap-2">
                                 <div className="h-2 w-2 rounded-full bg-green-400" />
-                                <span className="text-[8px] text-green-400 font-mono tracking-widest">TREE GENERATED</span>
+                                <span className="text-[10px] text-green-400 font-mono tracking-widest">TREE GENERATED</span>
                             </div>
                         )}
                         {phase === "error" && (
                             <div className="flex items-center gap-2">
                                 <div className="h-2 w-2 rounded-full bg-red-400" />
-                                <span className="text-[8px] text-red-400 font-mono tracking-widest">ERROR</span>
+                                <span className="text-[10px] text-red-400 font-mono tracking-widest">ERROR</span>
                             </div>
                         )}
                         {phase === "idle" && (
                             <div className="flex items-center gap-1.5">
                                 <div className="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse" />
-                                <span className="text-[8px] text-vector-white/40 font-mono tracking-widest">RAG_PIPELINE READY</span>
+                                <span className="text-[10px] text-vector-white/40 font-mono tracking-widest">RAG_PIPELINE READY</span>
                             </div>
                         )}
                     </div>
@@ -206,7 +206,7 @@ const TemplateScreen = () => {
                             style={{ textShadow: "0 0 20px rgba(125,249,255,0.4)" }}>
                             UPLOAD_TEMPLATE
                         </h1>
-                        <p className="text-[10px] text-vector-blue/60 font-mono tracking-wider mt-1">
+                        <p className="text-[12px] text-vector-blue/60 font-mono tracking-wider mt-1">
                             Drop a study document. GPT-4o reads it and builds your knowledge tree automatically.
                         </p>
                     </div>
@@ -236,8 +236,8 @@ const TemplateScreen = () => {
                                         cloud_upload
                                     </span>
                                     <div className="text-center">
-                                        <p className="text-[11px] text-vector-white tracking-widest uppercase font-mono">DROP FILE HERE</p>
-                                        <p className="text-[9px] text-vector-white/40 font-mono mt-1">or click to browse · PDF, MD, TXT, DOCX</p>
+                                        <p className="text-[13px] text-vector-white tracking-widest uppercase font-mono">DROP FILE HERE</p>
+                                        <p className="text-[11px] text-vector-white/40 font-mono mt-1">or click to browse · PDF, MD, TXT, DOCX</p>
                                     </div>
                                 </div>
 
@@ -245,27 +245,26 @@ const TemplateScreen = () => {
                                 {uploadedFiles.length > 0 && (
                                     <div className="border border-vector-blue/30 bg-black/20">
                                         <div className="flex items-center justify-between px-4 py-3 border-b border-vector-blue/20">
-                                            <span className="text-[8px] text-vector-blue/60 uppercase tracking-widest font-mono">
+                                            <span className="text-[10px] text-vector-blue/60 uppercase tracking-widest font-mono">
                                                 QUEUE ({uploadedFiles.length})
                                             </span>
                                         </div>
                                         <div className="divide-y divide-vector-blue/10">
                                             {uploadedFiles.map((f) => (
                                                 <div key={f.id} className="flex items-center gap-3 px-4 py-3">
-                                                    <span className={`material-symbols-outlined text-[18px] ${
-                                                        f.status === "done"      ? "text-green-400" :
-                                                        f.status === "error"     ? "text-red-400"   :
-                                                        f.status === "uploading" ? "text-vector-blue animate-spin" :
-                                                        "text-vector-white/30"}`}>
+                                                    <span className={`material-symbols-outlined text-[18px] ${f.status === "done" ? "text-green-400" :
+                                                        f.status === "error" ? "text-red-400" :
+                                                            f.status === "uploading" ? "text-vector-blue animate-spin" :
+                                                                "text-vector-white/30"}`}>
                                                         {f.status === "done" ? "check_circle" :
-                                                         f.status === "error" ? "error" :
-                                                         f.status === "uploading" ? "refresh" : "schedule"}
+                                                            f.status === "error" ? "error" :
+                                                                f.status === "uploading" ? "refresh" : "schedule"}
                                                     </span>
                                                     <div className="flex-1 min-w-0">
-                                                        <p className="text-[10px] text-vector-white font-mono truncate">{f.name}</p>
-                                                        {f.message && <p className="text-[8px] text-vector-white/40 font-mono mt-0.5">{f.message}</p>}
+                                                        <p className="text-[12px] text-vector-white font-mono truncate">{f.name}</p>
+                                                        {f.message && <p className="text-[10px] text-vector-white/40 font-mono mt-0.5">{f.message}</p>}
                                                     </div>
-                                                    <span className="text-[8px] text-vector-white/30 font-mono uppercase shrink-0">{fmtSize(f.size)}</span>
+                                                    <span className="text-[10px] text-vector-white/30 font-mono uppercase shrink-0">{fmtSize(f.size)}</span>
                                                     {f.status === "pending" && (
                                                         <button onClick={() => removeFile(f.id)} className="text-vector-white/20 hover:text-red-400 transition-colors">
                                                             <span className="material-symbols-outlined text-[16px]">close</span>
@@ -278,7 +277,7 @@ const TemplateScreen = () => {
                                             <button
                                                 onClick={handleBuild}
                                                 disabled={pendingCount === 0 || phase === "loading"}
-                                                className="w-full py-3 bg-vector-blue text-vector-bg text-[9px] uppercase tracking-widest font-bold font-mono hover:brightness-110 transition-all disabled:opacity-40 flex items-center justify-center gap-2"
+                                                className="w-full py-3 bg-vector-blue text-vector-bg text-[11px] uppercase tracking-widest font-bold font-mono hover:brightness-110 transition-all disabled:opacity-40 flex items-center justify-center gap-2"
                                             >
                                                 <span className="material-symbols-outlined text-sm">
                                                     {phase === "loading" ? "hourglass_top" : "auto_awesome"}
@@ -293,9 +292,9 @@ const TemplateScreen = () => {
                                 {(phase === "loading" || phase === "error") && scanLog.length > 0 && (
                                     <div className="border border-vector-blue/20 bg-black/60">
                                         <div className="px-4 py-2 border-b border-vector-blue/20">
-                                            <span className="text-[8px] text-vector-blue/60 font-mono tracking-widest uppercase">AI_PIPELINE_LOG</span>
+                                            <span className="text-[10px] text-vector-blue/60 font-mono tracking-widest uppercase">AI_PIPELINE_LOG</span>
                                         </div>
-                                        <div ref={logRef} className="p-4 max-h-40 overflow-y-auto custom-scrollbar font-mono text-[9px] space-y-1">
+                                        <div ref={logRef} className="p-4 max-h-40 overflow-y-auto custom-scrollbar font-mono text-[11px] space-y-1">
                                             {scanLog.map((line, i) => (
                                                 <div key={i} className="flex items-center gap-2 text-vector-blue/70">
                                                     <span className="text-vector-blue/30">&gt;</span>
@@ -321,7 +320,7 @@ const TemplateScreen = () => {
                                 {/* Error action */}
                                 {phase === "error" && (
                                     <button onClick={reset}
-                                        className="px-6 py-3 border border-red-500/40 text-red-400 text-[9px] font-mono tracking-widest uppercase hover:bg-red-500/10 transition-all w-fit">
+                                        className="px-6 py-3 border border-red-500/40 text-red-400 text-[11px] font-mono tracking-widest uppercase hover:bg-red-500/10 transition-all w-fit">
                                         RESET &amp; TRY AGAIN
                                     </button>
                                 )}
@@ -330,14 +329,14 @@ const TemplateScreen = () => {
                             {/* Right column */}
                             <div className="flex flex-col gap-4">
                                 <div className="border border-vector-blue/30 bg-black/20 p-5">
-                                    <p className="text-[8px] text-vector-blue/50 uppercase tracking-widest font-mono mb-4">ACCEPTED_FORMATS</p>
+                                    <p className="text-[10px] text-vector-blue/50 uppercase tracking-widest font-mono mb-4">ACCEPTED_FORMATS</p>
                                     <div className="flex flex-col gap-3">
                                         {ACCEPTED_TYPES.map(({ ext, label, icon, color }) => (
                                             <div key={label} className="flex items-center gap-3 p-3 border border-vector-blue/15">
                                                 <span className={`material-symbols-outlined text-[20px] ${color}`}>{icon}</span>
                                                 <div>
-                                                    <p className={`text-[9px] font-bold uppercase tracking-widest font-mono ${color}`}>{label}</p>
-                                                    <p className="text-[8px] text-vector-white/30 font-mono">.{ext}</p>
+                                                    <p className={`text-[11px] font-bold uppercase tracking-widest font-mono ${color}`}>{label}</p>
+                                                    <p className="text-[10px] text-vector-white/30 font-mono">.{ext}</p>
                                                 </div>
                                             </div>
                                         ))}
@@ -345,19 +344,19 @@ const TemplateScreen = () => {
                                 </div>
 
                                 <div className="border border-vector-blue/20 bg-black/10 p-5">
-                                    <p className="text-[8px] text-vector-blue/50 uppercase tracking-widest font-mono mb-3">PIPELINE_OVERVIEW</p>
+                                    <p className="text-[10px] text-vector-blue/50 uppercase tracking-widest font-mono mb-3">PIPELINE_OVERVIEW</p>
                                     {[
-                                        { step: "01", label: "TEXT_EXTRACT",  desc: "Read file, strip formatting" },
+                                        { step: "01", label: "TEXT_EXTRACT", desc: "Read file, strip formatting" },
                                         { step: "02", label: "CHUNK + EMBED", desc: "600-char windows → Pinecone vectors" },
-                                        { step: "03", label: "CONCEPT_MAP",   desc: "GPT-4o identifies key concepts" },
-                                        { step: "04", label: "TREE_BUILD",    desc: "Nodes + prerequisite edges created" },
-                                        { step: "05", label: "GRAPH_RENDER",  desc: "Interactive VectorGraph populated" },
+                                        { step: "03", label: "CONCEPT_MAP", desc: "GPT-4o identifies key concepts" },
+                                        { step: "04", label: "TREE_BUILD", desc: "Nodes + prerequisite edges created" },
+                                        { step: "05", label: "GRAPH_RENDER", desc: "Interactive VectorGraph populated" },
                                     ].map(({ step, label, desc }) => (
                                         <div key={step} className="flex gap-3 mb-3 last:mb-0">
-                                            <span className="text-[8px] text-vector-blue/40 font-mono shrink-0 pt-0.5">{step}</span>
+                                            <span className="text-[10px] text-vector-blue/40 font-mono shrink-0 pt-0.5">{step}</span>
                                             <div>
-                                                <p className="text-[8px] text-vector-blue font-mono uppercase tracking-widest">{label}</p>
-                                                <p className="text-[8px] text-vector-white/30 font-mono">{desc}</p>
+                                                <p className="text-[10px] text-vector-blue font-mono uppercase tracking-widest">{label}</p>
+                                                <p className="text-[10px] text-vector-white/30 font-mono">{desc}</p>
                                             </div>
                                         </div>
                                     ))}
@@ -366,19 +365,19 @@ const TemplateScreen = () => {
                                 {/* Live node discovery */}
                                 {phase === "loading" && liveNodes.length > 0 && (
                                     <div className="border border-vector-blue/30 bg-black/20 p-4">
-                                        <p className="text-[8px] text-vector-blue/50 uppercase tracking-widest font-mono mb-3">
+                                        <p className="text-[10px] text-vector-blue/50 uppercase tracking-widest font-mono mb-3">
                                             NODES_DISCOVERED ({liveNodes.length})
                                         </p>
                                         <div className="flex flex-col gap-1.5">
                                             {liveNodes.map((n) => (
                                                 <div key={n.title} className="flex items-center gap-2">
                                                     <span className="material-symbols-outlined text-green-400 text-sm">check_circle</span>
-                                                    <span className="text-[9px] font-mono text-vector-white/70">{n.title}</span>
+                                                    <span className="text-[11px] font-mono text-vector-white/70">{n.title}</span>
                                                 </div>
                                             ))}
                                             <div className="flex items-center gap-2">
                                                 <span className="material-symbols-outlined text-vector-blue text-sm animate-spin">refresh</span>
-                                                <span className="text-[9px] font-mono text-vector-blue/50 animate-pulse">scanning...</span>
+                                                <span className="text-[11px] font-mono text-vector-blue/50 animate-pulse">scanning...</span>
                                             </div>
                                         </div>
                                     </div>
@@ -400,17 +399,17 @@ const TemplateScreen = () => {
                                         <h2 className="text-lg font-bold text-green-400 tracking-widest terminal-text uppercase">
                                             KNOWLEDGE TREE GENERATED
                                         </h2>
-                                        <p className="text-[10px] text-vector-white/60 font-mono mt-1">
+                                        <p className="text-[12px] text-vector-white/60 font-mono mt-1">
                                             Subject: <span className="text-vector-blue">{result.subject}</span>
                                             {" · "}AI analysed {(result.text_len / 1000).toFixed(1)}k chars
                                         </p>
                                         <div className="flex gap-6 mt-3">
                                             <div>
-                                                <p className="text-[8px] text-vector-white/40 font-mono uppercase tracking-widest">Nodes</p>
+                                                <p className="text-[10px] text-vector-white/40 font-mono uppercase tracking-widest">Nodes</p>
                                                 <p className="text-2xl font-bold text-green-400 font-mono">{result.nodes.length}</p>
                                             </div>
                                             <div>
-                                                <p className="text-[8px] text-vector-white/40 font-mono uppercase tracking-widest">Edges</p>
+                                                <p className="text-[10px] text-vector-white/40 font-mono uppercase tracking-widest">Edges</p>
                                                 <p className="text-2xl font-bold text-green-400 font-mono">{result.edges.length}</p>
                                             </div>
                                         </div>
@@ -421,16 +420,16 @@ const TemplateScreen = () => {
                             {/* Node list */}
                             <div className="border border-vector-blue/20 bg-black/20">
                                 <div className="px-4 py-3 border-b border-vector-blue/20">
-                                    <span className="text-[8px] text-vector-blue/60 font-mono tracking-widest uppercase">GENERATED_NODES</span>
+                                    <span className="text-[10px] text-vector-blue/60 font-mono tracking-widest uppercase">GENERATED_NODES</span>
                                 </div>
                                 <div className="grid grid-cols-2 divide-x divide-vector-blue/10">
                                     {result.nodes.map((n) => (
                                         <div key={n.title} className="flex items-start gap-2 px-4 py-2.5 border-b border-vector-blue/10">
                                             <span className="material-symbols-outlined text-green-400 text-sm mt-0.5 shrink-0">check_circle</span>
                                             <div>
-                                                <p className="text-[9px] font-mono text-vector-white/80">{n.title}</p>
+                                                <p className="text-[11px] font-mono text-vector-white/80">{n.title}</p>
                                                 {n.description && (
-                                                    <p className="text-[7px] font-mono text-vector-white/30 mt-0.5 leading-relaxed">{n.description}</p>
+                                                    <p className="text-[9px] font-mono text-vector-white/30 mt-0.5 leading-relaxed">{n.description}</p>
                                                 )}
                                             </div>
                                         </div>
@@ -441,14 +440,14 @@ const TemplateScreen = () => {
                             <div className="flex gap-4">
                                 <button
                                     onClick={() => navigate("/knowledge-tree")}
-                                    className="flex-1 py-4 bg-vector-blue text-vector-bg text-[10px] font-bold tracking-widest uppercase font-mono hover:brightness-110 transition-all flex items-center justify-center gap-2"
+                                    className="flex-1 py-4 bg-vector-blue text-vector-bg text-[12px] font-bold tracking-widest uppercase font-mono hover:brightness-110 transition-all flex items-center justify-center gap-2"
                                 >
                                     <span className="material-symbols-outlined">account_tree</span>
                                     <p>VIEW KNOWLEDGE TREE</p>
                                 </button>
                                 <button
                                     onClick={reset}
-                                    className="px-6 py-4 border border-vector-blue/30 text-vector-blue text-[9px] font-mono tracking-widest uppercase hover:bg-vector-blue/10 transition-all"
+                                    className="px-6 py-4 border border-vector-blue/30 text-vector-blue text-[11px] font-mono tracking-widest uppercase hover:bg-vector-blue/10 transition-all"
                                 >
                                     <p>RESET</p>
                                 </button>
