@@ -24,14 +24,14 @@ Provides a read-only, at-a-glance summary of the student's current learning stat
 
 - **The Rule of 3:** The active task queue has a hard limit of 3 tasks to enforce prioritization.
 - **Zen Mode:** Distraction-free full-screen takeover.
-- **Brain Dump:** Press Cmd/Ctrl + J to quickly offload intrusive thoughts to an Inbox without breaking focus.
+- **Brain Dump:** offload intrusive thoughts to an Inbox without breaking focus.
 
 ### 🤖 Chatbot (Agentic AI Assistant)
 
 A conversational AI assistant deeply integrated with the knowledge graph.
 
 - **RAG-Powered Q&A:** Queries Pinecone using your embedded notes as the corpus.
-- **Graph & Study Planning:** Can create events on Google Calendar and Todoist via natural language.
+- **Graph & Study Planning:** Can schedule events via natural language.
 
 ### 🗓 Auto-Scheduler & Calendar
 
@@ -40,13 +40,7 @@ Combines Google Calendar events with automatically scheduled review sessions.
 - **Forgetting Curve Optimizer:** Projects when nodes will fall below a critical threshold (0.3) and generates optimal review slots.
 - **Exam Preparation Mode:** Identifies relevant nodes, highlights gaps, and creates a customized multi-day plan.
 
-### 🧩 Adaptive Logic Engine
 
-Identifies when a student is stuck and intervenes.
-
-- **The Wall Detection:** Flags if a student fails a child node's quiz while the parent node shows mastery.
-- **Auto-Bridge Nodes:** Generates a new bridge node between a parent and difficult child with introductory content.
-- **Grandparent Reset:** Escalates persistent failure by forcing a review of fundamentals.
 
 ---
 
@@ -95,6 +89,7 @@ pip install -r requirements.txt
 copy .env.example .env        # then open .env and fill in your keys
 ```
 
+Already inputted by default, no need to do this step
 `.env` values you need:
 ```
 OPENAI_API_KEY=sk-...
