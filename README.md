@@ -89,6 +89,19 @@ copy .env.example .env        # then open .env and fill in your keys
 
 Make a .env file in the lockingang folder with these three variables
 For this step you need an Open AI API key and you have to set up a Pinecone Vector db and copy the api key and the index name.
+Here are the steps to set up pinecone if you dont already have it:
+  1) Sign up for a free account on the Pinecone website.
+  2) Log in to the Pinecone console.
+  3) Navigate to the API Keys section in the left sidebar.
+  4) Click the Create API Key button.
+  5) Enter a descriptive name for your API key.
+  6) Copy the generated API key value immediately and save it in a secure place, as it will not be shown again after you close the dialog
+Now for getting the index name:
+  1) Navigate to the Indexes section in the left sidebar.
+  2) Click the Create Index button
+  3) Enter a unique Index Name.
+  4) Configure the index settings( dimension: 1536, metric: cosine, capacity: serverless)
+  5) Click the Create Index button to finalize the process
 
 `.env` values you need:
 ```
