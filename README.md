@@ -87,7 +87,7 @@ pip install -r requirements.txt
 copy .env.example .env        # then open .env and fill in your keys
 ```
 
-Already inputted the keys by default, this is optional. Skip if you need
+Make a .env file in the lockingang folder with these three variables:
 `.env` values you need:
 ```
 OPENAI_API_KEY=sk-...
