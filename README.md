@@ -59,8 +59,6 @@ lockingang utilizes a fully local stack with selective cloud integrations to ens
 | **API for RAG**      | FastAPI                      | Separates the RAG AI system and frontend        |
 | **On-Device Embeds** | Transformers.js (Web Worker) | 768-float semantic vectors, fully local         |
 | **Database**         | SQLite + WAL mode            | Prevents locks during background decay cycles   |
-| **Calendar Sync**    | Google Calendar API          | Display and schedule tasks (up to 1 week ahead) |
-| **Task Management**  | Todoist API                  | Natural-language task capture and sync          |
 | **External Quiz**    | Kahoot API / Scraping        | Sourcing community quiz content                 |
 
 ---
