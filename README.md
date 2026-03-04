@@ -89,7 +89,7 @@ pip install -r requirements.txt
 copy .env.example .env        # then open .env and fill in your keys
 ```
 
-Already inputted by default, no need to do this step
+Already inputted the keys by default, this is optional. Skip if you need
 `.env` values you need:
 ```
 OPENAI_API_KEY=sk-...
